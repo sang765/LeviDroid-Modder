@@ -1,6 +1,7 @@
 package org.levimc.launcher.util;
 
 import android.app.Activity;
+import android.app.WallpaperManager;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.content.res.ColorStateList;
@@ -19,6 +20,8 @@ import android.graphics.drawable.GradientDrawable;
 import android.graphics.drawable.StateListDrawable;
 import android.net.Uri;
 import android.os.Build;
+import android.os.Handler;
+import android.os.Looper;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
@@ -100,13 +103,30 @@ public class PersonalizationManager {
         // accent from the wallpaper. Cached because extraction is not free;
         // picking any color (or the wallpaper button) stores an explicit value.
         int cachedWallpaperAccent = prefs.getInt(KEY_WALLPAPER_ACCENT_COLOR, 0);
-        if (cachedWallpaperAccent != 0) return cachedWallpaperAccent;
+        return cachedWallpaperAccent != 0 ? cachedWallpaperAccent : updateWallpaperAccent();
+    }
+
+    private int updateWallpaperAccent() {
         int derived = WallpaperColorExtractor.extract(context);
         if (derived != 0) {
             prefs.edit().putInt(KEY_WALLPAPER_ACCENT_COLOR, derived).apply();
-            return derived;
         }
-        return PRESET_COLORS[0];
+        return derived != 0 ? derived : PRESET_COLORS[0];
+    }
+
+    // Keeps the wallpaper-derived accent fresh without polling: BaseActivity
+    // recreates itself when the change generation bumps, so resumed screens
+    // pick the new color up on their own.
+    public static void startWallpaperAccentTracking(Context context) {
+        Context appContext = context.getApplicationContext();
+        WallpaperManager wallpaperManager = WallpaperManager.getInstance(appContext);
+        wallpaperManager.addOnColorsChangedListener((colors, which) -> {
+            if ((which & WallpaperManager.FLAG_SYSTEM) == 0) return;
+            PersonalizationManager pm = new PersonalizationManager(appContext);
+            if (pm.hasCustomAccent()) return;
+            pm.updateWallpaperAccent();
+            sChangeGeneration.incrementAndGet();
+        }, new Handler(Looper.getMainLooper()));
     }
 
     public void setAccentColor(int color) {
