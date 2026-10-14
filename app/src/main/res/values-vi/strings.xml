@@ -460,6 +460,9 @@
     <string name="mod_entry_label">Tệp chính</string>
     <string name="mod_id_label">Mod ID</string>
     <string name="mod_config_files_label">Cấu hình Files</string>
+    <string name="mod_file_label">Tệp</string>
+    <string name="mod_compat_warning">⚠ Dành cho %1$s</string>
+    <string name="total_mods_size">Dung lượng:</string>
     <string name="mod_unknown_author">Không rõ Tác giả</string>
     <string name="mod_unknown_version">Không rõ phiên bản</string>
     <string name="mod_all_versions">Tất cả các phiên bản được hỗ trợ</string>

@@ -44,6 +44,7 @@ public class ModDetailActivity extends BaseActivity {
     private MetaRow versionRow;
     private MetaRow minecraftVersionsRow;
     private MetaRow configFilesRow;
+    private MetaRow fileNameRow;
     private Switch modSwitch;
     private Button configureButton;
     private View headerContainer;
@@ -90,6 +91,7 @@ public class ModDetailActivity extends BaseActivity {
         versionRow = MetaRow.bind(findViewById(R.id.mod_version_row));
         minecraftVersionsRow = MetaRow.bind(findViewById(R.id.mod_minecraft_versions_row));
         configFilesRow = MetaRow.bind(findViewById(R.id.mod_config_files_row));
+        fileNameRow = MetaRow.bind(findViewById(R.id.mod_file_name_row));
         modSwitch = findViewById(R.id.mod_switch_detail);
         headerContainer = findViewById(R.id.mod_detail_title);
         View heroContainer = findViewById(R.id.mod_detail_header_container);
@@ -160,6 +162,7 @@ public class ModDetailActivity extends BaseActivity {
             versionRow.set(R.string.mod_version_label, version);
             minecraftVersionsRow.set(R.string.mod_minecraft_versions_label, formatMinecraftVersions(mod));
             configFilesRow.set(R.string.mod_config_files_label, formatConfigFiles(mod));
+            fileNameRow.set(R.string.mod_file_label, fallbackText(mod.getFileName(), "—"));
             loadModIcon(mod);
 
             if (configureButton != null) {

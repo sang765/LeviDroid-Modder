@@ -11,6 +11,7 @@ import android.widget.Toast;
 import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.ItemTouchHelper;
 import androidx.recyclerview.widget.LinearLayoutManager;
@@ -34,6 +35,7 @@ import org.levimc.launcher.util.StorageAccess;
 import org.levimc.launcher.util.PersonalizationManager;
 import java.util.ArrayList;
 import java.util.List;
+import java.io.File;
 
 public class ModsFullscreenActivity extends BaseActivity {
 
@@ -42,6 +44,8 @@ public class ModsFullscreenActivity extends BaseActivity {
     private MainViewModel viewModel;
     private TextView totalModsCount;
     private TextView enabledModsCount;
+    private TextView totalSizeCount;
+    private String selectedVersionCode;
     private ActivityResultLauncher<Intent> pickModLauncher;
     private FileHandler fileHandler;
     private InbuiltModManager inbuiltModManager;
@@ -104,6 +108,7 @@ public class ModsFullscreenActivity extends BaseActivity {
 
         totalModsCount = findViewById(R.id.total_mods_count);
         enabledModsCount = findViewById(R.id.enabled_mods_count);
+        totalSizeCount = findViewById(R.id.total_size_count);
 
         PersonalizationManager personalizationManager = new PersonalizationManager(this);
         View root = findViewById(android.R.id.content);
@@ -142,6 +147,7 @@ public class ModsFullscreenActivity extends BaseActivity {
         if (selectedVersion != null) {
             viewModel.setCurrentVersion(selectedVersion);
         }
+        selectedVersionCode = selectedVersion != null ? selectedVersion.versionCode : null;
 
         viewModel.getModsLiveData().observe(this, this::updateModsUI);
     }
@@ -149,6 +155,7 @@ public class ModsFullscreenActivity extends BaseActivity {
     private void setupRecyclerView() {
         modsRecycler = findViewById(R.id.mods_recycler_fullscreen);
         modsAdapter = new ModsAdapter(new ArrayList<>());
+        modsAdapter.setCurrentVersionCode(selectedVersionCode);
         modsRecycler.setLayoutManager(new LinearLayoutManager(this));
         modsRecycler.setAdapter(modsAdapter);
         if (modsRecycler.getItemAnimator() instanceof SimpleItemAnimator) {
@@ -193,7 +200,16 @@ public class ModsFullscreenActivity extends BaseActivity {
             @Override
             public void clearView(@NonNull RecyclerView recyclerView, @NonNull RecyclerView.ViewHolder viewHolder) {
                 super.clearView(recyclerView, viewHolder);
+                modsAdapter.setDragHandleVisible(viewHolder, false);
                 modsAdapter.commitReorder();
+            }
+
+            @Override
+            public void onSelectedChanged(@Nullable RecyclerView.ViewHolder viewHolder, int actionState) {
+                super.onSelectedChanged(viewHolder, actionState);
+                if (viewHolder != null && actionState == ItemTouchHelper.ACTION_STATE_DRAG) {
+                    modsAdapter.setDragHandleVisible(viewHolder, true);
+                }
             }
 
             @Override
@@ -284,6 +300,19 @@ public class ModsFullscreenActivity extends BaseActivity {
 
         totalModsCount.setText(String.valueOf(total));
         enabledModsCount.setText(String.valueOf(enabled));
+
+        if (totalSizeCount != null) {
+            long totalBytes = 0;
+            if (mods != null) {
+                for (Mod mod : mods) {
+                    File entry = mod.getEntryPath() == null ? null : new File(mod.getEntryPath());
+                    if (entry != null && entry.isFile()) {
+                        totalBytes += entry.length();
+                    }
+                }
+            }
+            totalSizeCount.setText(android.text.format.Formatter.formatShortFileSize(this, totalBytes));
+        }
     }
 
     @Override

@@ -460,6 +460,9 @@
     <string name="mod_entry_label">Entry File</string>
     <string name="mod_id_label">Mod ID</string>
     <string name="mod_config_files_label">Config Files</string>
+    <string name="mod_file_label">File</string>
+    <string name="mod_compat_warning">⚠ Designed for %1$s</string>
+    <string name="total_mods_size">Size:</string>
     <string name="mod_unknown_author">Unknown author</string>
     <string name="mod_unknown_version">Unknown version</string>
     <string name="mod_all_versions">All supported versions</string>
