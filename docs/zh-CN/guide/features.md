@@ -1,6 +1,6 @@
 # 功能概览
 
-LeviLauncher 的核心是日常 Minecraft 基岩版启动器工作流。Native mod API 是开发者扩展能力，不是普通用户的默认入口。
+LeviLauncher Modder 的核心是日常 Minecraft 基岩版启动器工作流。Native mod API 是开发者扩展能力，不是普通用户的默认入口。
 
 ## 版本与实例管理
 
@@ -14,7 +14,7 @@ LeviLauncher 的核心是日常 Minecraft 基岩版启动器工作流。Native m
 
 ## Xbox 账号
 
-LeviLauncher 可以在启动器内管理多个 Xbox 账号。启动 Minecraft 前选择需要使用的账号，避免进游戏后才发现身份不对。
+LeviLauncher Modder 可以在启动器内管理多个 Xbox 账号。启动 Minecraft 前选择需要使用的账号，避免进游戏后才发现身份不对。
 
 ## 快速启动
 

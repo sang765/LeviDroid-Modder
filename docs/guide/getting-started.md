@@ -1,6 +1,6 @@
 # Getting Started
 
-This page walks through the launcher path: install LeviLauncher, prepare the official Minecraft app, select a version, and start the game.
+This page walks through the launcher path: install LeviLauncher Modder, prepare the official Minecraft app, select a version, and start the game.
 
 ## Requirements
 
@@ -9,25 +9,25 @@ This page walks through the launcher path: install LeviLauncher, prepare the off
 - A legitimate Minecraft Bedrock Edition installation from Google Play.
 - Enough free storage for the launcher, Minecraft data, worlds, packs, and backups.
 
-LeviLauncher is not a replacement for owning Minecraft. It works with the official game and is not affiliated with Mojang or Microsoft.
+LeviLauncher Modder is not a replacement for owning Minecraft. It works with the official game and is not affiliated with Mojang or Microsoft.
 
-## Install LeviLauncher
+## Install LeviLauncher Modder
 
-1. Open the [Releases page](https://github.com/LiteLDev/LeviLaunchroid/releases).
+1. Open the [Releases page](https://github.com/sang765/LeviDroid-Modder/releases).
 2. Download the latest APK.
 3. Allow installation from the browser or file manager you used to download the APK.
-4. Install the APK and open LeviLauncher.
+4. Install the APK and open LeviLauncher Modder.
 5. Accept the launcher agreement and grant the permissions requested by the app.
 
 ## Prepare Minecraft
 
-Install Minecraft Bedrock Edition from Google Play before using the launcher. LeviLauncher checks for the official app and uses it as the trusted game source.
+Install Minecraft Bedrock Edition from Google Play before using the launcher. LeviLauncher Modder checks for the official app and uses it as the trusted game source.
 
 If the launcher reports that Minecraft is missing or unsupported, install or update the Google Play version first.
 
 ## Choose and Launch a Version
 
-1. Open LeviLauncher.
+1. Open LeviLauncher Modder.
 2. Go to the version or instance screen.
 3. Select the Minecraft version you want to run.
 4. Enable version isolation when launching an imported version that should keep its data separate.

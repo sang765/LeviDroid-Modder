@@ -8,7 +8,7 @@
 
 <resources>
     <!-- Common -->
-    <string name="app_name">LeviLauncher</string>
+    <string name="app_name">LeviLauncher Modder</string>
     <string name="minecraft">Minecraft</string>
     <string name="launch">Lancer</string>
     <string name="beta_badge">Bêta</string>
@@ -32,7 +32,7 @@
     <string name="about_title">☕ À propos</string>
     <string name="copyright">©2024–2026 LeviMC. Tous droits réservés.</string>
     <string name="font_license">Cette application utilise la police Misans.</string>
-    <string name="about_footer_github">GitHub : https://github.com/LiteLDev/LeviLaunchroid</string>
+    <string name="about_footer_github">GitHub : https://github.com/sang765/LeviDroid-Modder</string>
     <string name="quick_actions_title">Actions rapides</string>
     <string name="content_mgmt_section_title">Gestion de contenu</string>
     <string name="misc_section_title">Divers</string>
@@ -174,8 +174,8 @@
 
     <string name="error_no_browser">Aucun navigateur disponible</string>
     <!-- License & Security -->
-    <string name="eula_title">Accord de licence LeviLauncher</string>
-    <string name="eula_message"><b>Bienvenue sur LeviLauncher</b>\n\nEn utilisant ce logiciel, vous acceptez :\n\n• C\'est un lanceur Minecraft <b>non officiel</b>\n• Vous devez posséder une copie <b>sous licence</b> de Minecraft\n• Toute forme de piratage ou de triche est interdite\n• Les mods/packs de ressources sont utilisés à vos risques et périls\n• Non affilié à Mojang/Microsoft\n\nL\'utilisation continue vaut acceptation</string>
+    <string name="eula_title">Accord de licence LeviLauncher Modder</string>
+    <string name="eula_message"><b>Bienvenue sur LeviLauncher Modder</b>\n\nEn utilisant ce logiciel, vous acceptez :\n\n• C\'est un lanceur Minecraft <b>non officiel</b>\n• Vous devez posséder une copie <b>sous licence</b> de Minecraft\n• Toute forme de piratage ou de triche est interdite\n• Les mods/packs de ressources sont utilisés à vos risques et périls\n• Non affilié à Mojang/Microsoft\n\nL\'utilisation continue vaut acceptation</string>
     <string name="eula_agree">Accepter</string>
     <string name="eula_exit">Refuser</string>
 
@@ -228,7 +228,7 @@
     <string name="instance_delete_confirm_title">Supprimer l\'instance</string>
     <string name="instance_delete_confirm_msg">Êtes-vous sûr ? Toutes les données, y compris les mondes, seront définitivement supprimées.</string>
     <string name="instance_backup_title">Sauvegarder l\'instance</string>
-    <string name="instance_backup_desc">Crée une sauvegarde complète de cette instance dans Download/LeviLauncher/Backups.</string>
+    <string name="instance_backup_desc">Crée une sauvegarde complète de cette instance dans Download/LeviLauncher Modder/Backups.</string>
     <string name="instance_backup_button">Sauvegarder l\'instance</string>
     <string name="instance_backup_confirm_message">Créer maintenant une sauvegarde complète de cette instance ? Quittez d\'abord Minecraft s\'il est en cours d\'exécution afin d\'éviter toute modification de fichiers pendant la sauvegarde.</string>
     <string name="instance_backup_in_progress">Sauvegarde de l\'instance…</string>
@@ -435,8 +435,8 @@
     <string name="external_mods_open_link">Ouvrir le lien</string>
     <string name="external_mods_external_dialog_title">Téléchargement externe</string>
     <string name="external_mods_ad_dialog_title">Téléchargement financé par la publicité</string>
-    <string name="external_mods_external_dialog_message">%1$s utilise une page de téléchargement en dehors de LeviLauncher.\n\n1. Appuyez sur Ouvrir le lien et téléchargez le fichier .levipack ou .so.\n2. Revenez dans LeviLauncher et ouvrez Mods.\n3. Appuyez sur Analyser.\n4. Appuyez sur Ajouter à côté du mod que vous souhaitez importer.\n\nL’analyse vérifie uniquement le dossier Téléchargements principal. Déplacez-y le fichier si votre navigateur l’a enregistré ailleurs.</string>
-    <string name="external_mods_ad_dialog_message">%1$s utilise une page de téléchargement avec publicité choisie par son développeur. LeviLauncher ne contrôle ni cette page ni ses publicités.\n\n1. Appuyez sur Ouvrir le lien et téléchargez le fichier .levipack ou .so.\n2. Revenez dans LeviLauncher et ouvrez Mods.\n3. Appuyez sur Analyser.\n4. Appuyez sur Ajouter à côté du mod que vous souhaitez importer.\n\nL’analyse vérifie uniquement le dossier Téléchargements principal. Téléchargez uniquement le fichier du mod ; n’installez aucune application sans rapport et n’autorisez pas les notifications.</string>
+    <string name="external_mods_external_dialog_message">%1$s utilise une page de téléchargement en dehors de LeviLauncher Modder.\n\n1. Appuyez sur Ouvrir le lien et téléchargez le fichier .levipack ou .so.\n2. Revenez dans LeviLauncher Modder et ouvrez Mods.\n3. Appuyez sur Analyser.\n4. Appuyez sur Ajouter à côté du mod que vous souhaitez importer.\n\nL’analyse vérifie uniquement le dossier Téléchargements principal. Déplacez-y le fichier si votre navigateur l’a enregistré ailleurs.</string>
+    <string name="external_mods_ad_dialog_message">%1$s utilise une page de téléchargement avec publicité choisie par son développeur. LeviLauncher Modder ne contrôle ni cette page ni ses publicités.\n\n1. Appuyez sur Ouvrir le lien et téléchargez le fichier .levipack ou .so.\n2. Revenez dans LeviLauncher Modder et ouvrez Mods.\n3. Appuyez sur Analyser.\n4. Appuyez sur Ajouter à côté du mod que vous souhaitez importer.\n\nL’analyse vérifie uniquement le dossier Téléchargements principal. Téléchargez uniquement le fichier du mod ; n’installez aucune application sans rapport et n’autorisez pas les notifications.</string>
     <string name="external_mods_by_author">par %1$s</string>
     <string name="external_mods_version">Mod %1$s</string>
     <string name="external_mods_minecraft_versions">Minecraft %1$s</string>
@@ -549,9 +549,9 @@
     <string name="ms_device_code_login_desc">Ouvrez une session privée du navigateur avec le code d\'appareil déjà rempli.</string>
     <string name="ms_webview_login">Ouvrir la connexion intégrée</string>
     <string name="ms_webview_option_title">WebView intégrée</string>
-    <string name="ms_webview_login_desc">Connectez-vous sans quitter LeviLauncher. Utilisez cette option lorsque le flux du navigateur n\'est pas disponible.</string>
+    <string name="ms_webview_login_desc">Connectez-vous sans quitter LeviLauncher Modder. Utilisez cette option lorsque le flux du navigateur n\'est pas disponible.</string>
     <string name="ms_device_code_title">Se connecter avec un code d\'appareil</string>
-    <string name="ms_device_code_instructions">Ouvrez la page de connexion d\'appareil Microsoft, saisissez ce code, puis approuvez l\'accès. LeviLauncher terminera automatiquement.</string>
+    <string name="ms_device_code_instructions">Ouvrez la page de connexion d\'appareil Microsoft, saisissez ce code, puis approuvez l\'accès. LeviLauncher Modder terminera automatiquement.</string>
     <string name="ms_device_code_label">Code d\'appareil Microsoft</string>
     <string name="ms_device_code_requesting">Demande d\'un code sécurisé…</string>
     <string name="ms_device_code_waiting_code">--------</string>
@@ -565,7 +565,7 @@
     <string name="ms_device_code_copied">Code copié</string>
     <string name="ms_device_code_open_browser">Ouvrir la connexion Microsoft</string>
     <string name="ms_device_code_step_title">Terminez la connexion dans votre navigateur</string>
-    <string name="ms_device_code_browser_note">LeviLauncher ouvre votre navigateur par défaut dans une session privée, remplit automatiquement le code et demande une nouvelle connexion Microsoft.</string>
+    <string name="ms_device_code_browser_note">LeviLauncher Modder ouvre votre navigateur par défaut dans une session privée, remplit automatiquement le code et demande une nouvelle connexion Microsoft.</string>
     <string name="ms_choose_other_method">Autre méthode</string>
     <string name="ms_no_browser">Aucun navigateur n\'est disponible sur cet appareil.</string>
     <string name="ms_default_browser_no_private_mode">Votre navigateur par défaut ne prend pas en charge la connexion privée. Mettez-le à jour ou utilisez la connexion WebView.</string>
@@ -578,14 +578,14 @@
     <string name="ms_active_badge">Actif</string>
     <string name="ms_account_subtitle_format">ID utilisateur : %1$s • Mis à jour : %2$s</string>
     <string name="xbox_avatar">Avatar Xbox</string>
-    <string name="launcher_managed_mc_login">Connectez-vous à Minecraft avec LeviLauncher</string>
+    <string name="launcher_managed_mc_login">Connectez-vous à Minecraft avec LeviLauncher Modder</string>
     <string name="dialog_title_login_required">Connexion requise</string>
     <string name="dialog_message_login_required">La connexion gérée est activée, mais aucun compte n\'est connecté. Allez dans Comptes.</string>
     <string name="go_to_accounts">Comptes</string>
     <string name="disable_launcher_login_and_continue">Fermer</string>
 
     <string name="ms_feature_disabled_title">Fonction désactivée</string>
-    <string name="ms_feature_disabled_desc">Activez « Se connecter à Minecraft avec LeviLauncher » dans les paramètres pour gérer les comptes Microsoft.</string>
+    <string name="ms_feature_disabled_desc">Activez « Se connecter à Minecraft avec LeviLauncher Modder » dans les paramètres pour gérer les comptes Microsoft.</string>
     <string name="ms_activated">Activé</string>
 
     <!-- Popup labels -->
@@ -864,16 +864,16 @@
     <string name="vanilla_prefix">Vanilla %s</string>
 
     <string name="about_page_title">À propos</string>
-    <string name="about_subtitle">LeviLauncher — Un lanceur Minecraft Bedrock moderne</string>
+    <string name="about_subtitle">LeviLauncher Modder — Un lanceur Minecraft Bedrock moderne</string>
     <string name="about_authors_title">👥 Auteurs et Mainteneurs</string>
     <string name="about_author_name">DreamGuXiang</string>
     <string name="about_author_badge">Auteur</string>
-    <string name="about_author_role">Auteurs de LeviLauncher</string>
+    <string name="about_author_role">Auteurs de LeviLauncher Modder</string>
     <string name="about_afdian">Afdian</string>
     <string name="about_patreon">Patreon</string>
     <string name="about_source_title">Code Source et Open Source</string>
-    <string name="about_github_repo">GitHub · LeviLauncher</string>
-    <string name="about_github_org">LiteLDev</string>
+    <string name="about_github_repo">GitHub · LeviLauncher Modder</string>
+    <string name="about_github_org">sang765</string>
     <string name="about_license_note">Voir LICENSE dans le dépôt pour plus de détails.</string>
     <string name="about_contribute_title">Contribuer</string>
     <string name="about_contribute_desc">Les contributions (Issues/Pull Requests) sont les bienvenues.</string>
@@ -882,7 +882,7 @@
 
     <string-array name="launcher_tips">
         <item>Les Paramètres vous permettent d\'ajuster le thème, la couleur, le fond et d\'autres options.</item>
-        <item>LeviLauncher est open source. Utilisez GitHub issues pour signaler un problème.</item>
+        <item>LeviLauncher Modder est open source. Utilisez GitHub issues pour signaler un problème.</item>
         <item>Utilisez la liste déroulante des versions pour changer d\'instance rapidement.</item>
         <item>Est-ce que les gens lisent vraiment ça ?</item>
         <item>Vous pouvez faire glisser les mods pour réorganiser leur priorité de chargement.</item>
@@ -1033,10 +1033,10 @@
     <string name="mod_config_hotbar_slot_opacity">Opacité de l’emplacement %1$d de la barre rapide</string>
     <!-- Changelog & News -->
     <string name="changelog_title">Nouveautés</string>
-    <string name="changelog_version">LeviLauncher %1$s</string>
+    <string name="changelog_version">LeviLauncher Modder %1$s</string>
     <string name="changelog_continue">Continuer</string>
     <string name="news_title">Actualités du lanceur</string>
-    <string name="news_subtitle">Mises à jour, annonces et avis importants de l’équipe LeviLauncher.</string>
+    <string name="news_subtitle">Mises à jour, annonces et avis importants de l’équipe LeviLauncher Modder.</string>
     <string name="news_enable_notifications">Activer les notifications</string>
     <string name="news_refresh">Actualiser les actualités</string>
     <string name="news_empty">Aucune actualité n’a encore été publiée.</string>
@@ -1046,7 +1046,7 @@
     <string name="news_refresh_failed">Impossible d’actualiser. Les actualités enregistrées sont affichées.</string>
     <string name="news_unread_description">Actualités du lanceur, %1$d non lues</string>
     <string name="news_notification_channel">Actualités du lanceur</string>
-    <string name="news_notification_channel_description">Nouvelles annonces et avis importants de LeviLauncher</string>
+    <string name="news_notification_channel_description">Nouvelles annonces et avis importants de LeviLauncher Modder</string>
     <string name="mod_config_category_slots">Emplacements</string>
     <string name="mod_config_category_appearance">Apparence</string>
     <string name="mod_config_category_behavior">Comportement</string>

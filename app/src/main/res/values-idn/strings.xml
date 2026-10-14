@@ -8,7 +8,7 @@
 
 <resources>
     <!-- Common -->
-    <string name="app_name">LeviLauncher</string>
+    <string name="app_name">LeviLauncher Modder</string>
     <string name="minecraft">Minecraft</string>
     <string name="launch">Luncurkan</string>
     <string name="beta_badge">Beta</string>
@@ -32,7 +32,7 @@
     <string name="about_title">☕ Tentang</string>
     <string name="copyright">©2024–2026 LeviMC. All rights reserved.</string>
     <string name="font_license">Aplikasi ini menggunakan font Misans..</string>
-    <string name="about_footer_github">GitHub: https://github.com/LiteLDev/LeviLaunchroid</string>
+    <string name="about_footer_github">GitHub: https://github.com/sang765/LeviDroid-Modder</string>
     <string name="quick_actions_title">Tindakan Cepat</string>
     <string name="content_mgmt_section_title">Manajemen Konten</string>
     <string name="misc_section_title">Lain-lain</string>
@@ -174,8 +174,8 @@
 
     <string name="error_no_browser">Tidak ada peramban yang tersedia.</string>
     <!-- License & Security -->
-    <string name="eula_title">LeviLauncher License Agreement</string>
-    <string name="eula_message"><b>Selamat datang di LeviLauncher</b>\n\nBy using this software you agree to:\n\n• This is an <b>unofficial</b> Minecraft launcher\n• You must own a <b>licensed</b> copy of Minecraft\n• Any form of piracy or cheating is prohibited\n• Mods/resource packs are used at your own risk\n• Not affiliated with Mojang/Microsoft\n\nContinued use constitutes agreement</string>
+    <string name="eula_title">LeviLauncher Modder License Agreement</string>
+    <string name="eula_message"><b>Selamat datang di LeviLauncher Modder</b>\n\nBy using this software you agree to:\n\n• This is an <b>unofficial</b> Minecraft launcher\n• You must own a <b>licensed</b> copy of Minecraft\n• Any form of piracy or cheating is prohibited\n• Mods/resource packs are used at your own risk\n• Not affiliated with Mojang/Microsoft\n\nContinued use constitutes agreement</string>
     <string name="eula_agree">Terima</string>
     <string name="eula_exit">Tolak</string>
 
@@ -228,7 +228,7 @@
     <string name="instance_delete_confirm_title">Hapus Instans</string>
     <string name="instance_delete_confirm_msg">Apakah Anda yakin ingin menghapus instans ini? Semua data, termasuk dunia, akan dihapus permanen.</string>
     <string name="instance_backup_title">Cadangkan Instans</string>
-    <string name="instance_backup_desc">Buat cadangan lengkap instans ini di Download/LeviLauncher/Backups.</string>
+    <string name="instance_backup_desc">Buat cadangan lengkap instans ini di Download/LeviLauncher Modder/Backups.</string>
     <string name="instance_backup_button">Cadangkan Instans</string>
     <string name="instance_backup_confirm_message">Buat cadangan lengkap instans ini sekarang? Tutup Minecraft terlebih dahulu jika sedang berjalan agar file tidak berubah selama pencadangan.</string>
     <string name="instance_backup_in_progress">Mencadangkan instans…</string>
@@ -435,8 +435,8 @@
     <string name="external_mods_open_link">Buka Tautan</string>
     <string name="external_mods_external_dialog_title">Unduhan Eksternal</string>
     <string name="external_mods_ad_dialog_title">Unduhan dengan Iklan</string>
-    <string name="external_mods_external_dialog_message">%1$s menggunakan halaman unduhan di luar LeviLauncher.\n\n1. Ketuk Buka Tautan dan unduh file .levipack atau .so.\n2. Kembali ke LeviLauncher dan buka Mod.\n3. Ketuk Pindai.\n4. Ketuk Tambah di sebelah mod yang ingin Anda impor.\n\nPemindaian hanya memeriksa folder utama Unduhan. Pindahkan file ke sana jika browser menyimpannya di tempat lain.</string>
-    <string name="external_mods_ad_dialog_message">%1$s menggunakan halaman unduhan dengan iklan yang dipilih oleh pengembangnya. LeviLauncher tidak mengontrol halaman tersebut atau iklannya.\n\n1. Ketuk Buka Tautan dan unduh file .levipack atau .so.\n2. Kembali ke LeviLauncher dan buka Mod.\n3. Ketuk Pindai.\n4. Ketuk Tambah di sebelah mod yang ingin Anda impor.\n\nPemindaian hanya memeriksa folder utama Unduhan. Unduh hanya file mod; jangan memasang aplikasi yang tidak terkait atau mengizinkan notifikasi.</string>
+    <string name="external_mods_external_dialog_message">%1$s menggunakan halaman unduhan di luar LeviLauncher Modder.\n\n1. Ketuk Buka Tautan dan unduh file .levipack atau .so.\n2. Kembali ke LeviLauncher Modder dan buka Mod.\n3. Ketuk Pindai.\n4. Ketuk Tambah di sebelah mod yang ingin Anda impor.\n\nPemindaian hanya memeriksa folder utama Unduhan. Pindahkan file ke sana jika browser menyimpannya di tempat lain.</string>
+    <string name="external_mods_ad_dialog_message">%1$s menggunakan halaman unduhan dengan iklan yang dipilih oleh pengembangnya. LeviLauncher Modder tidak mengontrol halaman tersebut atau iklannya.\n\n1. Ketuk Buka Tautan dan unduh file .levipack atau .so.\n2. Kembali ke LeviLauncher Modder dan buka Mod.\n3. Ketuk Pindai.\n4. Ketuk Tambah di sebelah mod yang ingin Anda impor.\n\nPemindaian hanya memeriksa folder utama Unduhan. Unduh hanya file mod; jangan memasang aplikasi yang tidak terkait atau mengizinkan notifikasi.</string>
     <string name="external_mods_by_author">oleh %1$s</string>
     <string name="external_mods_version">Mod %1$s</string>
     <string name="external_mods_minecraft_versions">Minecraft %1$s</string>
@@ -549,9 +549,9 @@
     <string name="ms_device_code_login_desc">Buka sesi browser privat dengan kode perangkat yang sudah terisi.</string>
     <string name="ms_webview_login">Buka masuk tertanam</string>
     <string name="ms_webview_option_title">WebView Tertanam</string>
-    <string name="ms_webview_login_desc">Masuk tanpa meninggalkan LeviLauncher. Gunakan saat alur browser tidak tersedia.</string>
+    <string name="ms_webview_login_desc">Masuk tanpa meninggalkan LeviLauncher Modder. Gunakan saat alur browser tidak tersedia.</string>
     <string name="ms_device_code_title">Masuk dengan Kode Perangkat</string>
-    <string name="ms_device_code_instructions">Buka halaman masuk perangkat Microsoft, masukkan kode ini, lalu setujui akses. LeviLauncher akan menyelesaikannya secara otomatis.</string>
+    <string name="ms_device_code_instructions">Buka halaman masuk perangkat Microsoft, masukkan kode ini, lalu setujui akses. LeviLauncher Modder akan menyelesaikannya secara otomatis.</string>
     <string name="ms_device_code_label">Kode perangkat Microsoft</string>
     <string name="ms_device_code_requesting">Meminta kode aman…</string>
     <string name="ms_device_code_waiting_code">--------</string>
@@ -565,7 +565,7 @@
     <string name="ms_device_code_copied">Kode disalin</string>
     <string name="ms_device_code_open_browser">Buka masuk Microsoft</string>
     <string name="ms_device_code_step_title">Selesaikan proses masuk di browser Anda</string>
-    <string name="ms_device_code_browser_note">LeviLauncher membuka browser default Anda dalam sesi privat, mengisi kode secara otomatis, dan meminta proses masuk Microsoft yang baru.</string>
+    <string name="ms_device_code_browser_note">LeviLauncher Modder membuka browser default Anda dalam sesi privat, mengisi kode secara otomatis, dan meminta proses masuk Microsoft yang baru.</string>
     <string name="ms_choose_other_method">Metode lain</string>
     <string name="ms_no_browser">Tidak ada browser yang tersedia di perangkat ini.</string>
     <string name="ms_default_browser_no_private_mode">Browser default Anda tidak mendukung masuk secara privat. Perbarui browser atau gunakan login WebView.</string>
@@ -578,14 +578,14 @@
     <string name="ms_active_badge">Aktif</string>
     <string name="ms_account_subtitle_format">ID Pengguna: %1$s • Diperbarui: %2$s</string>
     <string name="xbox_avatar">Avatar Xbox</string>
-    <string name="launcher_managed_mc_login">Masuk ke Minecraft menggunakan LeviLauncher</string>
+    <string name="launcher_managed_mc_login">Masuk ke Minecraft menggunakan LeviLauncher Modder</string>
     <string name="dialog_title_login_required">Login diperlukan</string>
     <string name="dialog_message_login_required">Login yang dikelola oleh launcher diaktifkan, tetapi belum ada akun yang masuk. Buka Akun untuk masuk.</string>
     <string name="go_to_accounts">Akun</string>
     <string name="disable_launcher_login_and_continue">Tutup</string>
 
     <string name="ms_feature_disabled_title">Fitur Dinonaktifkan</string>
-    <string name="ms_feature_disabled_desc">Aktifkan “Masuk ke Minecraft dengan LeviLauncher” di Pengaturan untuk mengelola akun Microsoft.</string>
+    <string name="ms_feature_disabled_desc">Aktifkan “Masuk ke Minecraft dengan LeviLauncher Modder” di Pengaturan untuk mengelola akun Microsoft.</string>
     <string name="ms_activated">Diaktifkan</string>
 
     <!-- Popup labels -->
@@ -864,25 +864,25 @@
     <string name="vanilla_prefix">Vanilla %s</string>
 
     <string name="about_page_title">Tentang</string>
-    <string name="about_subtitle">LeviLauncher — Launcher Minecraft Bedrock Modern</string>
+    <string name="about_subtitle">LeviLauncher Modder — Launcher Minecraft Bedrock Modern</string>
     <string name="about_authors_title">👥 Penulis &amp; Pemelihara</string>
     <string name="about_author_name">DreamGuXiang</string>
     <string name="about_author_badge">Penulis</string>
-    <string name="about_author_role">Penulis LeviLauncher</string>
+    <string name="about_author_role">Penulis LeviLauncher Modder</string>
     <string name="about_afdian">Afdian</string>
     <string name="about_patreon">Patreon</string>
     <string name="about_source_title">Kode Sumber &amp; Open Source</string>
-    <string name="about_github_repo">GitHub · LeviLauncher</string>
-    <string name="about_github_org">LiteLDev</string>
+    <string name="about_github_repo">GitHub · LeviLauncher Modder</string>
+    <string name="about_github_org">sang765</string>
     <string name="about_license_note">Lihat LICENSE di repositori untuk detail lisensi.</string>
     <string name="about_contribute_title">Berkontribusi</string>
-    <string name="about_contribute_desc">Kontribusi melalui Issues atau Pull Requests dipersilakan untuk meningkatkan LeviLauncher.</string>
+    <string name="about_contribute_desc">Kontribusi melalui Issues atau Pull Requests dipersilakan untuk meningkatkan LeviLauncher Modder.</string>
     <string name="about_issues">Issue</string>
     <string name="about_star_fork">Star / Fork</string>
 
     <string-array name="launcher_tips">
         <item>Pengaturan memungkinkan Anda menyesuaikan tema, warna, latar belakang, dan opsi tampilan lain agar sesuai dengan setup Anda.</item>
-        <item>LeviLauncher bersifat open source. Gunakan GitHub issues untuk melaporkan masalah launcher atau menyarankan perbaikan.</item>
+        <item>LeviLauncher Modder bersifat open source. Gunakan GitHub issues untuk melaporkan masalah launcher atau menyarankan perbaikan.</item>
         <item>Gunakan dropdown versi untuk mengganti instans saat ini dengan cepat.</item>
         <item>Apakah ada yang benar-benar membaca ini?</item>
         <item>Anda dapat menyeret mod untuk mengubah prioritas pemuatannya.</item>
@@ -1033,10 +1033,10 @@
     <string name="mod_config_hotbar_slot_opacity">Opasitas slot hotbar %1$d</string>
     <!-- Changelog & News -->
     <string name="changelog_title">Yang baru</string>
-    <string name="changelog_version">LeviLauncher %1$s</string>
+    <string name="changelog_version">LeviLauncher Modder %1$s</string>
     <string name="changelog_continue">Lanjutkan</string>
     <string name="news_title">Berita launcher</string>
-    <string name="news_subtitle">Pembaruan, pengumuman, dan pemberitahuan penting dari tim LeviLauncher.</string>
+    <string name="news_subtitle">Pembaruan, pengumuman, dan pemberitahuan penting dari tim LeviLauncher Modder.</string>
     <string name="news_enable_notifications">Aktifkan notifikasi</string>
     <string name="news_refresh">Segarkan berita</string>
     <string name="news_empty">Belum ada berita yang diterbitkan.</string>
@@ -1046,7 +1046,7 @@
     <string name="news_refresh_failed">Tidak dapat menyegarkan. Menampilkan berita yang tersimpan.</string>
     <string name="news_unread_description">Berita launcher, %1$d belum dibaca</string>
     <string name="news_notification_channel">Berita launcher</string>
-    <string name="news_notification_channel_description">Pengumuman dan pemberitahuan penting baru dari LeviLauncher</string>
+    <string name="news_notification_channel_description">Pengumuman dan pemberitahuan penting baru dari LeviLauncher Modder</string>
     <string name="mod_config_category_slots">Slot</string>
     <string name="mod_config_category_appearance">Tampilan</string>
     <string name="mod_config_category_behavior">Perilaku</string>

@@ -8,7 +8,7 @@
 
 <resources>
     <!-- Common -->
-    <string name="app_name">LeviLauncher</string>
+    <string name="app_name">LeviLauncher Modder</string>
     <string name="minecraft">Minecraft</string>
     <string name="launch">起動</string>
     <string name="beta_badge">ベータ</string>
@@ -32,7 +32,7 @@
     <string name="about_title">☕ アプリについて</string>
     <string name="copyright">©2024–2026 LeviMC. All rights reserved.</string>
     <string name="font_license">このアプリは Misans フォントを使用しています。</string>
-    <string name="about_footer_github">GitHub: https://github.com/LiteLDev/LeviLaunchroid</string>
+    <string name="about_footer_github">GitHub: https://github.com/sang765/LeviDroid-Modder</string>
     <string name="quick_actions_title">クイックアクション</string>
     <string name="content_mgmt_section_title">コンテンツ管理</string>
     <string name="misc_section_title">その他</string>
@@ -174,8 +174,8 @@
 
     <string name="error_no_browser">利用可能なブラウザがありません</string>
     <!-- License & Security -->
-    <string name="eula_title">LeviLauncher 使用許諾契約</string>
-    <string name="eula_message"><b>LeviLauncher へようこそ</b>\n\nこのソフトウェアを使用することにより、以下に同意したとみなされます：\n\n• これは<b>非公式</b>の Minecraft ランチャーです\n• <b>ライセンスされた</b> Minecraft のコピーを所有している必要があります\n• いかなる形式の海賊版やチートも禁止されています\n• モッドやリソースパックの使用は自己責任です\n• Mojang / Microsoft とは提携していません\n\n継続使用は同意を構成します</string>
+    <string name="eula_title">LeviLauncher Modder 使用許諾契約</string>
+    <string name="eula_message"><b>LeviLauncher Modder へようこそ</b>\n\nこのソフトウェアを使用することにより、以下に同意したとみなされます：\n\n• これは<b>非公式</b>の Minecraft ランチャーです\n• <b>ライセンスされた</b> Minecraft のコピーを所有している必要があります\n• いかなる形式の海賊版やチートも禁止されています\n• モッドやリソースパックの使用は自己責任です\n• Mojang / Microsoft とは提携していません\n\n継続使用は同意を構成します</string>
     <string name="eula_agree">同意する</string>
     <string name="eula_exit">拒否する</string>
 
@@ -228,7 +228,7 @@
     <string name="instance_delete_confirm_title">インスタンスの削除</string>
     <string name="instance_delete_confirm_msg">本当に削除しますか？ワールドを含むすべてのデータが完全に失われます。</string>
     <string name="instance_backup_title">インスタンスのバックアップ</string>
-    <string name="instance_backup_desc">このインスタンスの完全バックアップを Download/LeviLauncher/Backups に作成します。</string>
+    <string name="instance_backup_desc">このインスタンスの完全バックアップを Download/LeviLauncher Modder/Backups に作成します。</string>
     <string name="instance_backup_button">インスタンスをバックアップ</string>
     <string name="instance_backup_confirm_message">このインスタンスの完全バックアップを今すぐ作成しますか？ 実行中の場合は、バックアップ中のファイル変更を防ぐため先に Minecraft を終了してください。</string>
     <string name="instance_backup_in_progress">インスタンスをバックアップしています…</string>
@@ -435,8 +435,8 @@
     <string name="external_mods_open_link">リンクを開く</string>
     <string name="external_mods_external_dialog_title">外部ダウンロード</string>
     <string name="external_mods_ad_dialog_title">広告付きダウンロード</string>
-    <string name="external_mods_external_dialog_message">%1$s は LeviLauncher 外部のダウンロードページを使用します。\n\n1. ［リンクを開く］をタップし、.levipack または .so ファイルをダウンロードします。\n2. LeviLauncher に戻り、［Mod］を開きます。\n3. ［スキャン］をタップします。\n4. インポートしたい Mod の横にある［追加］をタップします。\n\nスキャン対象はメインのダウンロードフォルダーのみです。ブラウザーが別の場所に保存した場合は、ファイルをそこへ移動してください。</string>
-    <string name="external_mods_ad_dialog_message">%1$s は開発者が選んだ広告付きダウンロードページを使用します。LeviLauncher はそのページや広告を管理していません。\n\n1. ［リンクを開く］をタップし、.levipack または .so ファイルをダウンロードします。\n2. LeviLauncher に戻り、［Mod］を開きます。\n3. ［スキャン］をタップします。\n4. インポートしたい Mod の横にある［追加］をタップします。\n\nスキャン対象はメインのダウンロードフォルダーのみです。Mod ファイルだけをダウンロードし、無関係なアプリをインストールしたり通知を許可したりしないでください。</string>
+    <string name="external_mods_external_dialog_message">%1$s は LeviLauncher Modder 外部のダウンロードページを使用します。\n\n1. ［リンクを開く］をタップし、.levipack または .so ファイルをダウンロードします。\n2. LeviLauncher Modder に戻り、［Mod］を開きます。\n3. ［スキャン］をタップします。\n4. インポートしたい Mod の横にある［追加］をタップします。\n\nスキャン対象はメインのダウンロードフォルダーのみです。ブラウザーが別の場所に保存した場合は、ファイルをそこへ移動してください。</string>
+    <string name="external_mods_ad_dialog_message">%1$s は開発者が選んだ広告付きダウンロードページを使用します。LeviLauncher Modder はそのページや広告を管理していません。\n\n1. ［リンクを開く］をタップし、.levipack または .so ファイルをダウンロードします。\n2. LeviLauncher Modder に戻り、［Mod］を開きます。\n3. ［スキャン］をタップします。\n4. インポートしたい Mod の横にある［追加］をタップします。\n\nスキャン対象はメインのダウンロードフォルダーのみです。Mod ファイルだけをダウンロードし、無関係なアプリをインストールしたり通知を許可したりしないでください。</string>
     <string name="external_mods_by_author">作者: %1$s</string>
     <string name="external_mods_version">Mod %1$s</string>
     <string name="external_mods_minecraft_versions">Minecraft %1$s</string>
@@ -549,9 +549,9 @@
     <string name="ms_device_code_login_desc">デバイスコードが入力済みのプライベートブラウザーセッションを開きます。</string>
     <string name="ms_webview_login">埋め込みサインインを開く</string>
     <string name="ms_webview_option_title">埋め込み WebView</string>
-    <string name="ms_webview_login_desc">LeviLauncher を離れずにサインインします。ブラウザー方式を利用できない場合に使用してください。</string>
+    <string name="ms_webview_login_desc">LeviLauncher Modder を離れずにサインインします。ブラウザー方式を利用できない場合に使用してください。</string>
     <string name="ms_device_code_title">デバイスコードでサインイン</string>
-    <string name="ms_device_code_instructions">Microsoft のデバイスサインインページを開き、このコードを入力してアクセスを承認してください。LeviLauncher が自動的に完了します。</string>
+    <string name="ms_device_code_instructions">Microsoft のデバイスサインインページを開き、このコードを入力してアクセスを承認してください。LeviLauncher Modder が自動的に完了します。</string>
     <string name="ms_device_code_label">Microsoft デバイスコード</string>
     <string name="ms_device_code_requesting">安全なコードを要求しています…</string>
     <string name="ms_device_code_waiting_code">--------</string>
@@ -565,7 +565,7 @@
     <string name="ms_device_code_copied">コードをコピーしました</string>
     <string name="ms_device_code_open_browser">Microsoft サインインを開く</string>
     <string name="ms_device_code_step_title">ブラウザーでサインインを完了</string>
-    <string name="ms_device_code_browser_note">LeviLauncher は既定のブラウザーをプライベートセッションで開き、コードを自動入力して、新しい Microsoft サインインを要求します。</string>
+    <string name="ms_device_code_browser_note">LeviLauncher Modder は既定のブラウザーをプライベートセッションで開き、コードを自動入力して、新しい Microsoft サインインを要求します。</string>
     <string name="ms_choose_other_method">別の方法</string>
     <string name="ms_no_browser">この端末で利用できるブラウザーがありません。</string>
     <string name="ms_default_browser_no_private_mode">既定のブラウザーはプライベートサインインに対応していません。更新するか WebView ログインを使用してください。</string>
@@ -578,14 +578,14 @@
     <string name="ms_active_badge">アクティブ</string>
     <string name="ms_account_subtitle_format">ユーザー ID: %1$s • 更新: %2$s</string>
     <string name="xbox_avatar">Xbox アバター</string>
-    <string name="launcher_managed_mc_login">LeviLauncher で Minecraft にサインイン</string>
+    <string name="launcher_managed_mc_login">LeviLauncher Modder で Minecraft にサインイン</string>
     <string name="dialog_title_login_required">サインインが必要です</string>
     <string name="dialog_message_login_required">ランチャー管理のログインが有効ですが、アカウントがサインインしていません。</string>
     <string name="go_to_accounts">アカウント</string>
     <string name="disable_launcher_login_and_continue">閉じる</string>
 
     <string name="ms_feature_disabled_title">機能が無効です</string>
-    <string name="ms_feature_disabled_desc">Microsoft アカウントを管理するには、設定で「LeviLauncher で Minecraft にサインイン」を有効にしてください。</string>
+    <string name="ms_feature_disabled_desc">Microsoft アカウントを管理するには、設定で「LeviLauncher Modder で Minecraft にサインイン」を有効にしてください。</string>
     <string name="ms_activated">有効化済み</string>
 
     <!-- Popup labels -->
@@ -864,16 +864,16 @@
     <string name="vanilla_prefix">バニラ %s</string>
 
     <string name="about_page_title">アプリについて</string>
-    <string name="about_subtitle">LeviLauncher — 最新の Minecraft Bedrock ランチャー</string>
+    <string name="about_subtitle">LeviLauncher Modder — 最新の Minecraft Bedrock ランチャー</string>
     <string name="about_authors_title">👥 開発者 &amp; メンテナー</string>
     <string name="about_author_name">DreamGuXiang</string>
     <string name="about_author_badge">開発者</string>
-    <string name="about_author_role">LeviLauncher 開発者</string>
+    <string name="about_author_role">LeviLauncher Modder 開発者</string>
     <string name="about_afdian">Afdian</string>
     <string name="about_patreon">Patreon</string>
     <string name="about_source_title">ソースコード &amp; オープンソース</string>
-    <string name="about_github_repo">GitHub · LeviLauncher</string>
-    <string name="about_github_org">LiteLDev</string>
+    <string name="about_github_repo">GitHub · LeviLauncher Modder</string>
+    <string name="about_github_org">sang765</string>
     <string name="about_license_note">ライセンスの詳細はリポジトリの LICENSE をご覧ください。</string>
     <string name="about_contribute_title">貢献</string>
     <string name="about_contribute_desc">Issues や Pull Requests を通じた貢献を歓迎します。</string>
@@ -882,7 +882,7 @@
 
     <string-array name="launcher_tips">
         <item>設定でテーマ、色、背景などの外観オプションを調整できます。</item>
-        <item>LeviLauncher はオープンソースです。GitHub で問題の報告や改善の提案ができます。</item>
+        <item>LeviLauncher Modder はオープンソースです。GitHub で問題の報告や改善の提案ができます。</item>
         <item>バージョンのドロップダウンを使用して、現在のインスタンスをすばやく切り替えます。</item>
         <item>誰かこれを本当に読んでいるのでしょうか？</item>
         <item>モッドをドラッグしてロードの優先度を変更できます。</item>
@@ -1033,10 +1033,10 @@
     <string name="mod_config_hotbar_slot_opacity">ホットバースロット %1$d の不透明度</string>
     <!-- Changelog & News -->
     <string name="changelog_title">新機能</string>
-    <string name="changelog_version">LeviLauncher %1$s</string>
+    <string name="changelog_version">LeviLauncher Modder %1$s</string>
     <string name="changelog_continue">続行</string>
     <string name="news_title">ランチャーニュース</string>
-    <string name="news_subtitle">LeviLauncher チームからの更新、告知、重要なお知らせです。</string>
+    <string name="news_subtitle">LeviLauncher Modder チームからの更新、告知、重要なお知らせです。</string>
     <string name="news_enable_notifications">通知を有効にする</string>
     <string name="news_refresh">ニュースを更新</string>
     <string name="news_empty">まだニュースは公開されていません。</string>
@@ -1046,7 +1046,7 @@
     <string name="news_refresh_failed">更新できませんでした。保存済みのニュースを表示します。</string>
     <string name="news_unread_description">ランチャーニュース、未読 %1$d 件</string>
     <string name="news_notification_channel">ランチャーニュース</string>
-    <string name="news_notification_channel_description">LeviLauncher の新しい告知と重要なお知らせ</string>
+    <string name="news_notification_channel_description">LeviLauncher Modder の新しい告知と重要なお知らせ</string>
     <string name="mod_config_category_slots">スロット</string>
     <string name="mod_config_category_appearance">外観</string>
     <string name="mod_config_category_behavior">動作</string>

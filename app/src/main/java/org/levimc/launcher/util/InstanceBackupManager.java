@@ -66,7 +66,7 @@ public class InstanceBackupManager {
     private static final String RUNTIME_LIBS_PREFIX = "runtime_libs/";
     private static final String PACKAGE_PREFIX = "package/";
     private static final String DOWNLOAD_RELATIVE_PATH =
-            Environment.DIRECTORY_DOWNLOADS + "/LeviLauncher/Backups";
+            Environment.DIRECTORY_DOWNLOADS + "/LeviLauncher Modder/Backups";
     private static final Gson GSON = new GsonBuilder().serializeNulls().setPrettyPrinting().create();
 
     private final Context context;
@@ -405,7 +405,7 @@ public class InstanceBackupManager {
         Uri tree = getBackupDownloadsTree();
         if (tree == null) throw new IOException(context.getString(org.levimc.launcher.R.string.backup_select_downloads));
         Uri downloads = DocumentsContract.buildDocumentUriUsingTree(tree, DocumentsContract.getTreeDocumentId(tree));
-        Uri launcherFolder = getOrCreateBackupDirectory(tree, downloads, "LeviLauncher");
+        Uri launcherFolder = getOrCreateBackupDirectory(tree, downloads, "LeviLauncher Modder");
         Uri backupFolder = getOrCreateBackupDirectory(tree, launcherFolder, "Backups");
         target.uri = DocumentsContract.createDocument(context.getContentResolver(), backupFolder, "application/zip", fileName);
         if (target.uri == null) throw new IOException("Cannot create backup file");

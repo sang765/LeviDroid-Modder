@@ -102,7 +102,7 @@ android {
                 mappingFileUploadEnabled false
                 nativeSymbolUploadEnabled true
             }
-            resValue "string", "app_name", "LeviLauncher Beta"
+            resValue "string", "app_name", "LeviLauncher Modder Beta"
             buildConfigField "boolean", "IS_BETA", "true"
             matchingFallbacks = ["release"]
             ndk {

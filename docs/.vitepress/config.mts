@@ -1,6 +1,6 @@
 import { defineConfig, type DefaultTheme } from "vitepress";
 
-const repo = "https://github.com/LiteLDev/LeviLaunchroid";
+const repo = "https://github.com/sang765/LeviDroid-Modder";
 const releases = `${repo}/releases`;
 const base = process.env.VITEPRESS_BASE ?? "/";
 
@@ -102,8 +102,8 @@ function buildChineseNav(): DefaultTheme.NavItem[] {
 }
 
 export default defineConfig({
-  title: "LeviLauncher",
-  description: "Documentation for the LeviLaunchroid Android Minecraft Bedrock launcher.",
+  title: "LeviLauncher Modder",
+  description: "Documentation for the LeviLauncher Modder Android Minecraft Bedrock launcher.",
   lang: "en-US",
   base,
   cleanUrls: true,
