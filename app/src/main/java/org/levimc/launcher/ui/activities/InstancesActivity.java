@@ -18,6 +18,7 @@ import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.RadioGroup;
 import android.widget.ScrollView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -29,8 +30,11 @@ import androidx.core.app.ActivityOptionsCompat;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.google.android.material.dialog.MaterialAlertDialogBuilder;
+
 import org.levimc.launcher.R;
 import org.levimc.launcher.core.versions.GameVersion;
+import org.levimc.launcher.settings.FeatureSettings;
 import org.levimc.launcher.util.PersonalizationManager;
 import org.levimc.launcher.core.versions.VersionManager;
 import org.levimc.launcher.ui.animation.DynamicAnim;
@@ -38,11 +42,17 @@ import org.levimc.launcher.ui.dialogs.CustomAlertDialog;
 import org.levimc.launcher.ui.dialogs.InstallProgressDialog;
 import org.levimc.launcher.util.ApkImportManager;
 import org.levimc.launcher.util.InstanceBackupManager;
+import org.levimc.launcher.util.LauncherStorage;
+import org.levimc.launcher.util.ProfileTransfer;
 import org.levimc.launcher.util.StorageAccess;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.LinkedHashSet;
 import java.util.List;
+import java.util.Set;
+import java.util.function.Consumer;
 
 public class InstancesActivity extends BaseActivity {
     public static final String EXTRA_RESTORE_BACKUP_ON_OPEN = "restore_backup_on_open";
@@ -56,6 +66,12 @@ public class InstancesActivity extends BaseActivity {
     private static final int CARD_TEXT_PRIMARY_LIGHT = Color.rgb(27, 31, 35);
     private static final int CARD_TEXT_SECONDARY_LIGHT = Color.rgb(68, 75, 82);
     private static final int CARD_TEXT_SECONDARY_DARK = Color.rgb(224, 228, 232);
+    private static final String KIND_MODS = "mods";
+    private static final String KIND_WORLDS = "worlds";
+    private static final String KIND_RESOURCE_PACKS = "resource_packs";
+    private static final String KIND_BEHAVIOR_PACKS = "behavior_packs";
+    private static final String KIND_SKIN_PACKS = "skin_packs";
+    private static final String KIND_SCREENSHOTS = "screenshots";
 
     private VersionManager versionManager;
     private RecyclerView recyclerView;
@@ -72,6 +88,7 @@ public class InstancesActivity extends BaseActivity {
     private InstallProgressDialog restoreProgressDialog;
     private InstallProgressDialog batchBackupProgressDialog;
     private TextView batchBackupButton;
+    private TextView transferContentButton;
     private List<GameVersion> pendingBatchBackupVersions = new ArrayList<>();
     private List<String> batchBackupPaths = new ArrayList<>();
     private List<String> batchBackupFailures = new ArrayList<>();
@@ -178,6 +195,7 @@ public class InstancesActivity extends BaseActivity {
         setupImportButton();
         setupBackupImportButton();
         setupBatchBackupButton();
+        setupTransferContentButton();
         updateCount();
         handleBackupOpenIntent(getIntent());
 
@@ -304,6 +322,116 @@ public class InstancesActivity extends BaseActivity {
         batchBackupButton.setSelected(true);
         applyAccentButtonStyle(batchBackupButton);
         batchBackupButton.setOnClickListener(v -> showBatchBackupSelection());
+    }
+
+    private void setupTransferContentButton() {
+        transferContentButton = findViewById(R.id.btn_transfer_content);
+        if (transferContentButton == null) return;
+        transferContentButton.setSelected(true);
+        applyAccentButtonStyle(transferContentButton);
+        transferContentButton.setOnClickListener(v -> {
+            if (allVersions.isEmpty()) return;
+            showVersionPicker(getString(R.string.transfer_pick_source), allVersions, this::showTransferTargetPicker);
+        });
+    }
+
+    private void showTransferTargetPicker(GameVersion source) {
+        List<GameVersion> targets = new ArrayList<>();
+        for (GameVersion version : allVersions) {
+            if (!version.getStorageProfileId().equals(source.getStorageProfileId())) {
+                targets.add(version);
+            }
+        }
+        if (targets.isEmpty()) return;
+        showVersionPicker(getString(R.string.transfer_pick_target), targets,
+                target -> showTransferOptionsDialog(source, target));
+    }
+
+    private void showVersionPicker(String title, List<GameVersion> versions, Consumer<GameVersion> onPick) {
+        String[] labels = new String[versions.size()];
+        for (int i = 0; i < versions.size(); i++) {
+            GameVersion version = versions.get(i);
+            labels[i] = version.displayName + " (" + version.versionCode + ")";
+        }
+        new MaterialAlertDialogBuilder(this)
+                .setTitle(title)
+                .setItems(labels, (dialog, which) -> onPick.accept(versions.get(which)))
+                .setNegativeButton(R.string.cancel, null)
+                .show();
+    }
+
+    private void showTransferOptionsDialog(GameVersion source, GameVersion target) {
+        View dialogView = getLayoutInflater().inflate(R.layout.dialog_transfer_profile, null);
+        RadioGroup modeGroup = dialogView.findViewById(R.id.transfer_mode_group);
+        new MaterialAlertDialogBuilder(this)
+                .setTitle(getString(R.string.transfer_profile_title) + "\n"
+                        + source.displayName + " → " + target.displayName)
+                .setView(dialogView)
+                .setPositiveButton(R.string.transfer, (dialog, which) -> {
+                    Set<String> kinds = new LinkedHashSet<>();
+                    if (((CheckBox) dialogView.findViewById(R.id.check_mods)).isChecked()) kinds.add(KIND_MODS);
+                    if (((CheckBox) dialogView.findViewById(R.id.check_worlds)).isChecked()) kinds.add(KIND_WORLDS);
+                    if (((CheckBox) dialogView.findViewById(R.id.check_resource_packs)).isChecked()) kinds.add(KIND_RESOURCE_PACKS);
+                    if (((CheckBox) dialogView.findViewById(R.id.check_behavior_packs)).isChecked()) kinds.add(KIND_BEHAVIOR_PACKS);
+                    if (((CheckBox) dialogView.findViewById(R.id.check_skin_packs)).isChecked()) kinds.add(KIND_SKIN_PACKS);
+                    if (((CheckBox) dialogView.findViewById(R.id.check_screenshots)).isChecked()) kinds.add(KIND_SCREENSHOTS);
+                    boolean move = modeGroup.getCheckedRadioButtonId() == R.id.radio_move;
+                    runProfileTransfer(source, target, kinds, move);
+                })
+                .setNegativeButton(R.string.cancel, null)
+                .show();
+    }
+
+    private void runProfileTransfer(GameVersion source, GameVersion target, Set<String> kinds, boolean move) {
+        new Thread(() -> {
+            File sourceBase = contentBaseDir(source);
+            File targetBase = contentBaseDir(target);
+            int copied = 0;
+            int skipped = 0;
+            for (String kind : kinds) {
+                File srcDir;
+                File dstDir;
+                if (KIND_MODS.equals(kind)) {
+                    srcDir = LauncherStorage.getProfileModsDir(this, source.getStorageProfileId());
+                    dstDir = LauncherStorage.getProfileModsDir(this, target.getStorageProfileId());
+                } else {
+                    srcDir = new File(sourceBase, contentDirName(kind));
+                    dstDir = new File(targetBase, contentDirName(kind));
+                }
+                if (srcDir.equals(dstDir) || !srcDir.isDirectory()) continue;
+                ProfileTransfer.Result result = ProfileTransfer.transferDir(srcDir, dstDir, move);
+                copied += result.copied;
+                skipped += result.skipped;
+            }
+            int finalCopied = copied;
+            int finalSkipped = skipped;
+            runOnUiThread(() -> Toast.makeText(this,
+                    getString(R.string.transfer_summary, finalCopied, finalSkipped),
+                    Toast.LENGTH_LONG).show());
+        }, "profile-transfer").start();
+    }
+
+    private File contentBaseDir(GameVersion version) {
+        String savedType = getSharedPreferences("content_management", MODE_PRIVATE)
+                .getString("storage_type", "INTERNAL");
+        FeatureSettings.StorageType storageType;
+        try {
+            storageType = FeatureSettings.StorageType.valueOf(savedType);
+        } catch (IllegalArgumentException e) {
+            storageType = FeatureSettings.StorageType.INTERNAL;
+        }
+        return LauncherStorage.getContentGameDataDir(this, version.getStorageProfileId(),
+                LauncherStorage.normalizeContentStorageType(storageType, version.versionIsolation));
+    }
+
+    private static String contentDirName(String kind) {
+        return switch (kind) {
+            case KIND_WORLDS -> "minecraftWorlds";
+            case KIND_RESOURCE_PACKS -> "resource_packs";
+            case KIND_BEHAVIOR_PACKS -> "behavior_packs";
+            case KIND_SKIN_PACKS -> "skin_packs";
+            default -> "Screenshots";
+        };
     }
 
     private void applyAccentButtonStyle(TextView button) {
@@ -812,6 +940,7 @@ public class InstancesActivity extends BaseActivity {
         setupImportButton();
         setupBackupImportButton();
         setupBatchBackupButton();
+        setupTransferContentButton();
         applyFilters();
     }
 

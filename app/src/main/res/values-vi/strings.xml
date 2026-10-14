@@ -306,6 +306,13 @@
     <string name="transfer_to">Chuyển tới:</string>
     <string name="transfer_success">Chuyển đổi đã hoàn tất</string>
     <string name="transfer_failed">Chuyển đổi thất bại</string>
+    <string name="transfer_profile_button">Chuyển dữ liệu</string>
+    <string name="transfer_profile_title">Chuyển giữa các phiên bản</string>
+    <string name="transfer_pick_source">Phiên bản nguồn:</string>
+    <string name="transfer_pick_target">Phiên bản đích:</string>
+    <string name="transfer_copy">Sao chép</string>
+    <string name="transfer_move">Chuyển đi</string>
+    <string name="transfer_summary">%1$d mục đã chuyển, %2$d bỏ qua (đã tồn tại)</string>
     <string name="transfer_same_location">Nội dung đã có sẵn tại vị trí này</string>
     <string name="import_content">Nhập</string>
     <string name="import_content_title">Nhập nội dung</string>

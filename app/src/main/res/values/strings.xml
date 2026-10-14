@@ -306,6 +306,13 @@
     <string name="transfer_to">Transfer to:</string>
     <string name="transfer_success">Transfer completed successfully</string>
     <string name="transfer_failed">Transfer failed</string>
+    <string name="transfer_profile_button">Transfer data</string>
+    <string name="transfer_profile_title">Transfer Between Versions</string>
+    <string name="transfer_pick_source">Source version:</string>
+    <string name="transfer_pick_target">Destination version:</string>
+    <string name="transfer_copy">Copy</string>
+    <string name="transfer_move">Move</string>
+    <string name="transfer_summary">%1$d items transferred, %2$d skipped (already exist)</string>
     <string name="transfer_same_location">Content is already in this location</string>
     <string name="import_content">Import</string>
     <string name="import_content_title">Import Content</string>
