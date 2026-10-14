@@ -1,11 +1,13 @@
 package org.levimc.launcher.ui.activities;
 
+import android.Manifest;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.content.res.ColorStateList;
 import android.graphics.Color;
 import android.graphics.drawable.GradientDrawable;
 import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
 import android.util.Base64;
 import android.view.Gravity;
@@ -28,12 +30,14 @@ import com.google.android.material.switchmaterial.SwitchMaterial;
 
 import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts;
+import androidx.core.content.ContextCompat;
 
 import org.levimc.launcher.R;
 import org.levimc.launcher.core.crash.CrashReporter;
 import org.levimc.launcher.preloader.PreloaderSignatureRulesManager;
 import org.levimc.launcher.settings.FeatureSettings;
 import org.levimc.launcher.ui.animation.DynamicAnim;
+import org.levimc.launcher.ui.dialogs.CustomAlertDialog;
 import org.levimc.launcher.ui.dialogs.LogcatOverlayManager;
 import org.levimc.launcher.util.GithubReleaseUpdater;
 import org.levimc.launcher.util.LanguageManager;
@@ -41,6 +45,7 @@ import org.levimc.launcher.util.PermissionsHandler;
 import org.levimc.launcher.util.PersonalizationManager;
 import org.levimc.launcher.util.LauncherBackgroundController;
 import org.levimc.launcher.util.ThemeManager;
+import org.levimc.launcher.util.WallpaperColorExtractor;
 
 import java.text.DateFormat;
 import java.lang.ref.WeakReference;
@@ -52,6 +57,7 @@ public class SettingsActivity extends BaseActivity {
     private PermissionsHandler permissionsHandler;
     private ActivityResultLauncher<Intent> permissionResultLauncher;
     private ActivityResultLauncher<Intent> bgImagePickerLauncher;
+    private ActivityResultLauncher<String> wallpaperColorPermissionLauncher;
     private int updateButtonTapCount = 0;
     private long lastUpdateButtonTapTime = 0;
     private static final int EASTER_EGG_TAP_COUNT = 3;
@@ -123,6 +129,17 @@ public class SettingsActivity extends BaseActivity {
                                 else Toast.makeText(activity, R.string.bg_media_import_failed, Toast.LENGTH_LONG).show();
                             });
                         }
+                    }
+                }
+        );
+
+        wallpaperColorPermissionLauncher = registerForActivityResult(
+                new ActivityResultContracts.RequestPermission(),
+                granted -> {
+                    if (granted) {
+                        applyWallpaperAccentColor();
+                    } else {
+                        Toast.makeText(this, R.string.wallpaper_color_failed, Toast.LENGTH_LONG).show();
                     }
                 }
         );
@@ -391,6 +408,37 @@ public class SettingsActivity extends BaseActivity {
                 }
             });
         }
+
+        Button btnWallpaperColor = findViewById(R.id.btn_wallpaper_color);
+        if (btnWallpaperColor != null) {
+            btnWallpaperColor.setOnClickListener(v -> applyWallpaperAccentColor());
+        }
+    }
+
+    private void applyWallpaperAccentColor() {
+        int color = WallpaperColorExtractor.extract(this);
+        if (color != 0) {
+            personalizationManager.setAccentColor(color);
+            refreshColorPickerInPlace();
+            Toast.makeText(this, R.string.wallpaper_color_applied, Toast.LENGTH_SHORT).show();
+            return;
+        }
+
+        // Android 11 and below need READ_EXTERNAL_STORAGE to read the wallpaper bitmap.
+        boolean storageMissing = Build.VERSION.SDK_INT <= Build.VERSION_CODES.R
+                && ContextCompat.checkSelfPermission(this, Manifest.permission.READ_EXTERNAL_STORAGE)
+                        != PackageManager.PERMISSION_GRANTED;
+        if (storageMissing) {
+            new CustomAlertDialog(this)
+                    .setTitleText(getString(R.string.wallpaper_color_failed_title))
+                    .setMessage(getString(R.string.wallpaper_color_failed_storage_message))
+                    .setPositiveButton(getString(R.string.grant_permission),
+                            v -> wallpaperColorPermissionLauncher.launch(Manifest.permission.READ_EXTERNAL_STORAGE))
+                    .setNegativeButton(getString(R.string.cancel), null)
+                    .show();
+        } else {
+            Toast.makeText(this, R.string.wallpaper_color_failed, Toast.LENGTH_LONG).show();
+        }
     }
 
     private void buildColorGrid(LinearLayout container, int[] colors, int selectedColor) {
@@ -479,6 +527,12 @@ public class SettingsActivity extends BaseActivity {
         if (btnSelectImage != null && accent != 0) {
             btnSelectImage.setBackgroundTintList(ColorStateList.valueOf(accent));
             btnSelectImage.setTextColor(Color.WHITE);
+        }
+
+        Button btnWallpaperColor = findViewById(R.id.btn_wallpaper_color);
+        if (btnWallpaperColor != null && accent != 0) {
+            btnWallpaperColor.setBackgroundTintList(ColorStateList.valueOf(accent));
+            btnWallpaperColor.setTextColor(Color.WHITE);
         }
         
         Button btnCheckUpdate = findViewById(R.id.btn_check_update);

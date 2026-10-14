@@ -965,6 +965,11 @@
     <string name="mod_load_order_placeholder">Load order: 1</string>
     <string name="custom_color_hex_rgb">Custom Color (HEX/RGB)</string>
     <string name="custom_color_hint">#RRGGBB or R,G,B</string>
+    <string name="wallpaper_color_from_wallpaper">Use wallpaper color</string>
+    <string name="wallpaper_color_applied">Accent color taken from the wallpaper</string>
+    <string name="wallpaper_color_failed">Couldn\'t get the color from the wallpaper</string>
+    <string name="wallpaper_color_failed_title">Wallpaper color unavailable</string>
+    <string name="wallpaper_color_failed_storage_message">On Android 11 and below, reading the wallpaper needs Storage access. Grant the permission and try again.</string>
     <string name="screenshot_name_placeholder">Screenshot Name</string>
     <string name="screenshot_date_placeholder">Date: 2024-01-01 12:00:00</string>
 

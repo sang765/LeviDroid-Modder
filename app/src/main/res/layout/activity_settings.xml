@@ -578,6 +578,18 @@
                                 android:textColor="@color/on_primary"
                                 android:backgroundTint="@color/primary" />
                         </LinearLayout>
+
+                        <Button
+                            android:id="@+id/btn_wallpaper_color"
+                            android:layout_width="match_parent"
+                            android:layout_height="40dp"
+                            android:layout_marginTop="12dp"
+                            android:text="@string/wallpaper_color_from_wallpaper"
+                            android:textAllCaps="false"
+                            android:fontFamily="@font/misans"
+                            android:textSize="12sp"
+                            android:textColor="@color/on_primary"
+                            android:backgroundTint="@color/primary" />
                     </LinearLayout>
 
                     <LinearLayout
