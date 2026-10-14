@@ -25,7 +25,7 @@ class GamePackageManager private constructor(
     private val progressListener: MinecraftRuntimePreparer.ProgressListener?
 ) {
 
-    private val packageContext: Context
+    private val packageContext: Context?
     private val assetManager: AssetManager
     private val nativeLibDir: String
     private val applicationInfo: ApplicationInfo
@@ -62,18 +62,20 @@ class GamePackageManager private constructor(
 
     init {
         report("GamePackageManager init started")
-        val packageName = detectGamePackage() ?: throw IllegalStateException("Minecraft not found")
-        report("Detected Minecraft package: $packageName")
-        packageContext = context.createPackageContext(
-            packageName,
-            Context.CONTEXT_IGNORE_SECURITY or Context.CONTEXT_INCLUDE_CODE
-        )
-        
         if (version != null && !version.isInstalled) {
+            // Isolated instances run from their own APK copy, no installed package needed.
+            packageContext = null
             applicationInfo = MinecraftLauncher(context).createFakeApplicationInfo(version, MinecraftLauncher.MC_PACKAGE_NAME)
             nativeLibDir = applicationInfo.nativeLibraryDir
         } else {
-            applicationInfo = packageContext.applicationInfo
+            val packageName = detectGamePackage() ?: throw IllegalStateException("Minecraft not found")
+            report("Detected Minecraft package: $packageName")
+            val pkgContext = context.createPackageContext(
+                packageName,
+                Context.CONTEXT_IGNORE_SECURITY or Context.CONTEXT_INCLUDE_CODE
+            )
+            packageContext = pkgContext
+            applicationInfo = pkgContext.applicationInfo
             nativeLibDir = resolveNativeLibDir()
         }
         
@@ -172,7 +174,7 @@ class GamePackageManager private constructor(
                 }
             }
         } else {
-            val appInfo = packageContext.applicationInfo
+            val appInfo = requireNotNull(packageContext).applicationInfo
             if (File(appInfo.nativeLibraryDir).exists()) {
                 copyFromNativeDir(appInfo.nativeLibraryDir, outputDir)
             }
@@ -199,7 +201,7 @@ class GamePackageManager private constructor(
             applicationInfo.sourceDir?.let { paths.add(it) }
             applicationInfo.splitSourceDirs?.let { paths.addAll(it) }
         } else {
-            val appInfo = packageContext.applicationInfo
+            val appInfo = requireNotNull(packageContext).applicationInfo
             appInfo.sourceDir?.let { paths.add(it) }
             appInfo.splitPublicSourceDirs?.let { paths.addAll(it) }
         }
@@ -438,8 +440,9 @@ class GamePackageManager private constructor(
                 }
             }
         } else {
-            paths.add(packageContext.packageResourcePath)
-            val splitPath = packageContext.packageResourcePath.replace("base.apk", "split_install_pack.apk")
+            val resourcePath = requireNotNull(packageContext).packageResourcePath
+            paths.add(resourcePath)
+            val splitPath = resourcePath.replace("base.apk", "split_install_pack.apk")
             if (File(splitPath).exists()) paths.add(splitPath)
         }
         
@@ -639,13 +642,18 @@ class GamePackageManager private constructor(
         }
     }
 
-    fun getPackageContext(): Context = packageContext
+    fun getPackageContext(): Context? = packageContext
 
     fun getApplicationInfo(): ApplicationInfo = applicationInfo
 
     fun getVersionName(): String? {
         return try {
-            context.packageManager.getPackageInfo(packageContext.packageName, 0).versionName
+            val pkgContext = packageContext
+            if (pkgContext != null) {
+                context.packageManager.getPackageInfo(pkgContext.packageName, 0).versionName
+            } else {
+                version?.versionCode
+            }
         } catch (e: Exception) {
             version?.versionCode
         }

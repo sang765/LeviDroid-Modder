@@ -851,7 +851,7 @@ import okhttp3.OkHttpClient;
             }
         }
 
-        if (!PlayStoreValidator.isMinecraftInstalled(this)) {
+        if (version.isInstalled && !PlayStoreValidator.isMinecraftInstalled(this)) {
             trace.warning("Launch cancelled", "Minecraft is not installed");
             binding.launchButton.setEnabled(true);
             PlayStoreValidationDialog.showNotInstalledDialog(this);

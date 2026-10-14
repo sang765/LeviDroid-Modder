@@ -204,7 +204,7 @@ object MinecraftRuntimePreparer {
         launchIntent.putExtra(MinecraftLauncher.EXTRA_STORAGE_CACHE_DIR, cacheDir.absolutePath)
 
         val mcInfo: ApplicationInfo = if (version.isInstalled) {
-            gameManager.getPackageContext().applicationInfo
+            requireNotNull(gameManager.getPackageContext()).applicationInfo
         } else {
             MinecraftLauncher(context).createFakeApplicationInfo(version, MinecraftLauncher.MC_PACKAGE_NAME)
         }
