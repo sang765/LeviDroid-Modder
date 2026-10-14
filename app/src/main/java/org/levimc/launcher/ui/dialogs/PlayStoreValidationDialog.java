@@ -9,16 +9,6 @@ import org.levimc.launcher.R;
 
 public class PlayStoreValidationDialog {
     private static final String MINECRAFT_PLAY_STORE_URL = "https://play.google.com/store/apps/details?id=com.mojang.minecraftpe";
-    public static void showNotFromPlayStoreDialog(Context context) {
-        new CustomAlertDialog(context)
-                .setTitleText(context.getString(R.string.minecraft_playstore_required_title))
-                .setMessage(context.getString(R.string.minecraft_playstore_required_message))
-                .setPositiveButton(context.getString(R.string.buy_minecraft), v -> {
-                    openPlayStore(context);
-                })
-                .setNegativeButton(context.getString(R.string.cancel), null)
-                .show();
-    }
 
     public static void showNotInstalledDialog(Context context) {
         new CustomAlertDialog(context)

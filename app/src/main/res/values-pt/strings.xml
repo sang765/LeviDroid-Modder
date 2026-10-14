@@ -394,9 +394,6 @@
     </plurals>
 
     <!-- Play Store Validation -->
-    <string name="minecraft_playstore_required_title">Versão da Play Store Necessária</string>
-    <string name="minecraft_playstore_required_message">Este launcher só funciona com a versão oficial do Minecraft da Google Play. Por favor, instale-a.</string>
-    <string name="buy_minecraft">Obter Minecraft</string>
     <string name="minecraft_not_installed_title">Minecraft Não Instalado</string>
     <string name="minecraft_not_installed_message">O Minecraft não está instalado no seu dispositivo. Por favor, instale pela Google Play Store.</string>
     <string name="install_minecraft">Instalar Minecraft</string>

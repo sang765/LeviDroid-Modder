@@ -394,9 +394,6 @@
     </plurals>
 
     <!-- Play Store Validation -->
-    <string name="minecraft_playstore_required_title">Play Store संस्करण आवश्यक है</string>
-    <string name="minecraft_playstore_required_message">यह लॉन्चर केवल Google Play Store से आधिकारिक Minecraft ऐप के साथ काम करता है। कृपया जारी रखने के लिए Play Store संस्करण इंस्टॉल करें।</string>
-    <string name="buy_minecraft">Minecraft प्राप्त करें</string>
     <string name="minecraft_not_installed_title">Minecraft इंस्टॉल नहीं है</string>
     <string name="minecraft_not_installed_message">आपके डिवाइस पर Minecraft इंस्टॉल नहीं है। कृपया इस लॉन्चर का उपयोग करने के लिए इसे Google Play Store से इंस्टॉल करें।</string>
     <string name="install_minecraft">Minecraft इंस्टॉल करें</string>

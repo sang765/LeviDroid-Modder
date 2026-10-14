@@ -394,9 +394,6 @@
     </plurals>
 
     <!-- Play Store Validation -->
-    <string name="minecraft_playstore_required_title">Play Store Sürümü Gerekli</string>
-    <string name="minecraft_playstore_required_message">Bu başlatıcı yalnızca Google Play Store\'daki resmi Minecraft uygulamasıyla çalışır. Devam etmek için Play Store sürümünü yükleyin.</string>
-    <string name="buy_minecraft">Minecraft\'ı Edin</string>
     <string name="minecraft_not_installed_title">Minecraft Yüklü Değil</string>
     <string name="minecraft_not_installed_message">Cihazınızda Minecraft yüklü değil. Bu başlatıcıyı kullanmak için Google Play Store\'dan yükleyin.</string>
     <string name="install_minecraft">Minecraft\'ı Yükle</string>
