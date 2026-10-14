@@ -23,6 +23,8 @@
 
 LeviLauncher Modder is a lightweight, open-source Android launcher specifically designed for legitimate players of Minecraft: Bedrock Edition (MCBE). It provides a flexible and user-friendly alternative to the standard Google Play installation, allowing you to manage multiple game versions and extend functionality with external modules.
 
+LeviLauncher Modder is an independent fork of the original [LeviLauncher](https://github.com/LiteLDev/LeviLaunchroid) by the [LeviMC team](https://github.com/LiteLDev), maintained by [sang765](https://github.com/sang765) in this repository.
+
 LeviLauncher Modder enables you to import your official Minecraft APK and run it directly without requiring system installation. The launcher supports loading external native modules to enhance gameplay, provides robust multi-version management with complete isolation between installations, and includes built-in tools for managing resource packs and worlds. Whether you're looking to organize different game versions, test modifications, or optimize your gaming experience, LeviLauncher Modder offers the flexibility you need.
 
 ### Key Features
@@ -152,7 +154,7 @@ LeviLauncher Modder is designed for legitimate players of Minecraft Bedrock Edit
 
 ### Prohibited Uses
 
-- Do not claim LeviLauncher Modder as your own without crediting the LeviMC team and its contributors
+- Do not claim LeviLauncher Modder as your own without crediting the original LeviLauncher project and its authors
 - Do not use LeviLauncher Modder to violate Mojang or Microsoft's user agreements
 
 > **Disclaimer:** The authors and contributors of LeviLauncher Modder are not responsible for bans, damages, or issues arising from the use of this software. Use it at your own risk and in accordance with Minecraft's terms of service.
@@ -167,22 +169,25 @@ LeviLauncher Modder would not be possible without the contributions and support 
 
 ### Special Thanks To
 
-- **LeviMC Organization** – For maintaining the LeviLauncher Modder project and providing infrastructure support
+- **[sang765](https://github.com/sang765)** – Maintainer of this LeviLauncher Modder fork
+- **[LeviMC Organization](https://github.com/LiteLDev)** – For creating and maintaining the original [LeviLauncher](https://github.com/LiteLDev/LeviLaunchroid) project this fork is based on
 - **Android Community** – For excellent documentation, libraries, and tools that made this launcher possible
 - **Open Source Community** – For all the libraries, frameworks, and tools that power this project
-- **Contributors** – A heartfelt thank you to all [contributors](https://github.com/sang765/LeviDroid-Modder/graphs/contributors) who have continuously improved and maintained LeviLauncher Modder through their time and expertise
+- **Contributors** – A heartfelt thank you to all [contributors of the original project](https://github.com/LiteLDev/LeviLaunchroid/graphs/contributors) who have continuously improved and maintained LeviLauncher through their time and expertise
 
 ---
 
 ## Contact & Support
 
-**Author / Team:** LeviMC Team
+**Maintainer:** [sang765](https://github.com/sang765)
 
 **Project Repository:** [https://github.com/sang765/LeviDroid-Modder](https://github.com/sang765/LeviDroid-Modder)
 
+**Original Repository:** [https://github.com/LiteLDev/LeviLaunchroid](https://github.com/LiteLDev/LeviLaunchroid)
+
 **Report Issues:** [GitHub Issues Page](https://github.com/sang765/LeviDroid-Modder/issues)
 
-**For support and questions:** Please create an issue on the GitHub repository or contact the LeviMC team directly
+**For support and questions:** Please create an issue on this GitHub repository
 
 ---
 
@@ -195,6 +200,6 @@ LeviLauncher Modder would not be possible without the contributions and support 
 [![Downloads](https://img.shields.io/github/downloads/sang765/LeviDroid-Modder/total.svg)](https://github.com/sang765/LeviDroid-Modder/releases)
 [![Android](https://img.shields.io/badge/Android-9.0%2B-green?style=flat-square&logo=android)](https://www.android.com/)
 
-**Made with ❤️ by the LeviMC Community**
+**Made with ❤️ by [sang765](https://github.com/sang765)**
 
 </div>
