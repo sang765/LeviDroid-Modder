@@ -869,6 +869,10 @@
     <string name="about_author_name">DreamGuXiang</string>
     <string name="about_author_badge">Tác giả</string>
     <string name="about_author_role">Tác giả LeviLauncher Modder</string>
+    <string name="about_modder_name">sang765</string>
+    <string name="about_modder_badge">Modder</string>
+    <string name="about_modder_role">Modder Version bởi sang765</string>
+    <string name="about_modder_github">GitHub · sang765</string>
     <string name="about_afdian">Afdian</string>
     <string name="about_patreon">Patreon</string>
     <string name="about_source_title">Mã nguồn &amp; Mã nguồn mở</string>

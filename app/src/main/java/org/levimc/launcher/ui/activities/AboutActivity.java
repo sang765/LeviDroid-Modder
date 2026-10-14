@@ -26,6 +26,7 @@ public class AboutActivity extends BaseActivity {
     private static final String URL_ORG = "https://github.com/sang765";
     private static final String URL_ISSUES = "https://github.com/sang765/LeviDroid-Modder/issues";
     private static final String MAINTAINER_AVATAR_URL = "https://yt3.googleusercontent.com/ft4khqXZ_fQn-DbSLg91kQy3_JUQ_73rbg18nOcmMtunX5bq25jzrThWQAk9YsFkTKFesUL7sg8=s160-c-k-c0x00ffffff-no-rj";
+    private static final String MODDER_AVATAR_URL = "https://avatars.githubusercontent.com/sang765";
     private static final String URL_YOUTUBE = "https://www.youtube.com/c/mrpokeg";
 
     private final ExecutorService executor = Executors.newSingleThreadExecutor();
@@ -47,6 +48,7 @@ public class AboutActivity extends BaseActivity {
     private void styleBadges() {
         TextView authorBadge = findViewById(R.id.author_badge);
         TextView maintainerBadge = findViewById(R.id.maintainer_badge);
+        TextView modderBadge = findViewById(R.id.modder_badge);
 
         org.levimc.launcher.util.PersonalizationManager pm = new org.levimc.launcher.util.PersonalizationManager(this);
         int accent = pm.getAccentColor();
@@ -63,6 +65,10 @@ public class AboutActivity extends BaseActivity {
                 maintainerBadge.setBackground(gd);
                 maintainerBadge.setTextColor(android.graphics.Color.WHITE);
             }
+            if (modderBadge != null) {
+                modderBadge.setBackground(gd);
+                modderBadge.setTextColor(android.graphics.Color.WHITE);
+            }
         }
     }
 
@@ -74,6 +80,7 @@ public class AboutActivity extends BaseActivity {
     private void loadAvatars() {
         com.microsoft.xbox.idp.toolkit.CircleImageView avatar = findViewById(R.id.author_avatar);
         com.microsoft.xbox.idp.toolkit.CircleImageView maintainerAvatar = findViewById(R.id.maintainer_avatar);
+        com.microsoft.xbox.idp.toolkit.CircleImageView modderAvatar = findViewById(R.id.modder_avatar);
 
         executor.execute(() -> {
             try {
@@ -99,6 +106,18 @@ public class AboutActivity extends BaseActivity {
                     }
                 }
             } catch (Exception ignored) {}
+
+            try {
+                if (modderAvatar != null) {
+                    Response resp = client.newCall(new Request.Builder().url(MODDER_AVATAR_URL).build()).execute();
+                    if (resp.isSuccessful() && resp.body() != null) {
+                        Bitmap bmp = BitmapFactory.decodeStream(resp.body().byteStream());
+                        runOnUiThread(() -> {
+                            if (bmp != null) modderAvatar.setImageBitmap(bmp);
+                        });
+                    }
+                }
+            } catch (Exception ignored) {}
         });
     }
 
@@ -110,6 +129,7 @@ public class AboutActivity extends BaseActivity {
         setupLinkButton(R.id.btn_issues, URL_ISSUES);
         setupLinkButton(R.id.btn_star_fork, URL_REPO);
         setupLinkButton(R.id.btn_youtube_maintainer, URL_YOUTUBE);
+        setupLinkButton(R.id.btn_github_modder, URL_ORG);
     }
 
     private void setupLinkButton(int viewId, String url) {
