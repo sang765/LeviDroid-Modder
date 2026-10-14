@@ -138,7 +138,8 @@ public class GithubReleaseUpdater {
     private static String pickApkUrl(JSONArray assets) {
         String fallback = null;
         String universal = null;
-        String deviceAbi = Build.SUPPORTED_ABIS.isEmpty() ? "" : Build.SUPPORTED_ABIS.get(0);
+        String[] supportedAbis = Build.SUPPORTED_ABIS;
+        String deviceAbi = supportedAbis.length == 0 ? "" : supportedAbis[0];
         for (int i = 0; i < assets.length(); i++) {
             try {
                 JSONObject asset = assets.getJSONObject(i);
