@@ -12,6 +12,7 @@ import android.graphics.ColorMatrixColorFilter;
 import android.graphics.ImageDecoder;
 import android.graphics.RenderEffect;
 import android.graphics.Shader;
+import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.ColorDrawable;
 import android.graphics.drawable.Drawable;
 import android.graphics.drawable.GradientDrawable;
@@ -845,4 +846,38 @@ public class PersonalizationManager {
             0xFF616161, 0xFF455A64, 0xFF37474F,
             0xFF4AE0A0, 0xFFCDDC39, 0xFF8BC34A
     };
+
+    public static void applyAccentToLogo(ImageView view, int accent) {
+        if (view == null || accent == 0) return;
+        Drawable drawable = ContextCompat.getDrawable(view.getContext(), R.drawable.ic_leaf_logo_mono);
+        if (!(drawable instanceof BitmapDrawable)) return;
+        view.setImageBitmap(tintWithAccent(((BitmapDrawable) drawable).getBitmap(), accent));
+    }
+
+    // Maps each pixel's luminance onto the accent color so the logo keeps its
+    // shading while following the theme.
+    public static Bitmap tintWithAccent(Bitmap source, int accent) {
+        int width = source.getWidth();
+        int height = source.getHeight();
+        int[] pixels = new int[width * height];
+        source.getPixels(pixels, 0, width, 0, 0, width, height);
+        int ar = Color.red(accent);
+        int ag = Color.green(accent);
+        int ab = Color.blue(accent);
+        for (int i = 0; i < pixels.length; i++) {
+            int pixel = pixels[i];
+            int alpha = Color.alpha(pixel);
+            if (alpha == 0) continue;
+            float luminance = (0.299f * Color.red(pixel)
+                    + 0.587f * Color.green(pixel)
+                    + 0.114f * Color.blue(pixel)) / 255f;
+            pixels[i] = Color.argb(alpha,
+                    (int) (ar * luminance),
+                    (int) (ag * luminance),
+                    (int) (ab * luminance));
+        }
+        Bitmap tinted = Bitmap.createBitmap(width, height, Bitmap.Config.ARGB_8888);
+        tinted.setPixels(pixels, 0, width, 0, 0, width, height);
+        return tinted;
+    }
 }

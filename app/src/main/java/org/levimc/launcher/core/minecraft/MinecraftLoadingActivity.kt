@@ -43,6 +43,7 @@ class MinecraftLoadingActivity : BaseActivity(), MinecraftRuntimePreparer.Progre
     private lateinit var logView: TextView
     private lateinit var logScroll: ScrollView
     private lateinit var returnButton: Button
+    private lateinit var cancelButton: android.widget.ImageView
     private lateinit var trace: LaunchTrace
 
     @Volatile
@@ -73,6 +74,12 @@ class MinecraftLoadingActivity : BaseActivity(), MinecraftRuntimePreparer.Progre
         logView = findViewById(R.id.minecraftLaunchLog)
         logScroll = findViewById(R.id.minecraftLaunchLogScroll)
         returnButton = findViewById(R.id.minecraftLaunchReturn)
+        cancelButton = findViewById(R.id.minecraftLaunchCancel)
+
+        cancelButton.setOnClickListener {
+            appendLog("Launch cancelled")
+            returnToLauncher()
+        }
 
         returnButton.setOnClickListener {
             appendLog("Returning to launcher")
@@ -227,6 +234,9 @@ class MinecraftLoadingActivity : BaseActivity(), MinecraftRuntimePreparer.Progre
         val accent = if (configuredAccent != 0) configuredAccent else ContextCompat.getColor(this, R.color.primary)
         val accentTint = ColorStateList.valueOf(accent)
         val secondaryText = ContextCompat.getColor(this, R.color.text_secondary)
+
+        PersonalizationManager.applyAccentToLogo(findViewById(R.id.minecraftLaunchLogo), accent)
+        cancelButton.setColorFilter(accent)
 
         progressBar.progressTintList = accentTint
         progressBar.progressBackgroundTintList = ColorStateList.valueOf(withAlpha(accent, TRACK_ALPHA))

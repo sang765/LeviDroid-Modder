@@ -151,6 +151,7 @@ public class SplashActivity extends BaseActivity {
 
     private void applySplashTheme() {
         int accent = resolveAccentColor();
+        PersonalizationManager.applyAccentToLogo(binding.imgLeaf, accent);
         binding.tvAppName.setTextColor(accent);
         binding.logoGlow.setBackground(createRadialGlow(accent));
         binding.orbitRing.setBackground(createOrbitRing(accent));

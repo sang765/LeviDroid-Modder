@@ -19,18 +19,31 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
+    <ImageView
+        android:id="@+id/minecraftLaunchCancel"
+        android:layout_width="40dp"
+        android:layout_height="40dp"
+        android:background="?attr/selectableItemBackgroundBorderless"
+        android:contentDescription="@string/cancel"
+        android:padding="9dp"
+        android:src="@drawable/ic_close"
+        app:layout_constraintBottom_toBottomOf="@id/minecraftLaunchLogo"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="@id/minecraftLaunchLogo" />
+
     <TextView
         android:id="@+id/minecraftLaunchTitle"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginStart="18dp"
+        android:layout_marginEnd="12dp"
         android:includeFontPadding="false"
         android:text="@string/minecraft_loading_title"
         android:textColor="@color/on_background"
         android:textSize="26sp"
         android:textStyle="bold"
         app:layout_constraintBottom_toTopOf="@id/minecraftLaunchSubtitle"
-        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintEnd_toStartOf="@id/minecraftLaunchCancel"
         app:layout_constraintStart_toEndOf="@id/minecraftLaunchLogo"
         app:layout_constraintTop_toTopOf="@id/minecraftLaunchLogo"
         app:layout_constraintVertical_chainStyle="packed" />
@@ -46,7 +59,7 @@
         android:textColor="@color/text_secondary"
         android:textSize="13sp"
         app:layout_constraintBottom_toBottomOf="@id/minecraftLaunchLogo"
-        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintEnd_toStartOf="@id/minecraftLaunchCancel"
         app:layout_constraintStart_toEndOf="@id/minecraftLaunchLogo"
         app:layout_constraintTop_toBottomOf="@id/minecraftLaunchTitle" />
 
