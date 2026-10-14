@@ -907,7 +907,7 @@
     </string-array>
     <!-- Personalization -->
     <string name="theme_color_title">Màu chủ đề</string>
-    <string name="theme_color_desc">Màu nhấn chủ đạo của ứng dụng</string>
+    <string name="theme_color_desc">Màu nhấn chủ đạo của ứng dụng. Nếu bạn chưa chọn, màu sẽ được lấy từ hình nền.</string>
     <string name="preset_colors">MÀU SẮC CÀI SẴN</string>
     <string name="more_colors">NHIỀU MÀU SẮC HƠN</string>
     <string name="bg_image_title">Hình nền</string>

@@ -44,6 +44,7 @@ import java.util.concurrent.atomic.AtomicInteger;
 public class PersonalizationManager {
     private static final String PREFS_NAME = "personalization_prefs";
     private static final String KEY_ACCENT_COLOR = "accent_color";
+    private static final String KEY_WALLPAPER_ACCENT_COLOR = "wallpaper_accent_color";
     private static final String KEY_BG_IMAGE_PATH = "bg_image_path";
     private static final String KEY_BG_MEDIA_TYPE = "bg_media_type";
     private static final String KEY_BG_POSTER_PATH = "bg_poster_path";
@@ -92,7 +93,20 @@ public class PersonalizationManager {
     }
 
     public int getAccentColor() {
-        return prefs.getInt(KEY_ACCENT_COLOR, PRESET_COLORS[0]);
+        if (prefs.contains(KEY_ACCENT_COLOR)) {
+            return prefs.getInt(KEY_ACCENT_COLOR, PRESET_COLORS[0]);
+        }
+        // Material You style default: until the user picks a color, derive the
+        // accent from the wallpaper. Cached because extraction is not free;
+        // picking any color (or the wallpaper button) stores an explicit value.
+        int cachedWallpaperAccent = prefs.getInt(KEY_WALLPAPER_ACCENT_COLOR, 0);
+        if (cachedWallpaperAccent != 0) return cachedWallpaperAccent;
+        int derived = WallpaperColorExtractor.extract(context);
+        if (derived != 0) {
+            prefs.edit().putInt(KEY_WALLPAPER_ACCENT_COLOR, derived).apply();
+            return derived;
+        }
+        return PRESET_COLORS[0];
     }
 
     public void setAccentColor(int color) {
