@@ -395,7 +395,7 @@
 
     <!-- Play Store Validation -->
     <string name="minecraft_not_installed_title">未安装 Minecraft</string>
-    <string name="minecraft_not_installed_message">您的设备上似乎没有安装 Minecraft。请先从 Google Play 商店安装以使用此启动器。</string>
+    <string name="minecraft_not_installed_message">您的设备上似乎没有安装 Minecraft。请从 Google Play 商店或其他您信任的来源安装以使用此启动器。</string>
     <string name="install_minecraft">安装 Minecraft</string>
     <string name="genuine_badge_label">未通过正版验证</string>
     <string name="invalid_license_detected_toast">非正版MC，请确保设备上MC来自于谷歌商店</string>

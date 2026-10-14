@@ -395,7 +395,7 @@
 
     <!-- Play Store Validation -->
     <string name="minecraft_not_installed_title">Minecraft が未インストール</string>
-    <string name="minecraft_not_installed_message">Minecraft がインストールされていません。Google Play ストアからインストールしてください。</string>
+    <string name="minecraft_not_installed_message">Minecraft がインストールされていません。Google Play または信頼できる別のソースからインストールしてください。</string>
     <string name="install_minecraft">Minecraft をインストール</string>
     <string name="genuine_badge_label">ライセンス未確認</string>
     <string name="invalid_license_detected_toast">非正規品が検出されました。Play ストアからの Minecraft であることを確認してください。</string>

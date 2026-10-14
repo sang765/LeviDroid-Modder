@@ -395,7 +395,7 @@
 
     <!-- Play Store Validation -->
     <string name="minecraft_not_installed_title">Minecraft Yüklü Değil</string>
-    <string name="minecraft_not_installed_message">Cihazınızda Minecraft yüklü değil. Bu başlatıcıyı kullanmak için Google Play Store\'dan yükleyin.</string>
+    <string name="minecraft_not_installed_message">Cihazınızda Minecraft yüklü değil. Bu başlatıcıyı kullanmak için Google Play veya güvendiğiniz başka bir kaynaktan yükleyin.</string>
     <string name="install_minecraft">Minecraft\'ı Yükle</string>
     <string name="genuine_badge_label">Lisans doğrulanmadı</string>
     <string name="invalid_license_detected_toast">Orijinal olmayan Minecraft algılandı. Minecraft\'ın Google Play Store\'dan olduğundan emin olun</string>

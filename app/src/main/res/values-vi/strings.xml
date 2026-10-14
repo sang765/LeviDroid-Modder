@@ -961,6 +961,11 @@
     <string name="mod_load_order_placeholder">Thứ tự tải: 1</string>
     <string name="custom_color_hex_rgb">Màu tùy chỉnh (HEX/RGB)</string>
     <string name="custom_color_hint">#RRGGBB hoặc R,G,B</string>
+    <string name="wallpaper_color_from_wallpaper">Lấy màu từ hình nền</string>
+    <string name="wallpaper_color_applied">Đã lấy màu chủ đề từ hình nền</string>
+    <string name="wallpaper_color_failed">Không lấy được màu từ hình nền</string>
+    <string name="wallpaper_color_failed_title">Không đọc được hình nền</string>
+    <string name="wallpaper_color_failed_storage_message">Android 11 trở xuống cần quyền truy cập bộ nhớ để đọc hình nền. Hãy cấp quyền rồi thử lại.</string>
     <string name="screenshot_name_placeholder">Tên ảnh chụp màn hình</string>
     <string name="screenshot_date_placeholder">Ngày: 2024-01-01 12:00:00</string>
 

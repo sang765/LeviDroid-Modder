@@ -397,7 +397,7 @@
 
     <!-- Play Store Validation -->
     <string name="minecraft_not_installed_title">Minecraft не установлен</string>
-    <string name="minecraft_not_installed_message">Похоже, что Minecraft не установлен на вашем устройстве. Пожалуйста, установите его из Google Play Маркета, чтобы использовать этот лаунчер.</string>
+    <string name="minecraft_not_installed_message">Похоже, что Minecraft не установлен на вашем устройстве. Установите его из Google Play Маркета или другого доверенного источника, чтобы использовать этот лаунчер.</string>
     <string name="install_minecraft">Установить Minecraft</string>
     <string name="genuine_badge_label">Лицензия не подтверждена</string>
     <string name="invalid_license_detected_toast">Обнаружена нелицензионная версия Minecraft. Убедитесь, что Minecraft установлен из Google Play Маркета</string>
