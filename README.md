@@ -37,6 +37,21 @@ LeviLauncher Modder enables you to import your official Minecraft APK and run it
 
 ---
 
+## How does this fork differ from the original?
+
+LeviLauncher Modder keeps the original feature set and adds changes made for this community. Compared to [LiteLDev/LeviLaunchroid](https://github.com/LiteLDev/LeviLaunchroid):
+
+- **No Google Play Store requirement** – The original blocks launching unless Minecraft was installed from Google Play. This fork only requires Minecraft to be installed from *any* source, and imported instances (see APK import above) can launch even when Minecraft is uninstalled entirely, because the launcher runs the game from its own APK copy.
+- **CurseForge made optional** – CurseForge browsing is hidden automatically in builds compiled without a CurseForge API key, instead of being always present and failing on requests.
+- **Wallpaper accent color** – The theme color settings include a "Use wallpaper color" option that picks the accent color from your wallpaper. On Android 11 and below, this asks for Storage access when the wallpaper cannot be read.
+- **Fork-hosted links and updates** – In-app update checks, news feed, preloader signature rules, and backup paths point to this repository (`sang765/LeviDroid-Modder`, `dev` branch) instead of the original.
+- **Rebranded UI and credits** – The app is named "LeviLauncher Modder", with a credit card for [sang765](https://github.com/sang765) on the About screen.
+- **Independent CI and releases** – Releases here are built by this repository's own workflow and signed with the fork's maintainer key, published as `vX.Y.Z-modder.N` tags. A scheduled workflow keeps the `main` branch in sync with upstream, so future upstream changes can be merged in.
+
+What stays the same: the license (Apache 2.0), the internal package name and storage layout (existing data keeps working), and all upstream features. Feature requests and fixes that would benefit everyone are welcome as pull requests to the original project.
+
+---
+
 ## System Requirements
 
 Before installing LeviLauncher Modder, ensure your device meets the following minimum specifications:
@@ -55,7 +70,7 @@ Before installing LeviLauncher Modder, ensure your device meets the following mi
 
 ### Prerequisites
 
-Before proceeding with LeviLauncher Modder installation, ensure that you have the official Minecraft Bedrock Edition app installed on your device from Google Play. This is required for LeviLauncher Modder to function properly.
+Before proceeding with LeviLauncher Modder installation, ensure that you have your own licensed copy of Minecraft Bedrock Edition — either already installed on the device (from any source) or available as an `.apk`/`.apks` file to import into the launcher.
 
 ### Installation Steps
 
