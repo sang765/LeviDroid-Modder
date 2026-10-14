@@ -78,15 +78,7 @@ public class GithubReleaseUpdater {
                     JSONObject json = new JSONObject(body);
                     String latestVersion = json.getString("tag_name");
                     JSONArray assets = json.getJSONArray("assets");
-                    String downloadUrl = null;
-                    for (int i = 0; i < assets.length(); i++) {
-                        JSONObject asset = assets.getJSONObject(i);
-                        String name = asset.getString("name");
-                        if (name.endsWith(APK_ASSET_KEYWORD)) {
-                            downloadUrl = asset.getString("browser_download_url");
-                            break;
-                        }
-                    }
+                    String downloadUrl = pickApkUrl(assets);
                     if (downloadUrl == null) {
                         Log.e(TAG, "No APK asset found in release.");
                         return;
@@ -121,15 +113,7 @@ public class GithubReleaseUpdater {
                     JSONObject json = new JSONObject(body);
                     String latestVersion = json.getString("tag_name");
                     JSONArray assets = json.getJSONArray("assets");
-                    String downloadUrl = null;
-                    for (int i = 0; i < assets.length(); i++) {
-                        JSONObject asset = assets.getJSONObject(i);
-                        String name = asset.getString("name");
-                        if (name.endsWith(APK_ASSET_KEYWORD)) {
-                            downloadUrl = asset.getString("browser_download_url");
-                            break;
-                        }
-                    }
+                    String downloadUrl = pickApkUrl(assets);
                     if (downloadUrl == null) {
                         Log.e(TAG, "No APK asset found in release.");
                         return;
@@ -147,6 +131,28 @@ public class GithubReleaseUpdater {
                 }
             }
         });
+    }
+
+    // Releases carry per-ABI APKs plus a universal one; pick the one matching
+    // this device and fall back to universal so old single-APK releases keep working.
+    private static String pickApkUrl(JSONArray assets) {
+        String fallback = null;
+        String universal = null;
+        String deviceAbi = Build.SUPPORTED_ABIS.isEmpty() ? "" : Build.SUPPORTED_ABIS.get(0);
+        for (int i = 0; i < assets.length(); i++) {
+            try {
+                JSONObject asset = assets.getJSONObject(i);
+                String name = asset.getString("name");
+                if (!name.endsWith(APK_ASSET_KEYWORD)) continue;
+                String url = asset.getString("browser_download_url");
+                if (fallback == null) fallback = url;
+                if (name.contains("universal")) universal = url;
+                if (!deviceAbi.isEmpty() && name.contains(deviceAbi)) return url;
+            } catch (Exception e) {
+                Log.e(TAG, "Asset parse error: " + e.getMessage());
+            }
+        }
+        return universal != null ? universal : fallback;
     }
 
     private void showUpdateDialog(String version, String url) {

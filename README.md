@@ -74,7 +74,7 @@ Before proceeding with LeviLauncher Modder installation, ensure that you have yo
 
 ### Installation Steps
 
-1. Visit the [Releases Page](https://github.com/sang765/LeviDroid-Modder/releases) and download the latest APK build
+1. Visit the [Releases Page](https://github.com/sang765/LeviDroid-Modder/releases) and download the latest release. Each release ships three APKs: `-arm64-v8a` for most modern devices, `-armeabi-v7a` for older 32-bit devices, and `-universal` which bundles both if you are unsure
 2. Open your device Settings and navigate to Security or Applications
 3. Enable "Unknown Sources" or "Allow installation from unknown sources" to permit APK installation
 4. Locate the downloaded APK file using your file manager and tap to install

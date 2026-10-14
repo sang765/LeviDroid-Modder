@@ -128,35 +128,42 @@ jobs:
           name: LeviLauncher-Modder-beta-apk
           path: app/build/outputs/apk/beta/*.apk
 
-      - name: Sign Release APK
+      - name: Sign Release APKs
         if: startsWith(github.ref, 'refs/tags/')
-        uses: kevin-david/zipalign-sign-android-release@v2
-        id: sign_app
-        with:
-          releaseDirectory: app/build/outputs/apk/release
-          signingKeyBase64: ${{ secrets.SIGNING_KEY_STORE }}
-          alias: ${{ secrets.SIGNING_KEY_ALIAS }}
-          keyStorePassword: ${{ secrets.SIGNING_STORE_PASSWORD }}
-          keyPassword: ${{ secrets.SIGNING_KEY_PASSWORD }}
-          zipAlign: true
         env:
-          BUILD_TOOLS_VERSION: "35.0.0"
-
-      - name: Rename APK with tag
-        if: startsWith(github.ref, 'refs/tags/')
+          KEYSTORE_BASE64: ${{ secrets.SIGNING_KEY_STORE }}
+          KEY_ALIAS: ${{ secrets.SIGNING_KEY_ALIAS }}
+          STORE_PASSWORD: ${{ secrets.SIGNING_STORE_PASSWORD }}
+          KEY_PASSWORD: ${{ secrets.SIGNING_KEY_PASSWORD }}
         run: |
+          set -euo pipefail
           TAG=${GITHUB_REF_NAME}
-          SIGNED_APK="${{ steps.sign_app.outputs.signedReleaseFile }}"
-          APK_DST="LeviLauncher-Modder-${TAG}-release.apk"
-          cp "$SIGNED_APK" "$APK_DST"
-          echo "Signed APK renamed to $APK_DST"
+          BT="$ANDROID_HOME/build-tools/35.0.0"
+          echo "$KEYSTORE_BASE64" | base64 -d > "$RUNNER_TEMP/levi.p12"
+
+          # universal goes first: older in-app updaters grab the first .apk
+          # asset, which must stay installable on every ABI
+          for ABI in universal arm64-v8a armeabi-v7a; do
+            SRC="app/build/outputs/apk/release/app-${ABI}-release-unsigned.apk"
+            DST="LeviLauncher-Modder-${TAG}-${ABI}-release.apk"
+            cp "$SRC" "$DST"
+            "$BT/zipalign" -f -p 4 "$DST" "$DST.aligned"
+            mv "$DST.aligned" "$DST"
+            "$BT/apksigner" sign --ks "$RUNNER_TEMP/levi.p12" --ks-type pkcs12 \
+              --ks-key-alias "$KEY_ALIAS" --ks-pass env:STORE_PASSWORD \
+              --key-pass env:KEY_PASSWORD "$DST"
+            "$BT/apksigner" verify "$DST"
+            echo "Signed $DST"
+          done
+
+          rm -f "$RUNNER_TEMP/levi.p12"
 
       - name: Upload Signed APK Artifact
         if: startsWith(github.ref, 'refs/tags/')
         uses: actions/upload-artifact@v7
         with:
-          name: LeviLauncher-Modder-${{ github.ref_name }}-release.apk
-          path: LeviLauncher-Modder-${{ github.ref_name }}-release.apk
+          name: LeviLauncher-Modder-${{ github.ref_name }}-release-apks
+          path: LeviLauncher-Modder-${{ github.ref_name }}-*-release.apk
 
       - name: Generate GitHub release notes
         if: startsWith(github.ref, 'refs/tags/')
@@ -166,7 +173,10 @@ jobs:
         if: startsWith(github.ref, 'refs/tags/')
         uses: softprops/action-gh-release@v2
         with:
-          files: LeviLauncher-Modder-${{ github.ref_name }}-release.apk
+          files: |
+            LeviLauncher-Modder-${{ github.ref_name }}-universal-release.apk
+            LeviLauncher-Modder-${{ github.ref_name }}-arm64-v8a-release.apk
+            LeviLauncher-Modder-${{ github.ref_name }}-armeabi-v7a-release.apk
           body_path: release-notes.md
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
@@ -175,7 +185,7 @@ jobs:
         if: startsWith(github.ref, 'refs/tags/')
         env:
           DISCORD_WEBHOOK: ${{ secrets.DISCORD_WEBHOOK }}
-          APK_URL: "https://github.com/${{ github.repository }}/releases/download/${{ github.ref_name }}/LeviLauncher-Modder-${{ github.ref_name }}-release.apk"
+          APK_URL: "https://github.com/${{ github.repository }}/releases/download/${{ github.ref_name }}/LeviLauncher-Modder-${{ github.ref_name }}-universal-release.apk"
           TAG_NAME: ${{ github.ref_name }}
         run: |
           if [ -z "${DISCORD_WEBHOOK:-}" ]; then
