@@ -18,10 +18,12 @@ import java.nio.ByteOrder
  *
  * In place, without growing the file: one redundant dynamic entry
  * (DT_RELACOUNT is an optimization hint bionic tolerates missing) is
- * rewritten as DT_SONAME, and the soname string goes into the zero padding
- * after the dynamic entries, which must lie inside a PT_LOAD so the linker
- * can read it. Idempotent; silently skipped when the layout does not allow
- * it, which leaves the previous behavior in place.
+ * rewritten as DT_SONAME, the soname string goes into the zero padding
+ * after the dynamic entries (it must lie inside a PT_LOAD so the linker
+ * can read it), and DT_STRSZ is grown to cover the string - bionic bounds
+ * checks DT_SONAME against DT_STRSZ and aborts the loader otherwise.
+ * Idempotent; skipped when the layout does not allow it, which leaves the
+ * previous behavior in place.
  */
 internal object ElfSonamePatcher {
 
@@ -29,24 +31,33 @@ internal object ElfSonamePatcher {
     private const val DT_HASH = 4L
     private const val DT_STRTAB = 5L
     private const val DT_RELAENT = 9L
+    private const val DT_STRSZ = 10L
     private const val DT_SONAME = 14L
     private const val DT_RELENT = 19L
     private const val DT_GNU_HASH = 0x6ffffef5L
     private const val DT_RELACOUNT = 0x6ffffff9L
 
-    fun ensureSoname(file: File, soname: String) {
-        if (!file.isFile || file.length() < 64) return
-        RandomAccessFile(file, "rw").use { raf -> patch(raf, soname) }
+    /** Returns null once the lib has a usable DT_SONAME, else the skip reason. */
+    fun ensureSoname(file: File, soname: String): String? {
+        if (!file.isFile || file.length() < 64) return "file missing or too small"
+        // NativeImageGuard leaves processed images read-only.
+        val wasWritable = file.canWrite()
+        if (!wasWritable) file.setWritable(true, true)
+        try {
+            RandomAccessFile(file, "rw").use { raf -> return patch(raf, soname) }
+        } finally {
+            if (!wasWritable) file.setReadOnly()
+        }
     }
 
-    private fun patch(raf: RandomAccessFile, soname: String) {
+    private fun patch(raf: RandomAccessFile, soname: String): String? {
         val ident = ByteArray(16)
         raf.seek(0)
         raf.readFully(ident)
         if (ident[0] != 0x7f.toByte() || ident[1] != 'E'.code.toByte() ||
             ident[2] != 'L'.code.toByte() || ident[3] != 'F'.code.toByte()
         ) {
-            return
+            return "not an ELF"
         }
         val is64 = ident[4].toInt() == 2
 
@@ -87,12 +98,12 @@ internal object ElfSonamePatcher {
                 dynSize = if (is64) readU64(raf, off + 32) else readU32(raf, off + 16).toLong()
             }
         }
-        if (dynOff < 0 || dynSize <= 0) return
+        if (dynOff < 0 || dynSize <= 0) return "no PT_DYNAMIC"
 
         val entrySize = if (is64) 16 else 8
         var strtabVaddr = -1L
+        var strszIndex = -1
         var nullIndex = -1
-        var hasSoname = false
         var gnuHashIndex = -1
         var hashIndex = -1
         var relaCountIndex = -1
@@ -102,11 +113,11 @@ internal object ElfSonamePatcher {
         for (i in 0 until count) {
             val slot = dynOff + i.toLong() * entrySize
             val tag = if (is64) readU64(raf, slot) else readU32(raf, slot).toLong()
-            val value = if (is64) readU64(raf, slot + 8) else readU32(raf, slot + 4).toLong()
             when (tag) {
                 DT_NULL -> { nullIndex = i; break }
-                DT_SONAME -> { hasSoname = true; break }
-                DT_STRTAB -> strtabVaddr = value
+                DT_SONAME -> return null
+                DT_STRTAB -> strtabVaddr = if (is64) readU64(raf, slot + 8) else readU32(raf, slot + 4).toLong()
+                DT_STRSZ -> strszIndex = i
                 DT_GNU_HASH -> gnuHashIndex = i
                 DT_HASH -> hashIndex = i
                 DT_RELACOUNT -> relaCountIndex = i
@@ -114,14 +125,14 @@ internal object ElfSonamePatcher {
                 DT_RELENT -> relEntIndex = i
             }
         }
-        if (hasSoname || nullIndex < 0 || strtabVaddr < 0) return
+        if (nullIndex < 0 || strtabVaddr < 0 || strszIndex < 0) return "dynamic table incomplete"
         // All of these are optional for bionic; keep the least risky one.
         val candidate = when {
             relaCountIndex >= 0 -> relaCountIndex
             relaEntIndex >= 0 -> relaEntIndex
             relEntIndex >= 0 -> relEntIndex
             hashIndex >= 0 && gnuHashIndex >= 0 -> hashIndex
-            else -> return
+            else -> return "no spare dynamic entry"
         }
 
         // The soname string goes into the zero padding right after the
@@ -129,20 +140,20 @@ internal object ElfSonamePatcher {
         val stringOffset = dynOff + (nullIndex + 1).toLong() * entrySize
         val load = loads.firstOrNull { (poff, _, pfilesz) ->
             poff <= stringOffset && stringOffset + soname.length + 1 <= poff + pfilesz
-        } ?: return
+        } ?: return "dynamic table not fully mapped"
         raf.seek(stringOffset)
         val padding = ByteArray(soname.length + 1)
         raf.readFully(padding)
-        if (padding.any { it.toInt() != 0 }) return
+        if (padding.any { it.toInt() != 0 }) return "no zero padding after the dynamic entries"
         val stringVaddr = load.second + (stringOffset - load.first)
-        if (stringVaddr <= strtabVaddr) return
+        if (stringVaddr <= strtabVaddr) return "unexpected load layout"
 
+        val sonameValue = stringVaddr - strtabVaddr
         raf.seek(stringOffset)
         raf.write(soname.toByteArray(Charsets.US_ASCII))
         raf.write(0)
 
         val entrySlot = dynOff + candidate.toLong() * entrySize
-        val sonameValue = stringVaddr - strtabVaddr
         if (is64) {
             writeU64(raf, entrySlot, DT_SONAME)
             writeU64(raf, entrySlot + 8, sonameValue)
@@ -150,6 +161,17 @@ internal object ElfSonamePatcher {
             writeU32(raf, entrySlot, DT_SONAME.toInt())
             writeU32(raf, entrySlot + 4, sonameValue.toInt())
         }
+
+        // Bionic bounds checks DT_SONAME against DT_STRSZ and aborts the
+        // loader otherwise; a larger value only relaxes that check and all
+        // real strings stay within it.
+        val strszSlot = dynOff + strszIndex.toLong() * entrySize
+        if (is64) {
+            writeU64(raf, strszSlot + 8, sonameValue + soname.length + 1)
+        } else {
+            writeU32(raf, strszSlot + 4, (sonameValue + soname.length + 1).toInt())
+        }
+        return null
     }
 
     private fun readU16(raf: RandomAccessFile, at: Long): Int {

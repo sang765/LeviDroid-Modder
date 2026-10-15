@@ -611,7 +611,7 @@ class GamePackageManager private constructor(
         excludeReasons: Map<String, String> = emptyMap()
     ): List<LibraryLoadResult> {
         if (patchInjectedLibs.isNotEmpty()) {
-            ensurePatchLoaderSonames()
+            ensurePatchLoaderSonames(listener)
         }
         val allLibs = requiredLibs + systemLoadedLibs
         val loadableLibs = allLibs.filterNot { lib ->
@@ -662,13 +662,18 @@ class GamePackageManager private constructor(
     // DT_NEEDED lookup by name (the version lib dir is not a search path
     // of the app namespace). Give the extracted file one so the preloaded
     // lib links the same way the installed patch app does.
-    private fun ensurePatchLoaderSonames() {
+    private fun ensurePatchLoaderSonames(listener: MinecraftRuntimePreparer.ProgressListener?) {
         for (lib in patchInjectedLibs) {
-            val file = File(nativeLibDir, lib)
-            try {
-                ElfSonamePatcher.ensureSoname(file, lib)
+            val skipReason = try {
+                ElfSonamePatcher.ensureSoname(File(nativeLibDir, lib), lib)
             } catch (error: Throwable) {
-                Log.w(TAG, "Failed to ensure DT_SONAME on $lib: ${error.message}")
+                error.message ?: error.javaClass.simpleName
+            }
+            if (skipReason == null) {
+                listener?.onLog("Patched DT_SONAME: $lib")
+            } else {
+                Log.w(TAG, "DT_SONAME patch skipped for $lib: $skipReason")
+                listener?.onLog("DT_SONAME patch skipped: $lib ($skipReason)")
             }
         }
     }
