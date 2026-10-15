@@ -27,10 +27,9 @@ LeviLauncher Modder is an independent fork of the original [LeviLauncher](https:
 
 LeviLauncher Modder enables you to import your official Minecraft APK and run it directly without requiring system installation. The launcher supports loading external native modules to enhance gameplay, provides robust multi-version management with complete isolation between installations, and includes built-in tools for managing resource packs and worlds. Whether you're looking to organize different game versions, test modifications, or optimize your gaming experience, LeviLauncher Modder offers the flexibility you need.
 
-### Key Features
+### Key Features From Original App
 
 - **APK Import & Installation-Free Launching** – Import your official Minecraft APK and run it directly without system installation
-- **Patched Build Support** – Import MCPatch-style patched Minecraft APKs and launch them like any other version; the launcher manages the patch's injected native libraries automatically
 - **SO Module Loading** – Load external native SO modules to extend or enhance Minecraft features and performance
 - **Multi-Version Management & Version Isolation** – Manage multiple Minecraft versions independently, with separated configurations and data
 - **Multiple Xbox Account Management** – Manage multiple Xbox accounts inside the launcher and switch between them seamlessly
@@ -38,7 +37,7 @@ LeviLauncher Modder enables you to import your official Minecraft APK and run it
 
 ---
 
-## How does this fork differ from the original?
+## Key Features From LeviLauncher Modder
 
 LeviLauncher Modder keeps the original feature set and adds changes made for this community. Compared to [LiteLDev/LeviLaunchroid](https://github.com/LiteLDev/LeviLaunchroid):
 
@@ -47,11 +46,7 @@ LeviLauncher Modder keeps the original feature set and adds changes made for thi
 - **Copyable crash logs** – The game crash dialog includes a button that copies the full log to the clipboard, making it easy to report issues.
 - **CurseForge made optional** – CurseForge browsing is hidden automatically in builds compiled without a CurseForge API key, instead of being always present and failing on requests.
 - **Wallpaper accent color** – The theme color settings include a "Use wallpaper color" option that picks the accent color from your wallpaper. On Android 11 and below, this asks for Storage access when the wallpaper cannot be read.
-- **Fork-hosted links and updates** – In-app update checks, news feed, preloader signature rules, and backup paths point to this repository (`sang765/LeviDroid-Modder`, `dev` branch) instead of the original.
 - **Rebranded UI and credits** – The app is named "LeviLauncher Modder", with a credit card for [sang765](https://github.com/sang765) on the About screen.
-- **Independent CI and releases** – Releases here are built by this repository's own workflow and signed with the fork's maintainer key, published as `vX.Y.Z-modder.N` tags. A scheduled workflow keeps the `main` branch in sync with upstream, so future upstream changes can be merged in.
-
-What stays the same: the license (Apache 2.0), the internal package name and storage layout (existing data keeps working), and all upstream features. Feature requests and fixes that would benefit everyone are welcome as pull requests to the original project.
 
 ---
 
