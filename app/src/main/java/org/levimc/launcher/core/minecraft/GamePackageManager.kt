@@ -382,6 +382,9 @@ class GamePackageManager private constructor(
     }
 
     fun shouldLoadMallocRedirect(): Boolean {
+        // libgxcore.so ships for arm64 only; a 32-bit process (v7a APK on any
+        // device) cannot load it, so keep those devices on the legacy path.
+        if (!android.os.Process.is64Bit()) return false
         val versionCode = version?.versionCode ?: try {
             context.packageManager.getPackageInfo(MinecraftLauncher.MC_PACKAGE_NAME, 0).versionName
         } catch (_: Exception) {
