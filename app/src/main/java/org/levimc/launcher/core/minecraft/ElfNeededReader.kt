@@ -19,7 +19,7 @@ internal object ElfNeededReader {
     private const val DT_STRSZ = 10L
     private const val DT_NULL = 0L
     private const val MAX_DYNAMIC_BYTES = 1 shl 20
-    private const val MAX_STRTAB_BYTES = 1 shl 20
+    private const val STRING_SLACK_BYTES = 256
 
     private data class Segment(val vaddr: Long, val offset: Long, val size: Long)
 
@@ -59,7 +59,6 @@ internal object ElfNeededReader {
                 }
                 if (phnum == 0 || phentsize !in 1..1024) return emptyList()
 
-                data class Segment(val vaddr: Long, val offset: Long, val size: Long)
                 val loads = ArrayList<Segment>()
                 var dynOffset = -1L
                 var dynSize = 0L
@@ -132,7 +131,16 @@ internal object ElfNeededReader {
                 }
                 if (strtabOffset < 0) return emptyList()
 
-                val strings = ByteArray(strtabSize.toInt().coerceIn(1, MAX_STRTAB_BYTES))
+                // Patch tooling appends its strings to the end of .dynstr, so
+                // the table can be several MB (8.4MB on MCPatch builds); only
+                // read up to the highest referenced offset plus slack for the
+                // name itself.
+                val highest = needed.maxOrNull() ?: 0L
+                val readSize = (highest + STRING_SLACK_BYTES)
+                    .coerceAtMost(strtabSize)
+                    .toInt()
+                    .coerceAtLeast(1)
+                val strings = ByteArray(readSize)
                 raf.seek(strtabOffset)
                 raf.readFully(strings)
                 needed.mapNotNull { offset ->
