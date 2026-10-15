@@ -8,6 +8,7 @@ import android.content.res.AssetManager
 import android.os.Build
 import android.os.SystemClock
 import android.util.Log
+import dalvik.system.DexClassLoader
 import org.levimc.launcher.core.versions.GameVersion
 import org.levimc.launcher.util.LauncherStorage
 import org.levimc.launcher.util.NativeBridgeHelper
@@ -41,20 +42,21 @@ class GamePackageManager private constructor(
             if (shouldLoadMallocRedirect()) {
                 add("libMallocRedirect.so")
             }
-            addAll(patchInjectedLibs)
             add("libminecraftpe.so")
         }.toTypedArray()
     }
 
     // Libs that libminecraftpe.so links against but the launcher does not
-    // manage itself: every patch build injects its own loader libs (MCPatch
-    // ships libmtbinloader2.so) and the set differs per patch. The version
-    // lib dir is outside the classloader namespace search path, so anything
-    // libminecraftpe.so depends on must be preloaded via System.load or the
-    // dlopen fails with "library ... not found". Discovered from the ELF
-    // DT_NEEDED closure instead of a hardcoded list; libs the launcher
-    // already handles are excluded so official builds keep their exact
-    // load order.
+    // manage itself: patch builds (MCPatch etc.) inject their own loader
+    // libs and the set differs per patch, so it is discovered from the ELF
+    // DT_NEEDED closure instead of a hardcoded list. They are loaded by
+    // name together with libminecraftpe.so inside a child namespace whose
+    // search path is the version lib dir (see loadViaPatchNamespace) -
+    // patch loader libs are built without DT_SONAME, so System.load'ing
+    // them by absolute path would never satisfy the DT_NEEDED lookup by
+    // name.
+    // shortcut: patch builds on the pre-1.21.110 legacy load path in
+    // MinecraftRuntimePreparer are not covered by this.
     private val patchInjectedLibs: List<String> by lazy {
         val known = setOf(
             "libc++_shared.so",
@@ -636,7 +638,11 @@ class GamePackageManager private constructor(
             listener?.onLog("Loading native library: $lib")
             trace?.mark("System.load started", lib)
 
-            val result = loadLibraryDetailed(libName)
+            val result = if (lib == "libminecraftpe.so" && patchInjectedLibs.isNotEmpty()) {
+                loadViaPatchNamespace(patchInjectedLibs + lib)
+            } else {
+                loadLibraryDetailed(libName)
+            }
             results.add(result)
             val detail = formatLoadResult(result)
             trace?.mark(
@@ -652,6 +658,61 @@ class GamePackageManager private constructor(
         }
 
         return results
+    }
+
+    @SuppressLint("UnsafeDynamicallyLoadedCode")
+    private fun loadViaPatchNamespace(names: List<String>): LibraryLoadResult {
+        val fileName = names.last()
+        val startedAt = SystemClock.elapsedRealtime()
+        return try {
+            val loader = PatchClassLoader(
+                context.applicationInfo.sourceDir,
+                context.codeCacheDir.absolutePath,
+                nativeLibDir,
+                context.classLoader,
+            )
+            val bootstrap = loader.loadClass(PATCH_BOOTSTRAP_CLASS)
+            val failed = bootstrap
+                .getMethod("load", Array<String>::class.java)
+                .invoke(null, names.toTypedArray()) as String?
+            LibraryLoadResult(
+                normalizeLibraryName(fileName),
+                fileName,
+                "patch namespace",
+                failed == null,
+                elapsedSince(startedAt),
+                failed?.let { "$it not loadable from $nativeLibDir" },
+            )
+        } catch (e: Exception) {
+            Log.e(TAG, "Patch namespace load failed for $fileName: ${e.message}")
+            LibraryLoadResult(
+                normalizeLibraryName(fileName),
+                fileName,
+                "patch namespace",
+                false,
+                elapsedSince(startedAt),
+                e.message ?: e.javaClass.simpleName,
+            )
+        }
+    }
+
+    // Child-first only for the bootstrap class, so the copy loaded by this
+    // classloader runs its System.loadLibrary calls against a namespace
+    // whose search path is the version lib dir.
+    private class PatchClassLoader(
+        dexPath: String,
+        optimizedDir: String?,
+        libraryPath: String,
+        parent: ClassLoader,
+    ) : DexClassLoader(dexPath, optimizedDir, libraryPath, parent) {
+        override fun loadClass(name: String, resolve: Boolean): Class<*> {
+            if (name == PATCH_BOOTSTRAP_CLASS) {
+                val found = findClass(name)
+                if (resolve) resolveClass(found)
+                return found
+            }
+            return super.loadClass(name, resolve)
+        }
     }
 
     private fun toLibraryFileName(name: String): String {
@@ -719,6 +780,7 @@ class GamePackageManager private constructor(
 
     companion object {
         private const val TAG = "GamePackageManager"
+        private const val PATCH_BOOTSTRAP_CLASS = "org.levimc.launcher.core.minecraft.PatchLibBootstrap"
         private const val EXTRACTOR_VERSION = 2
 
         @Volatile
