@@ -39,14 +39,18 @@ internal object ElfNeededReader {
                 val phentsize: Int
                 val phnum: Int
                 if (is64) {
-                    val hdr = ByteArray(40)
+                    // e_ident is 16 bytes; the rest of the ELF64 header is 48
+                    // (e_phoff@16, e_phentsize@38, e_phnum@40 within this buffer).
+                    val hdr = ByteArray(48)
                     raf.readFully(hdr)
                     val buf = le(hdr)
                     phoff = buf.getLong(16)
                     phentsize = buf.getShort(38).toInt() and 0xffff
                     phnum = buf.getShort(40).toInt() and 0xffff
                 } else {
-                    val hdr = ByteArray(28)
+                    // Rest of the ELF32 header is 36 bytes (e_phoff@12,
+                    // e_phentsize@26, e_phnum@28 within this buffer).
+                    val hdr = ByteArray(32)
                     raf.readFully(hdr)
                     val buf = le(hdr)
                     phoff = buf.getInt(12).toLong() and 0xffffffffL
