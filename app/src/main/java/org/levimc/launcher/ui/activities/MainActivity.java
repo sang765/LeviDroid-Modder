@@ -12,6 +12,7 @@ import android.os.Bundle;
 import android.text.TextUtils;
 import android.view.View;
 import android.widget.ImageView;
+import android.widget.CheckBox;
 import android.widget.TextView;
 
 import androidx.activity.OnBackPressedCallback;
@@ -835,6 +836,15 @@ import okhttp3.OkHttpClient;
             return;
         }
 
+        if (version.isMinecraftPatch()
+                && !FeatureSettings.getInstance().isPatchWarningSkipped()
+                && !version.directoryName.equals(patchWarningShownFor)) {
+            trace.mark("Minecraft Patch launch warning shown");
+            binding.launchButton.setEnabled(true);
+            showMinecraftPatchWarning(version);
+            return;
+        }
+
         if (FeatureSettings.getInstance().isLauncherManagedMcLoginEnabled()) {
             trace.mark("Checking launcher-managed login");
             MsftAccountStore.MsftAccount active = getActiveAccount();
@@ -890,6 +900,38 @@ import okhttp3.OkHttpClient;
                     .setPositiveButton(getString(R.string.dialog_positive_ok), null)
                     .show();
         }
+    }
+
+    private String patchWarningShownFor;
+
+    private void showMinecraftPatchWarning(GameVersion version) {
+        LinearLayout content = new LinearLayout(this);
+        content.setOrientation(LinearLayout.VERTICAL);
+        int padding = (int) (16 * getResources().getDisplayMetrics().density);
+
+        TextView message = new TextView(this);
+        message.setText(R.string.patch_warning_message);
+        message.setTextSize(15);
+        LinearLayout.LayoutParams messageParams = new LinearLayout.LayoutParams(
+                LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT);
+        messageParams.bottomMargin = padding;
+        content.addView(message, messageParams);
+
+        CheckBox checkBox = new CheckBox(this);
+        checkBox.setText(R.string.patch_warning_dont_show);
+        content.addView(checkBox);
+
+        new CustomAlertDialog(this)
+                .setTitleText(getString(R.string.patch_warning_title))
+                .setCustomView(content)
+                .setPositiveButton(getString(R.string.patch_warning_ack), v -> {
+                    if (checkBox.isChecked()) {
+                        FeatureSettings.getInstance().setPatchWarningSkipped(true);
+                    }
+                    patchWarningShownFor = version.directoryName;
+                    binding.getRoot().post(this::performActualLaunch);
+                })
+                .show();
     }
 
     private Intent createMinecraftLaunchIntent() {

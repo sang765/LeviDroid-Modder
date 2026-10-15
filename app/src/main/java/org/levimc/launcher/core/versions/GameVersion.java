@@ -3,6 +3,7 @@ package org.levimc.launcher.core.versions;
 import android.os.Parcel;
 import android.os.Parcelable;
 
+import org.levimc.launcher.core.minecraft.MinecraftLauncher;
 import org.levimc.launcher.util.LauncherStorage;
 
 import java.io.File;
@@ -97,5 +98,15 @@ public class GameVersion implements Parcelable {
     public String getStorageProfileId() {
         if (isInstalled) return LauncherStorage.INSTALLED_MINECRAFT_PROFILE_ID;
         return LauncherStorage.sanitizeProfileId(directoryName);
+    }
+
+    /**
+     * Imported repacks (e.g. MCPatch) keep the game classes but ship a
+     * different package name; the official install is tracked separately,
+     * so any non-official package on an isolated version is a patch build.
+     */
+    public boolean isMinecraftPatch() {
+        return !isInstalled && packageName != null && !packageName.isEmpty()
+                && !MinecraftLauncher.MC_PACKAGE_NAME.equals(packageName);
     }
 }

@@ -490,7 +490,7 @@ public class VersionManager {
                 versionCode,
                 dir,
                 false,
-                null,
+                metadata.packageName,
                 "unknown"
         );
 

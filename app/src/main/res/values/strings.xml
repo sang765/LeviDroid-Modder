@@ -1128,4 +1128,9 @@
     <string name="mod_impact_disable_flagged">Disable flagged mods</string>
     <string name="mod_impact_relaunch">Restart the game</string>
     <string name="mod_impact_disabled_toast">Flagged mods disabled</string>
+    <string name="tag_patch">Minecraft Patch</string>
+    <string name="patch_warning_title">Warning before playing</string>
+    <string name="patch_warning_message">Minecraft Patch builds usually come with fixes and patches already applied, so running mods on top of them can be less stable than on a normal Minecraft build — or even crash the game. Think twice before combining Minecraft Patch with your LeviLauncher mods.</string>
+    <string name="patch_warning_dont_show">Do not show this warning again</string>
+    <string name="patch_warning_ack">Got it</string>
 </resources>

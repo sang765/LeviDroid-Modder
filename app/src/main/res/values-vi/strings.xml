@@ -1111,4 +1111,9 @@
     <string name="mod_impact_disable_flagged">Tắt các bản mod bị flag</string>
     <string name="mod_impact_relaunch">Khởi động lại game</string>
     <string name="mod_impact_disabled_toast">Đã tắt các mod bị flag</string>
+    <string name="tag_patch">Minecraft Patch</string>
+    <string name="patch_warning_title">Cảnh báo trước khi chơi</string>
+    <string name="patch_warning_message">Minecraft Patch thường có thêm các bản vá sửa sẵn vậy nên nếu bạn chạy mod ở trên Minecraft Patch thì có thể game sẽ không hoạt động ổn định so với Minecraft bình thường hoặc thậm chí tệ hơn là crash luôn game, vậy nên hãy cân nhắc trước khi chơi Minecraft Patch với mod của LeviLauncher</string>
+    <string name="patch_warning_dont_show">Không hiển thị cảnh báo này trong tương lai</string>
+    <string name="patch_warning_ack">Đã Hiểu</string>
 </resources>

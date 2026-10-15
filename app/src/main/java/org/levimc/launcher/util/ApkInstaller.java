@@ -174,7 +174,7 @@ public class ApkInstaller {
 
                 String versionName = extractVersionName(apkOrApksUri, baseDir, dirName);
                 postProgress(PROGRESS_METADATA_DONE);
-                writeProfileMetadata(metadataDir, dirName, versionName);
+                writeProfileMetadata(metadataDir, dirName, versionName, extractPackageName(new File(baseDir, APK_FILE_NAME)));
 
                 postProgress(PROGRESS_MAX);
                 postSuccess(versionName);
@@ -213,9 +213,9 @@ public class ApkInstaller {
         }
     }
 
-    private static void writeProfileMetadata(File metadataDir, String dirName, String versionName) throws IOException {
+    private static void writeProfileMetadata(File metadataDir, String dirName, String versionName, String packageName) throws IOException {
         VersionProfileMetadataStore store = new VersionProfileMetadataStore();
-        store.loadOrCreate(metadataDir, VersionProfileMetadataStore.Defaults.custom(dirName, versionName));
+        store.loadOrCreate(metadataDir, VersionProfileMetadataStore.Defaults.custom(dirName, versionName, packageName));
     }
 
     private void postProgress(int progress) {
@@ -295,15 +295,26 @@ public class ApkInstaller {
             PackageManager pm = context.getPackageManager();
             PackageInfo info = pm.getPackageArchiveInfo(apkFile.getAbsolutePath(), 0);
             if (info != null) {
-                String pkgName = info.packageName;
                 String vName = info.versionName;
-                if ("com.mojang.minecraftpe".equals(pkgName) && vName != null && !vName.isEmpty()) {
+                if (vName != null && !vName.isEmpty()) {
                     return vName;
                 }
             }
         } catch (Exception ignored) {
         }
         return "unknown_version";
+    }
+
+    private String extractPackageName(File apkFile) {
+        try {
+            PackageManager pm = context.getPackageManager();
+            PackageInfo info = pm.getPackageArchiveInfo(apkFile.getAbsolutePath(), 0);
+            if (info != null && info.packageName != null && !info.packageName.isEmpty()) {
+                return info.packageName;
+            }
+        } catch (Exception ignored) {
+        }
+        return null;
     }
 
     private String getFileName(Uri uri) {

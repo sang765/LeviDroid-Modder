@@ -1070,7 +1070,7 @@ public class InstancesActivity extends BaseActivity {
                     holder.typeTag.setBackgroundResource(R.drawable.bg_release_tag);
                 }
             } else {
-                holder.typeTag.setText(R.string.tag_custom);
+                holder.typeTag.setText(v.isMinecraftPatch() ? R.string.tag_patch : R.string.tag_custom);
                 int tagColor = hasBackgroundImage
                         ? secondaryTextColor
                         : holder.itemView.getContext().getResources().getColor(R.color.text_secondary, holder.itemView.getContext().getTheme());
