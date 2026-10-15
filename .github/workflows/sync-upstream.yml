@@ -34,6 +34,13 @@ jobs:
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
           git checkout -B main origin/main
           git merge --no-edit upstream/main
+          # GITHUB_TOKEN cannot push .github/workflows changes (no "workflows"
+          # permission exists for it), and the fork's workflows are maintained
+          # on dev — keep ours during the sync.
+          git checkout origin/main -- .github/workflows
+          if ! git diff --cached --quiet; then
+            git commit -m "chore: sync main with upstream, keeping fork workflows"
+          fi
 
       - name: Push main if updated
         run: |
