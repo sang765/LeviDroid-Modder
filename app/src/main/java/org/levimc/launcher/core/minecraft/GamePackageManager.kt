@@ -32,21 +32,31 @@ class GamePackageManager private constructor(
 
     private val knownPackages = arrayOf(MinecraftLauncher.MC_PACKAGE_NAME)
 
-    private val requiredLibs = buildList {
-        add("libc++_shared.so")
-        add("libfmod.so")
-        add("libMediaDecoders_Android.so")
-        if (shouldLoadMallocRedirect()) {
-            add("libMallocRedirect.so")
-        }
-        add("libminecraftpe.so")
-    }.toTypedArray()
+    // Lazy: nativeLibDir is only assigned in the init block below.
+    private val requiredLibs by lazy {
+        buildList {
+            add("libc++_shared.so")
+            add("libfmod.so")
+            add("libMediaDecoders_Android.so")
+            if (shouldLoadMallocRedirect()) {
+                add("libMallocRedirect.so")
+            }
+            // Patch repacks (MCPatch) link libminecraftpe.so against their own
+            // loader, which lives outside the classloader namespace search
+            // path; it must be preloaded or the dlopen of libminecraftpe.so
+            // fails with "library libmtbinloader2.so not found".
+            if (File(nativeLibDir, "libmtbinloader2.so").exists()) {
+                add("libmtbinloader2.so")
+            }
+            add("libminecraftpe.so")
+        }.toTypedArray()
+    }
 
     private val optionalLibs = arrayOf(
         "libHttpClient.Android.so",
     )
 
-    private val extractableLibs = requiredLibs + optionalLibs
+    private val extractableLibs by lazy { requiredLibs + optionalLibs }
 
     private val systemLoadedLibs = arrayOf(
         "libPlayFabMultiplayer.so",
