@@ -1,10 +1,13 @@
 package org.levimc.launcher.ui.dialogs;
 
 import android.app.Activity;
+import android.content.ClipData;
+import android.content.ClipboardManager;
 import android.content.Intent;
 import android.net.Uri;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -67,6 +70,13 @@ public class GameCrashDialogs {
         View content = LayoutInflater.from(activity).inflate(R.layout.dialog_game_crash_content, null, false);
         TextView logView = content.findViewById(R.id.game_crash_log);
         logView.setText(logText != null ? logText : activity.getString(R.string.game_crash_log_unavailable));
+        Button copyLogButton = content.findViewById(R.id.game_crash_copy_log);
+        copyLogButton.setOnClickListener(v -> {
+            ClipboardManager clipboard = activity.getSystemService(ClipboardManager.class);
+            clipboard.setPrimaryClip(ClipData.newPlainText(
+                    activity.getString(R.string.game_crash_title), logView.getText()));
+            Toast.makeText(activity, R.string.minecraft_loading_log_copied, Toast.LENGTH_SHORT).show();
+        });
         dialog.setCustomView(content);
         dialog.setPositiveButton(activity.getString(R.string.game_crash_open_log), v -> openCrashLog(logPath));
         dialog.setNeutralButton(activity.getString(R.string.game_crash_share_log), v -> shareCrashLog(logPath));
