@@ -1115,4 +1115,17 @@
     <string name="bg_media_blur_unavailable">Android 12+</string>
     <string name="screenshot_saved">Screenshot saved</string>
     <string name="backup_select_downloads">Select the Downloads folder to save backups in Downloads/LeviLauncher Modder/Backups.</string>
+    <string name="game_crash_title">Uh oh!</string>
+    <string name="game_crash_message">It looks like your game just crashed. Take a look at what happened below.</string>
+    <string name="game_crash_log_unavailable">The crash log could not be read.</string>
+    <string name="game_crash_close">Close</string>
+    <string name="game_crash_open_log">Open crash log</string>
+    <string name="game_crash_share_log">Share crash log</string>
+    <string name="mod_impact_title">Possible mod impact</string>
+    <string name="mod_impact_message">After analyzing the crash log, we think this crash was most likely caused by one of the mods you have installed. Please give it a check.</string>
+    <string name="mod_impact_flagged_label">Flagged mods:</string>
+    <string name="mod_impact_check_later">I\'ll check later</string>
+    <string name="mod_impact_disable_flagged">Disable flagged mods</string>
+    <string name="mod_impact_relaunch">Restart the game</string>
+    <string name="mod_impact_disabled_toast">Flagged mods disabled</string>
 </resources>

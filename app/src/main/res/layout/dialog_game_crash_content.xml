@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical">
+
+    <TextView
+        android:id="@+id/game_crash_message"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/game_crash_message"
+        android:textColor="@color/on_surface"
+        android:textSize="15sp" />
+
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="14dp"
+        android:background="@drawable/bg_log_block"
+        android:maxHeight="240dp"
+        android:padding="12dp">
+
+        <TextView
+            android:id="@+id/game_crash_log"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:fontFamily="monospace"
+            android:textColor="@color/text_secondary"
+            android:textSize="11sp" />
+    </ScrollView>
+
+</LinearLayout>

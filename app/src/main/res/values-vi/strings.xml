@@ -1098,4 +1098,17 @@
     <string name="batch_transferring">Đang chuyển %1$d trên %2$d…</string>
     <string name="batch_result">%1$d hoàn tất, %2$d thất bại</string>
     <string name="choose_export_folder">Chọn thư mục xuất</string>
+    <string name="game_crash_title">Uh oh!</string>
+    <string name="game_crash_message">Hình như game của bạn vừa bị crash nè, xem chuyện gì vừa xảy ra đi.</string>
+    <string name="game_crash_log_unavailable">Không đọc được nhật ký crash.</string>
+    <string name="game_crash_close">Đóng</string>
+    <string name="game_crash_open_log">Mở crash log</string>
+    <string name="game_crash_share_log">Share crash log</string>
+    <string name="mod_impact_title">Phát hiện ảnh hưởng</string>
+    <string name="mod_impact_message">Sau khi phân tích crash log thì chúng mình nhận thấy đây khả năng cao crash một trong số mod mà bạn đã cài đặt, Hãy kiểm tra thử xem như thế nào nhé.</string>
+    <string name="mod_impact_flagged_label">Mod bị gắn cờ:</string>
+    <string name="mod_impact_check_later">Sẽ check sau</string>
+    <string name="mod_impact_disable_flagged">Tắt các bản mod bị flag</string>
+    <string name="mod_impact_relaunch">Khởi động lại game</string>
+    <string name="mod_impact_disabled_toast">Đã tắt các mod bị flag</string>
 </resources>

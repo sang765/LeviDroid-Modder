@@ -41,6 +41,7 @@ import org.levimc.launcher.settings.FeatureSettings;
 
 import org.levimc.launcher.ui.animation.DynamicAnim;
 import org.levimc.launcher.ui.dialogs.CustomAlertDialog;
+import org.levimc.launcher.ui.dialogs.GameCrashDialogs;
 
 import org.levimc.launcher.ui.dialogs.PlayStoreValidationDialog;
 import org.levimc.launcher.ui.views.MainViewModel;
@@ -526,6 +527,8 @@ import okhttp3.OkHttpClient;
             handleVersionDependentIntent();
         }
         refreshContentCounts();
+        binding.getRoot().post(() ->
+                new GameCrashDialogs(this, this::performActualLaunch).showIfPending());
     }
 
     private void handleVersionDependentIntent() {
