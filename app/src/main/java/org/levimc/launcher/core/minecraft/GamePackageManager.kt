@@ -41,15 +41,47 @@ class GamePackageManager private constructor(
             if (shouldLoadMallocRedirect()) {
                 add("libMallocRedirect.so")
             }
-            // Patch repacks (MCPatch) link libminecraftpe.so against their own
-            // loader, which lives outside the classloader namespace search
-            // path; it must be preloaded or the dlopen of libminecraftpe.so
-            // fails with "library libmtbinloader2.so not found".
-            if (File(nativeLibDir, "libmtbinloader2.so").exists()) {
-                add("libmtbinloader2.so")
-            }
+            addAll(patchInjectedLibs)
             add("libminecraftpe.so")
         }.toTypedArray()
+    }
+
+    // Libs that libminecraftpe.so links against but the launcher does not
+    // manage itself: every patch build injects its own loader libs (MCPatch
+    // ships libmtbinloader2.so) and the set differs per patch. The version
+    // lib dir is outside the classloader namespace search path, so anything
+    // libminecraftpe.so depends on must be preloaded via System.load or the
+    // dlopen fails with "library ... not found". Discovered from the ELF
+    // DT_NEEDED closure instead of a hardcoded list; libs the launcher
+    // already handles are excluded so official builds keep their exact
+    // load order.
+    private val patchInjectedLibs: List<String> by lazy {
+        val known = setOf(
+            "libc++_shared.so",
+            "libfmod.so",
+            "libMediaDecoders_Android.so",
+            "libMallocRedirect.so",
+            "libHttpClient.Android.so",
+            "libPlayFabMultiplayer.so",
+            "libmaesdk.so",
+            "libgxcore.so",
+            "libbgxcore.so",
+        )
+        val ordered = mutableListOf<String>()
+        val visited = mutableSetOf<String>()
+        fun visit(name: String) {
+            if (!visited.add(name)) return
+            for (dep in ElfNeededReader.readNeeded(File(nativeLibDir, name))) {
+                if (!known.contains(dep) && File(nativeLibDir, dep).exists()) {
+                    visit(dep)
+                }
+            }
+            if (name != "libminecraftpe.so" && !known.contains(name)) {
+                ordered.add(name)
+            }
+        }
+        visit("libminecraftpe.so")
+        ordered
     }
 
     private val optionalLibs = arrayOf(
