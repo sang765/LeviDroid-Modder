@@ -1,6 +1,8 @@
 package org.levimc.launcher.core.minecraft
 
 import android.animation.ValueAnimator
+import android.content.ClipData
+import android.content.ClipboardManager
 import android.content.Intent
 import android.content.pm.ActivityInfo
 import android.content.res.ColorStateList
@@ -20,6 +22,7 @@ import android.widget.Button
 import android.widget.ProgressBar
 import android.widget.ScrollView
 import android.widget.TextView
+import android.widget.Toast
 import androidx.core.content.ContextCompat
 import org.levimc.launcher.R
 import org.levimc.launcher.ui.activities.BaseActivity
@@ -43,6 +46,7 @@ class MinecraftLoadingActivity : BaseActivity(), MinecraftRuntimePreparer.Progre
     private lateinit var logView: TextView
     private lateinit var logScroll: ScrollView
     private lateinit var returnButton: Button
+    private lateinit var copyLogButton: Button
     private lateinit var cancelButton: android.widget.ImageView
     private lateinit var trace: LaunchTrace
 
@@ -74,6 +78,7 @@ class MinecraftLoadingActivity : BaseActivity(), MinecraftRuntimePreparer.Progre
         logView = findViewById(R.id.minecraftLaunchLog)
         logScroll = findViewById(R.id.minecraftLaunchLogScroll)
         returnButton = findViewById(R.id.minecraftLaunchReturn)
+        copyLogButton = findViewById(R.id.minecraftLaunchCopyLog)
         cancelButton = findViewById(R.id.minecraftLaunchCancel)
 
         cancelButton.setOnClickListener {
@@ -84,6 +89,14 @@ class MinecraftLoadingActivity : BaseActivity(), MinecraftRuntimePreparer.Progre
         returnButton.setOnClickListener {
             appendLog("Returning to launcher")
             returnToLauncher()
+        }
+
+        copyLogButton.setOnClickListener {
+            val clipboard = getSystemService(ClipboardManager::class.java)
+            clipboard.setPrimaryClip(
+                ClipData.newPlainText(getString(R.string.minecraft_loading_log_title), logView.text)
+            )
+            Toast.makeText(this, R.string.minecraft_loading_log_copied, Toast.LENGTH_SHORT).show()
         }
 
         applyLaunchTheme()
@@ -214,6 +227,7 @@ class MinecraftLoadingActivity : BaseActivity(), MinecraftRuntimePreparer.Progre
         appendLog("Launch failed")
         appendLog(message)
         returnButton.visibility = View.VISIBLE
+        copyLogButton.visibility = View.VISIBLE
     }
 
     private fun animateProgressTo(targetProgress: Int) {

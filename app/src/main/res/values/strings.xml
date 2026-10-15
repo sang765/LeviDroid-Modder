@@ -526,6 +526,8 @@
     <string name="minecraft_loading_entering_game">Entering Minecraft</string>
     <string name="minecraft_loading_failed">Launch failed</string>
     <string name="minecraft_loading_return">Back to Launcher</string>
+    <string name="minecraft_loading_copy_log">Copy log</string>
+    <string name="minecraft_loading_log_copied">Launch log copied</string>
     <string name="launcher_restart_title">Back to Launcher</string>
     <string name="launcher_restart_subtitle">Just a moment while we bring you back</string>
     <string name="launcher_restart_status">Almost there…</string>

@@ -526,6 +526,8 @@
     <string name="minecraft_loading_entering_game">Đang vào Minecraft</string>
     <string name="minecraft_loading_failed">Khởi chạy thất bại</string>
     <string name="minecraft_loading_return">Quay về Launcher</string>
+    <string name="minecraft_loading_copy_log">Sao chép log</string>
+    <string name="minecraft_loading_log_copied">Đã sao chép log khởi chạy</string>
     <string name="launcher_restart_title">Quay về Launcher</string>
     <string name="launcher_restart_subtitle">Chờ một chút trong khi chúng tôi đưa bạn trở lại</string>
     <string name="launcher_restart_status">Gần đến rồi…</string>
