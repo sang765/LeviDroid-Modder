@@ -50,9 +50,8 @@ class GamePackageManager private constructor(
     // manage itself: patch builds (MCPatch etc.) inject their own loader
     // libs and the set differs per patch, so it is discovered from the ELF
     // DT_NEEDED closure instead of a hardcoded list. They are preloaded
-    // via System.load before libminecraftpe.so, which needs them present in
-    // the app namespace; see ensurePatchLoaderSonames for the DT_SONAME
-    // step that makes the by-name dependency lookup succeed.
+    // via System.load before libminecraftpe.so; see dropUnusedPatchDeps for
+    // the step that removes the unresolvable by-name dependency edge.
     // shortcut: patch builds on the pre-1.21.110 legacy load path in
     // MinecraftRuntimePreparer are not covered by this.
     private val patchInjectedLibs: List<String> by lazy {
@@ -611,7 +610,7 @@ class GamePackageManager private constructor(
         excludeReasons: Map<String, String> = emptyMap()
     ): List<LibraryLoadResult> {
         if (patchInjectedLibs.isNotEmpty()) {
-            ensurePatchLoaderSonames(listener)
+            dropUnusedPatchDeps(listener)
         }
         val allLibs = requiredLibs + systemLoadedLibs
         val loadableLibs = allLibs.filterNot { lib ->
@@ -657,23 +656,31 @@ class GamePackageManager private constructor(
         return results
     }
 
-    // Patch loader libs are built without DT_SONAME, so System.load'ing
-    // them by absolute path would never satisfy libminecraftpe.so's
-    // DT_NEEDED lookup by name (the version lib dir is not a search path
-    // of the app namespace). Give the extracted file one so the preloaded
-    // lib links the same way the installed patch app does.
-    private fun ensurePatchLoaderSonames(listener: MinecraftRuntimePreparer.ProgressListener?) {
+    // Patch loader libs are built without DT_SONAME, so libminecraftpe.so's
+    // by-name DT_NEEDED lookup never resolves in the app namespace (the
+    // version lib dir is not a search path there). The loader is preloaded
+    // before libminecraftpe.so anyway - same init order the installed patch
+    // app gets - and the game imports no symbol it defines, so the edge is
+    // dropped instead. Also undoes the DT_SONAME injection of earlier
+    // launches, which aborted the loader on bionic's .dynstr bounds check.
+    private fun dropUnusedPatchDeps(listener: MinecraftRuntimePreparer.ProgressListener?) {
+        val gameLib = File(nativeLibDir, "libminecraftpe.so")
         for (lib in patchInjectedLibs) {
-            val skipReason = try {
-                ElfSonamePatcher.ensureSoname(File(nativeLibDir, lib), lib)
+            try {
+                if (PatchDependencyPatcher.repairInjectedSoname(File(nativeLibDir, lib), lib)) {
+                    listener?.onLog("Repaired injected DT_SONAME: $lib")
+                }
+                val skipReason = PatchDependencyPatcher.dropUnusedNeeded(gameLib, File(nativeLibDir, lib), lib)
+                if (skipReason == null) {
+                    listener?.onLog("Dropped unused DT_NEEDED: $lib")
+                } else {
+                    Log.w(TAG, "DT_NEEDED drop skipped for $lib: $skipReason")
+                    listener?.onLog("DT_NEEDED drop skipped: $lib ($skipReason)")
+                }
             } catch (error: Throwable) {
-                error.message ?: error.javaClass.simpleName
-            }
-            if (skipReason == null) {
-                listener?.onLog("Patched DT_SONAME: $lib")
-            } else {
-                Log.w(TAG, "DT_SONAME patch skipped for $lib: $skipReason")
-                listener?.onLog("DT_SONAME patch skipped: $lib ($skipReason)")
+                val detail = error.message ?: error.javaClass.simpleName
+                Log.w(TAG, "Patch dep handling failed for $lib: $detail")
+                listener?.onLog("DT_NEEDED drop skipped: $lib ($detail)")
             }
         }
     }
