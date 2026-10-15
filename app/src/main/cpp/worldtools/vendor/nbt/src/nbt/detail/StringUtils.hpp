@@ -6,6 +6,7 @@
 // SPDX-License-Identifier: MPL-2.0
 
 #pragma once
+#include <cstdint>
 #include <string>
 
 namespace nbt::string_utils {
@@ -14,11 +15,11 @@ std::string& replaceAll(std::string& str, std::string_view oldValue, std::string
 
 [[nodiscard]] std::string replaceAll(std::string const& str, std::string_view oldValue, std::string_view newValue);
 
-[[nodiscard]] constexpr size_t doHash(std::string_view x) {
-    size_t           hash  = 0xcbf29ce484222325;
-    constexpr size_t prime = 0x100000001b3;
+[[nodiscard]] constexpr uint64_t doHash(std::string_view x) {
+    uint64_t           hash  = 0xcbf29ce484222325;
+    constexpr uint64_t prime = 0x100000001b3;
     for (char c : x) {
-        hash ^= static_cast<size_t>(c);
+        hash ^= static_cast<uint64_t>(c);
         hash *= prime;
     }
     return hash;
