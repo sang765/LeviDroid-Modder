@@ -55,7 +55,13 @@ internal object PatchDependencyPatcher {
             return "symbol scan failed: ${error.message ?: error.javaClass.simpleName}"
         }
         if (shared.isNotEmpty()) return "game imports ${shared.first()} from the loader"
-        return dropNeeded(game, neededName)
+        val wasWritable = game.canWrite()
+        if (!wasWritable) game.setWritable(true, true)
+        try {
+            RandomAccessFile(game, "rw").use { raf -> return dropNeeded(raf, neededName) }
+        } finally {
+            if (!wasWritable) game.setReadOnly()
+        }
     }
 
     /** True when an out-of-window DT_SONAME from the previous patch was neutralized. */
