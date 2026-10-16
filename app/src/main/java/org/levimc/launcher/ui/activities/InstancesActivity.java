@@ -30,8 +30,6 @@ import androidx.core.app.ActivityOptionsCompat;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.google.android.material.dialog.MaterialAlertDialogBuilder;
-
 import org.levimc.launcher.R;
 import org.levimc.launcher.core.versions.GameVersion;
 import org.levimc.launcher.settings.FeatureSettings;
@@ -353,21 +351,22 @@ public class InstancesActivity extends BaseActivity {
             GameVersion version = versions.get(i);
             labels[i] = version.displayName + " (" + version.versionCode + ")";
         }
-        new MaterialAlertDialogBuilder(this)
-                .setTitle(title)
+        new CustomAlertDialog(this)
+                .setTitleText(title)
                 .setItems(labels, (dialog, which) -> onPick.accept(versions.get(which)))
-                .setNegativeButton(R.string.cancel, null)
+                .setNegativeButton(getString(R.string.cancel), null)
+                .setBlurBackground(true)
                 .show();
     }
 
     private void showTransferOptionsDialog(GameVersion source, GameVersion target) {
         View dialogView = getLayoutInflater().inflate(R.layout.dialog_transfer_profile, null);
         RadioGroup modeGroup = dialogView.findViewById(R.id.transfer_mode_group);
-        new MaterialAlertDialogBuilder(this)
-                .setTitle(getString(R.string.transfer_profile_title) + "\n"
+        new CustomAlertDialog(this)
+                .setTitleText(getString(R.string.transfer_profile_title) + "\n"
                         + source.displayName + " → " + target.displayName)
-                .setView(dialogView)
-                .setPositiveButton(R.string.transfer, (dialog, which) -> {
+                .setCustomView(dialogView)
+                .setPositiveButton(getString(R.string.transfer), v -> {
                     Set<String> kinds = new LinkedHashSet<>();
                     if (((CheckBox) dialogView.findViewById(R.id.check_mods)).isChecked()) kinds.add(KIND_MODS);
                     if (((CheckBox) dialogView.findViewById(R.id.check_worlds)).isChecked()) kinds.add(KIND_WORLDS);
@@ -378,16 +377,24 @@ public class InstancesActivity extends BaseActivity {
                     boolean move = modeGroup.getCheckedRadioButtonId() == R.id.radio_move;
                     runProfileTransfer(source, target, kinds, move);
                 })
-                .setNegativeButton(R.string.cancel, null)
+                .setNegativeButton(getString(R.string.cancel), null)
+                .setBlurBackground(true)
                 .show();
     }
 
     private void runProfileTransfer(GameVersion source, GameVersion target, Set<String> kinds, boolean move) {
+        InstallProgressDialog progressDialog = new InstallProgressDialog(this);
+        progressDialog.setTitleText(getString(R.string.transfer_profile_title));
+        progressDialog.setStatusText(getString(R.string.transfer_progress_preparing));
+        progressDialog.setProgress(0);
+        progressDialog.show();
+
         new Thread(() -> {
             File sourceBase = contentBaseDir(source);
             File targetBase = contentBaseDir(target);
-            int copied = 0;
-            int skipped = 0;
+            List<File[]> pairs = new ArrayList<>();
+            List<String> labels = new ArrayList<>();
+            int grandTotal = 0;
             for (String kind : kinds) {
                 File srcDir;
                 File dstDir;
@@ -399,16 +406,62 @@ public class InstancesActivity extends BaseActivity {
                     dstDir = new File(targetBase, contentDirName(kind));
                 }
                 if (srcDir.equals(dstDir) || !srcDir.isDirectory()) continue;
-                ProfileTransfer.Result result = ProfileTransfer.transferDir(srcDir, dstDir, move);
+                pairs.add(new File[]{srcDir, dstDir});
+                labels.add(getString(kindLabelRes(kind)));
+                grandTotal += ProfileTransfer.countFiles(srcDir);
+            }
+
+            int[] overall = {0, -1}; // processed files, last shown percent
+            int copied = 0;
+            int skipped = 0;
+            for (int i = 0; i < pairs.size(); i++) {
+                File[] pair = pairs.get(i);
+                String kindLabel = labels.get(i);
+                int totalForKind = grandTotal;
+                int[] kindTotal = {0};
+                ProfileTransfer.Result result = ProfileTransfer.transferDir(pair[0], pair[1], move,
+                        (done, total) -> {
+                            kindTotal[0] = total;
+                            int percent = totalForKind == 0 ? 100 : (overall[0] + done) * 100 / totalForKind;
+                            if (percent == overall[1]) return;
+                            overall[1] = percent;
+                            String status = kindLabel + " · " + done + "/" + total;
+                            runOnUiThread(() -> {
+                                progressDialog.setStatusText(status);
+                                progressDialog.setProgress(percent);
+                            });
+                        });
+                overall[0] += kindTotal[0];
                 copied += result.copied;
                 skipped += result.skipped;
             }
+
             int finalCopied = copied;
             int finalSkipped = skipped;
-            runOnUiThread(() -> Toast.makeText(this,
-                    getString(R.string.transfer_summary, finalCopied, finalSkipped),
-                    Toast.LENGTH_LONG).show());
+            runOnUiThread(() -> {
+                progressDialog.setProgress(100);
+                progressDialog.setStatusText(getString(R.string.transfer_summary,
+                        finalCopied, finalSkipped));
+                View decor = progressDialog.getWindow() != null
+                        ? progressDialog.getWindow().getDecorView() : null;
+                if (decor != null) {
+                    decor.postDelayed(progressDialog::dismiss, 1000);
+                } else {
+                    progressDialog.dismiss();
+                }
+            });
         }, "profile-transfer").start();
+    }
+
+    private int kindLabelRes(String kind) {
+        return switch (kind) {
+            case KIND_MODS -> R.string.mods_section_title;
+            case KIND_WORLDS -> R.string.worlds_category;
+            case KIND_RESOURCE_PACKS -> R.string.resource_packs_category;
+            case KIND_BEHAVIOR_PACKS -> R.string.behavior_packs_category;
+            case KIND_SKIN_PACKS -> R.string.skin_packs_category;
+            default -> R.string.screenshots_category;
+        };
     }
 
     private File contentBaseDir(GameVersion version) {

@@ -315,6 +315,7 @@
     <string name="transfer_move">Move</string>
     <string name="transfer_summary">%1$d items transferred, %2$d skipped (already exist)</string>
     <string name="transfer_same_location">Content is already in this location</string>
+    <string name="transfer_progress_preparing">Preparing…</string>
     <string name="import_content">Import</string>
     <string name="import_content_title">Import Content</string>
     <string name="import_content_message">Select .mcworld, .mcpack, or .mcaddon file to import</string>

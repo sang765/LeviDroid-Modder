@@ -315,6 +315,7 @@
     <string name="transfer_move">Chuyển đi</string>
     <string name="transfer_summary">%1$d mục đã chuyển, %2$d bỏ qua (đã tồn tại)</string>
     <string name="transfer_same_location">Nội dung đã có sẵn tại vị trí này</string>
+    <string name="transfer_progress_preparing">Đang chuẩn bị…</string>
     <string name="import_content">Nhập</string>
     <string name="import_content_title">Nhập nội dung</string>
     <string name="import_content_message">Chọn file .mcworld, .mcpack, hoặc .mcaddon để nhập</string>
