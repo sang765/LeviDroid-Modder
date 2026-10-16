@@ -48,10 +48,8 @@ public class GithubReleaseUpdater {
     }
 
     public static int compareVersion(String a, String b) {
-        a = a.startsWith("v") ? a.substring(1) : a;
-        b = b.startsWith("v") ? b.substring(1) : b;
-        String[] x = a.split("\\.");
-        String[] y = b.split("\\.");
+        String[] x = tokenizeVersion(a);
+        String[] y = tokenizeVersion(b);
         int len = Math.max(x.length, y.length);
         for (int i = 0; i < len; i++) {
             int vi = i < x.length ? Integer.parseInt(x[i]) : 0;
@@ -62,6 +60,15 @@ public class GithubReleaseUpdater {
         return 0;
     }
 
+    // Tags like "v1.5.27-modder.21" carry non-numeric suffixes that crash a
+    // plain dot-split parseInt; compare the embedded numeric tokens instead.
+    private static String[] tokenizeVersion(String v) {
+        String[] raw = v.split("\\D+");
+        int start = 0;
+        while (start < raw.length && raw[start].isEmpty()) start++;
+        return java.util.Arrays.copyOfRange(raw, start, raw.length);
+    }
+
     public void checkUpdate() {
         String url = String.format(GITHUB_LATEST_API, owner, repo);
         Request request = new Request.Builder().url(url).build();
@@ -69,6 +76,8 @@ public class GithubReleaseUpdater {
             @Override
             public void onFailure(Call call, IOException e) {
                 Log.e(TAG, "Request failed: " + e.getMessage());
+                activity.runOnUiThread(() ->
+                        Toast.makeText(activity, activity.getString(R.string.update_check_failed, e.getMessage()), Toast.LENGTH_LONG).show());
             }
 
             @Override
@@ -92,6 +101,8 @@ public class GithubReleaseUpdater {
                     }
                 } catch (Exception e) {
                     Log.e(TAG, "Parse error: " + e.getMessage());
+                    activity.runOnUiThread(() ->
+                            Toast.makeText(activity, activity.getString(R.string.update_check_failed, e.getMessage()), Toast.LENGTH_LONG).show());
                 }
             }
         });

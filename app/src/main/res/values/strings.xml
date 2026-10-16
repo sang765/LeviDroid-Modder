@@ -146,6 +146,7 @@
     <string name="ignore_this_version">Ignore this version</string>
     <string name="update_progress">Download progress: %1$d%%</string>
     <string name="update_failed">Download failed: %1$s</string>
+    <string name="update_check_failed">Update check failed: %1$s</string>
     <string name="install_failed">Unable to install update: %1$s</string>
     <string name="already_latest_version">Already latest version (%1$s)</string>
     <string name="version_ignored">This version has been ignored</string>
