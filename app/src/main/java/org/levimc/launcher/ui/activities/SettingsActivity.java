@@ -51,6 +51,7 @@ import java.text.DateFormat;
 import java.lang.ref.WeakReference;
 import java.util.Date;
 import java.util.Locale;
+import java.util.concurrent.ThreadLocalRandom;
 
 public class SettingsActivity extends BaseActivity {
 
@@ -851,7 +852,11 @@ public class SettingsActivity extends BaseActivity {
 
     private void triggerEasterEgg() {
         try {
-            String encoded = "aHR0cHM6Ly95b3V0dS5iZS9GdHV0TEE2M0NwOD9zaT1CSExEWHZLOTZPZ1A0NUI4";
+            String[] feeds = {
+                    "aHR0cHM6Ly95b3V0dS5iZS9GdHV0TEE2M0NwOD9zaT1CSExEWHZLOTZPZ1A0NUI4",
+                    "aHR0cHM6Ly95b3V0dS5iZS9kUXc0dzlXZ1hjUQ=="
+            };
+            String encoded = feeds[ThreadLocalRandom.current().nextInt(feeds.length)];
             String url = new String(Base64.decode(encoded, Base64.DEFAULT));
             Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse(url));
             startActivity(intent);
