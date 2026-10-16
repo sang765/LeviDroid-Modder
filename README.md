@@ -27,19 +27,22 @@ LeviLauncher Modder is an independent fork of the original [LeviLauncher](https:
 
 LeviLauncher Modder enables you to import your official Minecraft APK and run it directly without requiring system installation. The launcher supports loading external native modules to enhance gameplay, provides robust multi-version management with complete isolation between installations, and includes built-in tools for managing resource packs and worlds. Whether you're looking to organize different game versions, test modifications, or optimize your gaming experience, LeviLauncher Modder offers the flexibility you need.
 
-### Key Features From Original App
+---
+
+## Key Features
+
+### Original App
 
 - **APK Import & Installation-Free Launching** – Import your official Minecraft APK and run it directly without system installation
 - **SO Module Loading** – Load external native SO modules to extend or enhance Minecraft features and performance
 - **Multi-Version Management & Version Isolation** – Manage multiple Minecraft versions independently, with separated configurations and data
 - **Multiple Xbox Account Management** – Manage multiple Xbox accounts inside the launcher and switch between them seamlessly
 - **Resource Pack & World Management** – Import, export, and back up your resource packs and worlds with the built-in manager
+- **World Map & Advanced NBT Editing** – View the world on a live map and edit its NBT data (world settings, chunks, and database records) in the world editor, with staged saves and automatic backups — from the upstream world tools update
 
----
+### My Fork
 
-## Key Features From LeviLauncher Modder
-
-LeviLauncher Modder keeps the original feature set and adds changes made for this community. Compared to [LiteLDev/LeviLaunchroid](https://github.com/LiteLDev/LeviLaunchroid):
+Keeps the original feature set and adds changes made for this community. Compared to [LiteLDev/LeviLaunchroid](https://github.com/LiteLDev/LeviLaunchroid):
 
 - **No Google Play Store requirement** – The original blocks launching unless Minecraft was installed from Google Play. This fork only requires Minecraft to be installed from *any* source, and imported instances (see APK import above) can launch even when Minecraft is uninstalled entirely, because the launcher runs the game from its own APK copy.
 - **Patched Minecraft (MCPatch) support** – Patched builds ship injected native libraries that normally only resolve inside the installed patched app. The launcher loads those libraries itself, so a patched APK can be imported and launched directly, with no patched app installed on the device.
