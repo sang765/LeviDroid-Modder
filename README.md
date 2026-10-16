@@ -17,13 +17,20 @@
 
 <table>
   <tr>
-    <td><img src="docs/screenshots/01-splash.jpg" width="440" alt="Splash screen"></td>
-    <td><img src="docs/screenshots/02-dashboard.jpg" width="440" alt="Dashboard"></td>
-    <td><img src="docs/screenshots/03-instances.jpg" width="440" alt="Instance manager"></td>
-    <td><img src="docs/screenshots/04-about.jpg" width="440" alt="About screen"></td>
-    <td><img src="docs/screenshots/05-settings.jpg" width="440" alt="Personalization settings"></td>
-    <td><img src="docs/screenshots/06-mods.jpg" width="440" alt="Mods manager"></td>
-    <td><img src="docs/screenshots/07-world-editor.jpg" width="440" alt="World map editor"></td>
+    <td><a href="docs/screenshots/01-splash.jpg"><img src="docs/screenshots/01-splash.jpg" width="440" alt="Splash screen"></a></td>
+    <td><a href="docs/screenshots/02-dashboard.jpg"><img src="docs/screenshots/02-dashboard.jpg" width="440" alt="Dashboard"></a></td>
+  </tr>
+  <tr>
+    <td><a href="docs/screenshots/03-instances.jpg"><img src="docs/screenshots/03-instances.jpg" width="440" alt="Instance manager"></a></td>
+    <td><a href="docs/screenshots/04-about.jpg"><img src="docs/screenshots/04-about.jpg" width="440" alt="About screen"></a></td>
+  </tr>
+  <tr>
+    <td><a href="docs/screenshots/05-settings.jpg"><img src="docs/screenshots/05-settings.jpg" width="440" alt="Personalization settings"></a></td>
+    <td><a href="docs/screenshots/06-mods.jpg"><img src="docs/screenshots/06-mods.jpg" width="440" alt="Mods manager"></a></td>
+  </tr>
+  <tr>
+    <td><a href="docs/screenshots/07-world-editor.jpg"><img src="docs/screenshots/07-world-editor.jpg" width="440" alt="World map editor"></a></td>
+    <td></td>
   </tr>
 </table>
 
