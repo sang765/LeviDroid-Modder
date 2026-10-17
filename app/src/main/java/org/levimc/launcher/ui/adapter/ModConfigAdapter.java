@@ -326,7 +326,7 @@ public class ModConfigAdapter extends RecyclerView.Adapter<ModConfigAdapter.Conf
             ImageButton button = new ImageButton(itemView.getContext());
             button.setImageResource(R.drawable.ic_arrow_down);
             button.setColorFilter(ContextCompat.getColor(itemView.getContext(), R.color.text_secondary));
-            button.setBackgroundResource(android.R.drawable.list_selector_background);
+            button.setBackgroundResource(R.drawable.dialog_item_ripple);
             button.setRotation(node.expanded ? 0f : -90f);
             button.setContentDescription(node.expanded
                     ? itemView.getContext().getString(R.string.mod_config_collapse)
