@@ -6,32 +6,46 @@
     android:layout_height="match_parent"
     android:orientation="vertical">
 
-    <FrameLayout
+    <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="48dp"
-        android:paddingStart="14dp"
-        android:paddingEnd="14dp">
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:paddingTop="6dp">
 
-        <ImageView
-            android:id="@+id/nav_back_button"
-            android:layout_width="28dp"
-            android:layout_height="28dp"
-            android:layout_gravity="start|center_vertical"
-            android:src="@drawable/ic_arrow_down"
-            android:rotation="90"
-            android:scaleType="centerInside"
-            android:background="?attr/selectableItemBackgroundBorderless"
-            android:clickable="true"
-            android:focusable="true"
-            app:tint="@color/text_secondary" />
+        <FrameLayout
+            android:layout_width="match_parent"
+            android:layout_height="44dp"
+            android:paddingStart="14dp"
+            android:paddingEnd="14dp">
 
-        <ImageView
-            android:id="@+id/nav_logo"
-            android:layout_width="28dp"
-            android:layout_height="28dp"
-            android:layout_gravity="end|center_vertical"
-            android:src="@drawable/ic_leaf_logo" />
-    </FrameLayout>
+            <ImageView
+                android:id="@+id/nav_back_button"
+                android:layout_width="28dp"
+                android:layout_height="28dp"
+                android:layout_gravity="start|center_vertical"
+                android:src="@drawable/ic_arrow_down"
+                android:rotation="90"
+                android:scaleType="centerInside"
+                android:background="?attr/selectableItemBackgroundBorderless"
+                android:clickable="true"
+                android:focusable="true"
+                app:tint="@color/text_secondary" />
+        </FrameLayout>
+
+        <FrameLayout
+            android:layout_width="match_parent"
+            android:layout_height="36dp"
+            android:paddingStart="14dp"
+            android:paddingEnd="14dp">
+
+            <ImageView
+                android:id="@+id/nav_logo"
+                android:layout_width="26dp"
+                android:layout_height="26dp"
+                android:layout_gravity="start|center_vertical"
+                android:src="@drawable/ic_leaf_logo" />
+        </FrameLayout>
+    </LinearLayout>
 
     <View
         android:id="@+id/nav_divider"
@@ -46,62 +60,110 @@
         android:paddingTop="6dp"
         android:paddingBottom="6dp">
 
-        <TextView
-            android:id="@+id/nav_tab_launch"
+        <LinearLayout
+            android:id="@+id/nav_tab_launch_item"
             android:layout_width="match_parent"
-            android:layout_height="44dp"
-            android:gravity="center_vertical"
-            android:paddingHorizontal="14dp"
-            android:fontFamily="@font/misans"
-            android:text="@string/nav_launch"
-            android:textColor="@color/on_surface"
-            android:textSize="13sp"
-            android:textStyle="bold"
-            android:drawableStart="@drawable/ic_nav_launch"
-            android:drawablePadding="8dp"
-            android:background="?attr/selectableItemBackground" />
+            android:layout_height="52dp"
+            android:gravity="center"
+            android:orientation="vertical"
+            android:background="?attr/selectableItemBackground">
 
-        <TextView
-            android:id="@+id/nav_tab_instances"
-            android:layout_width="match_parent"
-            android:layout_height="44dp"
-            android:gravity="center_vertical"
-            android:paddingHorizontal="14dp"
-            android:fontFamily="@font/misans"
-            android:text="@string/nav_instances"
-            android:textColor="@color/text_secondary"
-            android:textSize="13sp"
-            android:drawableStart="@drawable/ic_nav_instances"
-            android:drawablePadding="8dp"
-            android:background="?attr/selectableItemBackground" />
+            <ImageView
+                android:id="@+id/nav_tab_icon_launch"
+                android:layout_width="22dp"
+                android:layout_height="22dp"
+                android:src="@drawable/ic_nav_launch"
+                app:tint="@color/on_surface" />
 
-        <TextView
-            android:id="@+id/nav_tab_about"
-            android:layout_width="match_parent"
-            android:layout_height="44dp"
-            android:gravity="center_vertical"
-            android:paddingHorizontal="14dp"
-            android:fontFamily="@font/misans"
-            android:text="@string/nav_about"
-            android:textColor="@color/text_secondary"
-            android:textSize="13sp"
-            android:drawableStart="@drawable/ic_nav_about"
-            android:drawablePadding="8dp"
-            android:background="?attr/selectableItemBackground" />
+            <TextView
+                android:id="@+id/nav_tab_launch"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="3dp"
+                android:fontFamily="@font/misans"
+                android:text="@string/nav_launch"
+                android:textColor="@color/on_surface"
+                android:textSize="11sp"
+                android:textStyle="bold" />
+        </LinearLayout>
 
-        <TextView
-            android:id="@+id/nav_tab_settings"
+        <LinearLayout
+            android:id="@+id/nav_tab_instances_item"
             android:layout_width="match_parent"
-            android:layout_height="44dp"
-            android:gravity="center_vertical"
-            android:paddingHorizontal="14dp"
-            android:fontFamily="@font/misans"
-            android:text="@string/nav_settings"
-            android:textColor="@color/text_secondary"
-            android:textSize="13sp"
-            android:drawableStart="@drawable/ic_nav_settings"
-            android:drawablePadding="8dp"
-            android:background="?attr/selectableItemBackground" />
+            android:layout_height="52dp"
+            android:gravity="center"
+            android:orientation="vertical"
+            android:background="?attr/selectableItemBackground">
+
+            <ImageView
+                android:id="@+id/nav_tab_icon_instances"
+                android:layout_width="22dp"
+                android:layout_height="22dp"
+                android:src="@drawable/ic_nav_instances"
+                app:tint="@color/text_secondary" />
+
+            <TextView
+                android:id="@+id/nav_tab_instances"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="3dp"
+                android:fontFamily="@font/misans"
+                android:text="@string/nav_instances"
+                android:textColor="@color/text_secondary"
+                android:textSize="11sp" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/nav_tab_about_item"
+            android:layout_width="match_parent"
+            android:layout_height="52dp"
+            android:gravity="center"
+            android:orientation="vertical"
+            android:background="?attr/selectableItemBackground">
+
+            <ImageView
+                android:id="@+id/nav_tab_icon_about"
+                android:layout_width="22dp"
+                android:layout_height="22dp"
+                android:src="@drawable/ic_nav_about"
+                app:tint="@color/text_secondary" />
+
+            <TextView
+                android:id="@+id/nav_tab_about"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="3dp"
+                android:fontFamily="@font/misans"
+                android:text="@string/nav_about"
+                android:textColor="@color/text_secondary"
+                android:textSize="11sp" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/nav_tab_settings_item"
+            android:layout_width="match_parent"
+            android:layout_height="52dp"
+            android:gravity="center"
+            android:orientation="vertical"
+            android:background="?attr/selectableItemBackground">
+
+            <ImageView
+                android:id="@+id/nav_tab_icon_settings"
+                android:layout_width="22dp"
+                android:layout_height="22dp"
+                android:src="@drawable/ic_nav_settings"
+                app:tint="@color/text_secondary" />
+
+            <TextView
+                android:id="@+id/nav_tab_settings"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="3dp"
+                android:fontFamily="@font/misans"
+                android:text="@string/nav_settings"
+                android:textColor="@color/text_secondary"
+                android:textSize="11sp" />
+        </LinearLayout>
     </LinearLayout>
 
     <View
