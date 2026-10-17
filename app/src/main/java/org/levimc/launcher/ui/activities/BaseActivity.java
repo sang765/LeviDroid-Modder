@@ -210,10 +210,10 @@ public class BaseActivity extends AppCompatActivity {
         navBar.getLayoutParams().width = railCollapsedWidth;
 
         railSpring = new SpringAnimation(navBar, railWidthProperty);
-        railSpring.setStartValue(railCollapsedWidth);
-        railSpring.getSpring()
+        railSpring.setSpring(new SpringForce(railCollapsedWidth)
                 .setStiffness(SpringForce.STIFFNESS_MEDIUM)
-                .setDampingRatio(SpringForce.DAMPING_RATIO_NO_BOUNCY);
+                .setDampingRatio(SpringForce.DAMPING_RATIO_NO_BOUNCY));
+        railSpring.setStartValue(railCollapsedWidth);
 
         navBar.setOnHoverListener((v, event) -> {
             switch (event.getAction()) {
