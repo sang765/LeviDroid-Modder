@@ -335,6 +335,48 @@ public class SettingsActivity extends BaseActivity {
 
         setupColorPicker();
         setupBackgroundImagePicker();
+        setupNavBarPositionRow();
+    }
+
+    private void setupNavBarPositionRow() {
+        TextView current = findViewById(R.id.nav_bar_position_current);
+        Spinner spinner = findViewById(R.id.nav_bar_position_spinner);
+        if (current == null || spinner == null) return;
+
+        String[] values = {"top", "bottom", "left", "right"};
+        String[] labels = {
+                getString(R.string.nav_position_top),
+                getString(R.string.nav_position_bottom),
+                getString(R.string.nav_position_left),
+                getString(R.string.nav_position_right)
+        };
+
+        int selected = 0;
+        for (int i = 0; i < values.length; i++) {
+            if (values[i].equals(personalizationManager.getNavBarPosition())) {
+                selected = i;
+                break;
+            }
+        }
+        current.setText(labels[selected]);
+
+        ArrayAdapter<String> adapter = new ArrayAdapter<>(this, R.layout.spinner_item, labels);
+        adapter.setDropDownViewResource(R.layout.spinner_dropdown_item);
+        spinner.setAdapter(adapter);
+        spinner.setPopupBackgroundResource(R.drawable.bg_popup_menu_rounded);
+        spinner.setSelection(selected);
+        spinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                if (values[position].equals(personalizationManager.getNavBarPosition())) return;
+                personalizationManager.setNavBarPosition(values[position]);
+                recreate();
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> parent) {
+            }
+        });
     }
 
     private void refreshThemeSelectionUI() {

@@ -119,20 +119,32 @@ public class BaseActivity extends AppCompatActivity {
             return;
         }
 
+        String navPos = new PersonalizationManager(this).getNavBarPosition();
+        boolean sideRail = "left".equals(navPos) || "right".equals(navPos);
+        boolean navFirst = "top".equals(navPos) || "left".equals(navPos);
+
         LinearLayout wrapper = new LinearLayout(this);
-        wrapper.setOrientation(LinearLayout.VERTICAL);
+        wrapper.setOrientation(sideRail ? LinearLayout.HORIZONTAL : LinearLayout.VERTICAL);
         wrapper.setLayoutParams(new ViewGroup.LayoutParams(
                 ViewGroup.LayoutParams.MATCH_PARENT,
                 ViewGroup.LayoutParams.MATCH_PARENT
         ));
 
-        View navBar = LayoutInflater.from(this).inflate(R.layout.nav_bar, wrapper, false);
-        wrapper.addView(navBar);
+        View navBar = LayoutInflater.from(this).inflate(
+                sideRail ? R.layout.nav_bar_side : R.layout.nav_bar, wrapper, false);
 
-        LinearLayout.LayoutParams contentParams = new LinearLayout.LayoutParams(
-                ViewGroup.LayoutParams.MATCH_PARENT, 0, 1f);
+        LinearLayout.LayoutParams contentParams = sideRail
+                ? new LinearLayout.LayoutParams(0, ViewGroup.LayoutParams.MATCH_PARENT, 1f)
+                : new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, 0, 1f);
         contentView.setLayoutParams(contentParams);
-        wrapper.addView(contentView);
+
+        if (navFirst) {
+            wrapper.addView(navBar);
+            wrapper.addView(contentView);
+        } else {
+            wrapper.addView(contentView);
+            wrapper.addView(navBar);
+        }
 
         contentView.setAlpha(0f);
         contentView.setTranslationY(8f * getResources().getDisplayMetrics().density);
