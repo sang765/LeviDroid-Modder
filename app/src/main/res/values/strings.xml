@@ -151,6 +151,20 @@
     <string name="already_latest_version">Already latest version (%1$s)</string>
     <string name="version_ignored">This version has been ignored</string>
     <string name="downloading_update">Downloading update…</string>
+    <string name="update_download_background">Download in background</string>
+    <string name="install_method_title">Install method</string>
+    <string name="install_method_system">System</string>
+    <string name="install_method_shizuku">Shizuku</string>
+    <string name="install_method_root">Root</string>
+    <string name="update_installing_message">Installing, the app will close to finish the update.</string>
+    <string name="shizuku_failed_title">Shizuku install failed</string>
+    <string name="shizuku_not_running">Shizuku is not running. Start Shizuku, then try again.</string>
+    <string name="shizuku_failed">Make sure the app has Shizuku access and USB install is enabled.</string>
+    <string name="enable_usb_install">Enable USB install</string>
+    <string name="root_failed_title">Root install failed</string>
+    <string name="root_failed_message">Could not install with root access. Check your superuser manager and try again.</string>
+    <string name="update_installed_restart">Update installed, reopen the app to finish.</string>
+    <string name="update_download_progress">%1$d%% · %2$s / %3$s</string>
 
     <string name="repair_libs_in_progress">Repairing game library files…</string>
     <string name="repair_completed">Repair Completed</string>

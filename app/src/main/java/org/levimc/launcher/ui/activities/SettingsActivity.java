@@ -594,6 +594,12 @@ public class SettingsActivity extends BaseActivity {
             btnCrashLogs.setTextColor(Color.WHITE);
         }
 
+        Button btnInstallMethod = findViewById(R.id.btn_install_method);
+        if (btnInstallMethod != null && accent != 0) {
+            btnInstallMethod.setBackgroundTintList(ColorStateList.valueOf(accent));
+            btnInstallMethod.setTextColor(Color.WHITE);
+        }
+
         Button btnUpdatePreloaderSigs = findViewById(R.id.btn_update_preloader_sigs);
         if (btnUpdatePreloaderSigs != null && accent != 0) {
             btnUpdatePreloaderSigs.setBackgroundTintList(ColorStateList.valueOf(accent));
@@ -829,6 +835,12 @@ public class SettingsActivity extends BaseActivity {
         Button btnCrashLogs = findViewById(R.id.btn_crash_logs);
         btnCrashLogs.setOnClickListener(v -> showCrashLogsDialog());
 
+        Button btnInstallMethod = findViewById(R.id.btn_install_method);
+        if (btnInstallMethod != null) {
+            btnInstallMethod.setText(GithubReleaseUpdater.getInstallMethodLabel(this));
+            btnInstallMethod.setOnClickListener(v -> showInstallMethodDialog(btnInstallMethod));
+        }
+
         preloaderSigsLastUpdateText = findViewById(R.id.preloader_sigs_last_update);
         preloaderSigsUpdateButton = findViewById(R.id.btn_update_preloader_sigs);
         refreshPreloaderSigsLastUpdateUi();
@@ -852,6 +864,27 @@ public class SettingsActivity extends BaseActivity {
         new CustomAlertDialog(this)
                 .setTitleText(getString(R.string.crash_logs_title))
                 .setItems(items, (dialog, which) -> openCrashLog(files[which]))
+                .setNegativeButton(getString(R.string.cancel), null)
+                .show();
+    }
+
+    private void showInstallMethodDialog(Button button) {
+        final String[] methods = {
+                GithubReleaseUpdater.METHOD_SYSTEM,
+                GithubReleaseUpdater.METHOD_SHIZUKU,
+                GithubReleaseUpdater.METHOD_ROOT
+        };
+        String[] labels = {
+                getString(R.string.install_method_system),
+                getString(R.string.install_method_shizuku),
+                getString(R.string.install_method_root)
+        };
+        new CustomAlertDialog(this)
+                .setTitleText(getString(R.string.install_method_title))
+                .setItems(labels, (dialog, which) -> {
+                    GithubReleaseUpdater.setInstallMethod(this, methods[which]);
+                    button.setText(GithubReleaseUpdater.getInstallMethodLabel(this));
+                })
                 .setNegativeButton(getString(R.string.cancel), null)
                 .show();
     }

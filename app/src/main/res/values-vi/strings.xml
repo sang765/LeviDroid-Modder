@@ -151,6 +151,20 @@
     <string name="already_latest_version">Đang ở phiên bản mới nhất (%1$s)</string>
     <string name="version_ignored">Phiên bản này đã bị bỏ qua</string>
     <string name="downloading_update">Đang tải bản cập nhật…</string>
+    <string name="update_download_background">Tải trong nền</string>
+    <string name="install_method_title">Phương pháp cài đặt</string>
+    <string name="install_method_system">Hệ thống</string>
+    <string name="install_method_shizuku">Shizuku</string>
+    <string name="install_method_root">Root</string>
+    <string name="update_installing_message">Đang cài đặt, ứng dụng sẽ bị tắt để hoàn tất cập nhật.</string>
+    <string name="shizuku_failed_title">Cài đặt qua Shizuku thất bại</string>
+    <string name="shizuku_not_running">Shizuku chưa chạy. Hãy khởi động Shizuku rồi thử lại.</string>
+    <string name="shizuku_failed">Hãy đảm bảo ứng dụng có quyền truy cập với Shizuku và bật tính năng cài đặt qua USB.</string>
+    <string name="enable_usb_install">Bật cài đặt qua USB</string>
+    <string name="root_failed_title">Cài đặt qua Root thất bại</string>
+    <string name="root_failed_message">Không thể cài đặt bằng quyền root. Hãy kiểm tra trình quản lý Superuser rồi thử lại.</string>
+    <string name="update_installed_restart">Đã cài bản cập nhật, mở lại ứng dụng để hoàn tất.</string>
+    <string name="update_download_progress">%1$d%% · %2$s / %3$s</string>
 
     <string name="repair_libs_in_progress">Sửa chữa các file thư viện trò chơi…</string>
     <string name="repair_completed">Sửa chữa hoàn tất.</string>

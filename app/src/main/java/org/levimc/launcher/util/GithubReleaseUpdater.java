@@ -1,12 +1,20 @@
 package org.levimc.launcher.util;
 
 import android.app.Activity;
+import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
+import android.content.ServiceConnection;
 import android.content.SharedPreferences;
+import android.content.pm.PackageManager;
 import android.net.Uri;
 import android.os.Build;
+import android.os.IBinder;
+import android.provider.Settings;
 import android.util.Log;
+import android.view.View;
+import android.widget.ProgressBar;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.activity.result.ActivityResultLauncher;
@@ -17,10 +25,15 @@ import org.json.JSONObject;
 import org.levimc.launcher.R;
 import org.levimc.launcher.ui.dialogs.CustomAlertDialog;
 
+import rikka.shizuku.Shizuku;
+
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.Locale;
+import java.util.concurrent.atomic.AtomicBoolean;
+import java.util.concurrent.atomic.AtomicReference;
 
 import okhttp3.Call;
 import okhttp3.Callback;
@@ -197,13 +210,52 @@ public class GithubReleaseUpdater {
     }
 
     private void downloadApk(String url) {
-        activity.runOnUiThread(() -> Toast.makeText(activity, activity.getString(R.string.downloading_update), Toast.LENGTH_SHORT).show());
         Request request = new Request.Builder().url(url).build();
-        client.newCall(request).enqueue(new Callback() {
+        Call call = client.newCall(request);
+        AtomicBoolean finished = new AtomicBoolean(false);
+        AtomicBoolean cancelled = new AtomicBoolean(false);
+        AtomicBoolean backgrounded = new AtomicBoolean(false);
+        AtomicReference<CustomAlertDialog> dialogRef = new AtomicReference<>();
+        AtomicReference<ProgressBar> barRef = new AtomicReference<>();
+        AtomicReference<TextView> textRef = new AtomicReference<>();
+
+        activity.runOnUiThread(() -> {
+            if (activity.isFinishing() || activity.isDestroyed()) return;
+            View progressView = activity.getLayoutInflater().inflate(R.layout.dialog_update_progress, null);
+            ProgressBar progressBar = progressView.findViewById(R.id.update_progress_bar);
+            TextView progressText = progressView.findViewById(R.id.update_progress_text);
+            CustomAlertDialog dialog = new CustomAlertDialog(activity);
+            dialog.setTitleText(activity.getString(R.string.downloading_update));
+            dialog.setCustomView(progressView);
+            dialog.setPositiveButton(activity.getString(R.string.update_download_background),
+                    v -> backgrounded.set(true));
+            dialog.setNegativeButton(activity.getString(R.string.cancel), v -> {
+                cancelled.set(true);
+                call.cancel();
+            });
+            // Any dismissal that is neither a background nor a completed download
+            // (back key, activity teardown) must not leave a headless download running.
+            dialog.setOnDismissAnimationEndListener(() -> {
+                if (!backgrounded.get() && !finished.get()) {
+                    cancelled.set(true);
+                    call.cancel();
+                }
+            });
+            barRef.set(progressBar);
+            textRef.set(progressText);
+            dialogRef.set(dialog);
+            dialog.show();
+        });
+
+        call.enqueue(new Callback() {
             @Override
             public void onFailure(Call call, IOException e) {
-                activity.runOnUiThread(() ->
-                        Toast.makeText(activity, activity.getString(R.string.update_failed, e.getMessage()), Toast.LENGTH_LONG).show());
+                if (call.isCanceled() || cancelled.get()) return;
+                dismissProgressDialog(dialogRef);
+                activity.runOnUiThread(() -> {
+                    if (activity.isFinishing() || activity.isDestroyed()) return;
+                    Toast.makeText(activity, activity.getString(R.string.update_failed, e.getMessage()), Toast.LENGTH_LONG).show();
+                });
             }
 
             @Override
@@ -219,24 +271,30 @@ public class GithubReleaseUpdater {
                     File apkFile = new File(activity.getExternalCacheDir(), "update_apk.apk");
                     fos = new FileOutputStream(apkFile);
 
-                    long lastToastTime = 0;
+                    long lastUiUpdate = 0;
                     while ((len = is.read(buf)) > 0) {
+                        if (cancelled.get()) break;
                         fos.write(buf, 0, len);
                         downloaded += len;
 
                         long now = System.currentTimeMillis();
-                        if (now - lastToastTime > 500 && total > 0) {
-                            int percent = (int) (downloaded * 100 / total);
-                            activity.runOnUiThread(() ->
-                                    Toast.makeText(activity, activity.getString(R.string.update_progress, percent), Toast.LENGTH_SHORT).show());
-                            lastToastTime = now;
+                        if (now - lastUiUpdate > 250) {
+                            lastUiUpdate = now;
+                            updateProgressDialog(barRef, textRef, downloaded, total, cancelled, backgrounded);
                         }
                     }
                     fos.flush();
+                    if (cancelled.get() || call.isCanceled()) return;
+                    finished.set(true);
+                    dismissProgressDialog(dialogRef);
                     installApk(apkFile);
                 } catch (Exception e) {
-                    activity.runOnUiThread(() ->
-                            Toast.makeText(activity, activity.getString(R.string.update_failed, e.getMessage()), Toast.LENGTH_LONG).show());
+                    if (call.isCanceled() || cancelled.get()) return;
+                    dismissProgressDialog(dialogRef);
+                    activity.runOnUiThread(() -> {
+                        if (activity.isFinishing() || activity.isDestroyed()) return;
+                        Toast.makeText(activity, activity.getString(R.string.update_failed, e.getMessage()), Toast.LENGTH_LONG).show();
+                    });
                 } finally {
                     try {
                         if (is != null) is.close();
@@ -251,7 +309,201 @@ public class GithubReleaseUpdater {
         });
     }
 
+    private void dismissProgressDialog(AtomicReference<CustomAlertDialog> dialogRef) {
+        activity.runOnUiThread(() -> {
+            CustomAlertDialog dialog = dialogRef.get();
+            if (dialog != null && dialog.isShowing()) {
+                dialog.dismissImmediately();
+            }
+        });
+    }
+
+    private void updateProgressDialog(AtomicReference<ProgressBar> barRef, AtomicReference<TextView> textRef,
+                                      long downloaded, long total,
+                                      AtomicBoolean cancelled, AtomicBoolean backgrounded) {
+        activity.runOnUiThread(() -> {
+            if (cancelled.get() || backgrounded.get()) return;
+            if (activity.isFinishing() || activity.isDestroyed()) return;
+            ProgressBar bar = barRef.get();
+            TextView text = textRef.get();
+            if (bar == null || text == null) return;
+            if (total <= 0) {
+                if (!bar.isIndeterminate()) bar.setIndeterminate(true);
+                text.setText(formatBytes(downloaded));
+            } else {
+                if (bar.isIndeterminate()) bar.setIndeterminate(false);
+                int percent = (int) (downloaded * 100 / total);
+                bar.setProgress(percent);
+                text.setText(activity.getString(R.string.update_download_progress,
+                        percent, formatBytes(downloaded), formatBytes(total)));
+            }
+        });
+    }
+
+    private static String formatBytes(long bytes) {
+        if (bytes < 1024L) return bytes + " B";
+        if (bytes < 1024L * 1024L) return String.format(Locale.US, "%.1f KB", bytes / 1024.0);
+        return String.format(Locale.US, "%.1f MB", bytes / (1024.0 * 1024.0));
+    }
+
+    public static final String METHOD_SYSTEM = "system";
+    public static final String METHOD_SHIZUKU = "shizuku";
+    public static final String METHOD_ROOT = "root";
+
+    private static final int REQ_SHIZUKU_PERMISSION = 1001;
+
+    public static String getInstallMethod(Context context) {
+        return prefs(context).getString("install_method", METHOD_SYSTEM);
+    }
+
+    public static void setInstallMethod(Context context, String method) {
+        prefs(context).edit().putString("install_method", method).apply();
+    }
+
+    public static int getInstallMethodLabel(Context context) {
+        String method = getInstallMethod(context);
+        if (METHOD_SHIZUKU.equals(method)) return R.string.install_method_shizuku;
+        if (METHOD_ROOT.equals(method)) return R.string.install_method_root;
+        return R.string.install_method_system;
+    }
+
+    private static SharedPreferences prefs(Context context) {
+        return context.getSharedPreferences("update_prefs", Context.MODE_PRIVATE);
+    }
+
     private void installApk(File apkFile) {
+        String method = getInstallMethod(activity);
+        if (METHOD_SHIZUKU.equals(method)) {
+            shizukuInstallApk(apkFile);
+        } else if (METHOD_ROOT.equals(method)) {
+            rootInstallApk(apkFile);
+        } else {
+            systemInstallApk(apkFile);
+        }
+    }
+
+    private void shizukuInstallApk(File apkFile) {
+        if (!Shizuku.pingBinder()) {
+            showShizukuHelpDialog(R.string.shizuku_not_running);
+            return;
+        }
+        if (Shizuku.checkSelfPermission() != PackageManager.PERMISSION_GRANTED) {
+            Shizuku.OnRequestPermissionResultListener listener =
+                    new Shizuku.OnRequestPermissionResultListener() {
+                        @Override
+                        public void onRequestPermissionResult(int requestCode, int grantResult) {
+                            Shizuku.removeRequestPermissionResultListener(this);
+                            if (grantResult == PackageManager.PERMISSION_GRANTED) {
+                                shizukuBindAndInstall(apkFile);
+                            } else {
+                                showShizukuHelpDialog(R.string.shizuku_failed);
+                            }
+                        }
+                    };
+            Shizuku.addRequestPermissionResultListener(listener);
+            Shizuku.requestPermission(REQ_SHIZUKU_PERMISSION);
+            return;
+        }
+        shizukuBindAndInstall(apkFile);
+    }
+
+    private void shizukuBindAndInstall(File apkFile) {
+        showInstallingDialog();
+        ComponentName componentName = new ComponentName(
+                activity.getPackageName(), UpdateInstallerService.class.getName());
+        Shizuku.UserServiceArgs args = new Shizuku.UserServiceArgs(componentName)
+                .daemon(false)
+                .version(1)
+                .tag("update-installer");
+        ServiceConnection connection = new ServiceConnection() {
+            @Override
+            public void onServiceConnected(ComponentName name, IBinder binder) {
+                IUpdateInstallerService service = IUpdateInstallerService.Stub.asInterface(binder);
+                new Thread(() -> {
+                    int exit = -1;
+                    String output = "";
+                    try {
+                        exit = service.install(apkFile.getAbsolutePath());
+                        output = service.getOutput();
+                    } catch (Throwable t) {
+                        output = String.valueOf(t.getMessage());
+                    } finally {
+                        try {
+                            Shizuku.unbindUserService(args, this, true);
+                        } catch (Throwable ignored) {
+                        }
+                    }
+                    Log.e("GithubReleaseUpdater", "shizuku install exit=" + exit + " out=" + output);
+                    int code = exit;
+                    activity.runOnUiThread(() -> {
+                        if (code == 0) {
+                            Toast.makeText(activity, R.string.update_installed_restart, Toast.LENGTH_LONG).show();
+                        } else {
+                            showShizukuHelpDialog(R.string.shizuku_failed);
+                        }
+                    });
+                }).start();
+            }
+
+            @Override
+            public void onServiceDisconnected(ComponentName name) {
+            }
+        };
+        Shizuku.bindUserService(args, connection);
+    }
+
+    private void rootInstallApk(File apkFile) {
+        showInstallingDialog();
+        new Thread(() -> {
+            int exit = -1;
+            String output = "";
+            try {
+                Process process = Runtime.getRuntime().exec(new String[]{
+                        "su", "-c", "pm install -r '" + apkFile.getAbsolutePath() + "' 2>&1"});
+                output = UpdateInstallerService.readAll(process);
+                exit = process.waitFor();
+            } catch (Exception e) {
+                output = String.valueOf(e.getMessage());
+            }
+            Log.e("GithubReleaseUpdater", "root install exit=" + exit + " out=" + output);
+            int code = exit;
+            activity.runOnUiThread(() -> {
+                if (code == 0) {
+                    Toast.makeText(activity, R.string.update_installed_restart, Toast.LENGTH_LONG).show();
+                } else {
+                    showRootFailedDialog();
+                }
+            });
+        }).start();
+    }
+
+    private void showInstallingDialog() {
+        activity.runOnUiThread(() -> new CustomAlertDialog(activity)
+                .setMessage(activity.getString(R.string.update_installing_message))
+                .setPositiveButton(activity.getString(R.string.close), null)
+                .show());
+    }
+
+    private void showShizukuHelpDialog(int messageRes) {
+        activity.runOnUiThread(() -> new CustomAlertDialog(activity)
+                .setTitleText(activity.getString(R.string.shizuku_failed_title))
+                .setMessage(activity.getString(messageRes))
+                .setPositiveButton(activity.getString(R.string.enable_usb_install),
+                        v -> activity.startActivity(
+                                new Intent(Settings.ACTION_APPLICATION_DEVELOPMENT_SETTINGS)))
+                .setNegativeButton(activity.getString(R.string.cancel), null)
+                .show());
+    }
+
+    private void showRootFailedDialog() {
+        activity.runOnUiThread(() -> new CustomAlertDialog(activity)
+                .setTitleText(activity.getString(R.string.root_failed_title))
+                .setMessage(activity.getString(R.string.root_failed_message))
+                .setPositiveButton(activity.getString(R.string.close), null)
+                .show());
+    }
+
+    private void systemInstallApk(File apkFile) {
         PermissionsHandler handler = PermissionsHandler.getInstance();
         handler.setActivity(activity, permissionResultLauncher);
         handler.requestPermission(PermissionsHandler.PermissionType.UNKNOWN_SOURCES,
