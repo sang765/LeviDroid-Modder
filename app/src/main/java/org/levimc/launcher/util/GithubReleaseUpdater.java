@@ -289,7 +289,17 @@ public class GithubReleaseUpdater {
                     if (cancelled.get() || call.isCanceled()) return;
                     finished.set(true);
                     dismissProgressDialog(dialogRef);
-                    installApk(apkFile);
+                    try {
+                        installApk(apkFile);
+                    } catch (Exception installError) {
+                        // Install failures must not surface as a download error, and
+                        // the "installing" dialog must not be left hanging.
+                        dismissInstallingDialog();
+                        activity.runOnUiThread(() -> {
+                            if (activity.isFinishing() || activity.isDestroyed()) return;
+                            Toast.makeText(activity, activity.getString(R.string.install_failed, installError.getMessage()), Toast.LENGTH_LONG).show();
+                        });
+                    }
                 } catch (Exception e) {
                     if (call.isCanceled() || cancelled.get()) return;
                     dismissProgressDialog(dialogRef);
@@ -432,10 +442,13 @@ public class GithubReleaseUpdater {
         showInstallingDialog();
         ComponentName componentName = new ComponentName(
                 activity.getPackageName(), UpdateInstallerService.class.getName());
+        // processNameSuffix is mandatory in Shizuku 13.x — forAdd() rejects a null
+        // suffix with an NPE, so bindUserService would throw before connecting.
         Shizuku.UserServiceArgs args = new Shizuku.UserServiceArgs(componentName)
                 .daemon(false)
                 .version(1)
-                .tag("update-installer");
+                .tag("update-installer")
+                .processNameSuffix("update_installer");
         // Guards against a connect that arrives after the bind timeout fired.
         AtomicBoolean connected = new AtomicBoolean(false);
         Handler mainHandler = new Handler(Looper.getMainLooper());
