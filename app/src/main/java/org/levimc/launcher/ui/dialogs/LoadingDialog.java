@@ -12,7 +12,6 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import org.levimc.launcher.R;
-import org.levimc.launcher.util.PersonalizationManager;
 
 public class LoadingDialog extends Dialog {
     private TextView messageView;
@@ -44,13 +43,10 @@ public class LoadingDialog extends Dialog {
             messageView.setText(pendingMessage);
         }
         
-        try {
-            PersonalizationManager pm = new PersonalizationManager(getContext());
-            int accent = pm.getAccentColor();
-            if (accent != 0 && progressBar != null) {
-                progressBar.setIndeterminateTintList(ColorStateList.valueOf(accent));
-            }
-        } catch (Exception ignored) {}
+        int accent = DialogStyler.accent(getContext());
+        if (progressBar != null) {
+            progressBar.setIndeterminateTintList(ColorStateList.valueOf(accent));
+        }
     }
 
     public void setMessage(CharSequence message) {

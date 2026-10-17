@@ -42,6 +42,7 @@ import org.levimc.launcher.ui.adapter.StructuresAdapter;
 import org.levimc.launcher.ui.adapter.WorldsAdapter;
 import org.levimc.launcher.ui.animation.DynamicAnim;
 import org.levimc.launcher.ui.dialogs.CustomAlertDialog;
+import org.levimc.launcher.ui.dialogs.DialogStyler;
 import org.levimc.launcher.util.LauncherStorage;
 
 import android.provider.MediaStore;
@@ -942,11 +943,7 @@ public class ContentListActivity extends BaseActivity {
         
         dialog.show();
 
-        org.levimc.launcher.util.PersonalizationManager structPm = new org.levimc.launcher.util.PersonalizationManager(this);
-        int structAccent = structPm.getAccentColor();
-        if (structAccent != 0) {
-            dialog.getButton(AlertDialog.BUTTON_NEGATIVE).setTextColor(structAccent);
-        }
+        DialogStyler.applyAccent(dialog);
     }
 
     private void startStructureExport(WorldItem world, StructureExtractor.StructureInfo structure) {
@@ -1025,16 +1022,8 @@ public class ContentListActivity extends BaseActivity {
             })
             .setNegativeButton(R.string.cancel, null)
             .show();
-        
-        org.levimc.launcher.util.PersonalizationManager twPm = new org.levimc.launcher.util.PersonalizationManager(this);
-        int twAccent = twPm.getAccentColor();
-        if (twAccent != 0) {
-            dialog.getButton(AlertDialog.BUTTON_POSITIVE).setTextColor(twAccent);
-            dialog.getButton(AlertDialog.BUTTON_NEGATIVE).setTextColor(twAccent);
-        } else {
-            dialog.getButton(AlertDialog.BUTTON_POSITIVE).setTextColor(getResources().getColor(R.color.accent_text, getTheme()));
-            dialog.getButton(AlertDialog.BUTTON_NEGATIVE).setTextColor(getResources().getColor(R.color.accent_text, getTheme()));
-        }
+
+        DialogStyler.applyAccent(dialog);
     }
 
     private void showTransferPackDialog(ResourcePackItem pack) {
@@ -1077,16 +1066,8 @@ public class ContentListActivity extends BaseActivity {
             })
             .setNegativeButton(R.string.cancel, null)
             .show();
-        
-        org.levimc.launcher.util.PersonalizationManager tpPm = new org.levimc.launcher.util.PersonalizationManager(this);
-        int tpAccent = tpPm.getAccentColor();
-        if (tpAccent != 0) {
-            dialog.getButton(AlertDialog.BUTTON_POSITIVE).setTextColor(tpAccent);
-            dialog.getButton(AlertDialog.BUTTON_NEGATIVE).setTextColor(tpAccent);
-        } else {
-            dialog.getButton(AlertDialog.BUTTON_POSITIVE).setTextColor(getResources().getColor(R.color.accent_text, getTheme()));
-            dialog.getButton(AlertDialog.BUTTON_NEGATIVE).setTextColor(getResources().getColor(R.color.accent_text, getTheme()));
-        }
+
+        DialogStyler.applyAccent(dialog);
     }
 
     private void transferWorld(WorldItem world, FeatureSettings.StorageType targetType) {
@@ -1461,7 +1442,7 @@ public class ContentListActivity extends BaseActivity {
                 })
                 .setNegativeButton(R.string.cancel, null)
                 .show();
-        applyDialogAccent(dialog);
+        DialogStyler.applyAccent(dialog);
     }
 
     private void disableCurrentStorageOption(RadioButton internal, RadioButton external, RadioButton isolationInternal, RadioButton isolationExternal) {
@@ -1479,14 +1460,6 @@ public class ContentListActivity extends BaseActivity {
         if (selectedId == R.id.radio_version_isolation_internal) return FeatureSettings.StorageType.VERSION_ISOLATION_INTERNAL;
         if (selectedId == R.id.radio_version_isolation) return FeatureSettings.StorageType.VERSION_ISOLATION_EXTERNAL;
         return null;
-    }
-
-    private void applyDialogAccent(AlertDialog dialog) {
-        org.levimc.launcher.util.PersonalizationManager pm = new org.levimc.launcher.util.PersonalizationManager(this);
-        int accent = pm.getAccentColor();
-        int color = accent != 0 ? accent : getResources().getColor(R.color.accent_text, getTheme());
-        dialog.getButton(AlertDialog.BUTTON_POSITIVE).setTextColor(color);
-        dialog.getButton(AlertDialog.BUTTON_NEGATIVE).setTextColor(color);
     }
 
     private void transferWorldBatch(List<WorldItem> items, FeatureSettings.StorageType targetType, int index, int success, int failed) {

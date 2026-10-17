@@ -5,7 +5,7 @@
     android:orientation="vertical"
     android:padding="22dp"
     android:minWidth="300dp"
-    android:background="@drawable/bg_libs_repair_dialog">
+    android:background="@drawable/dialog_background">
 
     <LinearLayout
         android:layout_width="match_parent"

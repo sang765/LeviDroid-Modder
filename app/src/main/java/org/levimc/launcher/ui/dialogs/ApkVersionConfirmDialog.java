@@ -22,7 +22,6 @@ import androidx.fragment.app.DialogFragment;
 import org.levimc.launcher.R;
 import org.levimc.launcher.ui.animation.DynamicAnim;
 import org.levimc.launcher.util.LauncherStorage;
-import org.levimc.launcher.util.PersonalizationManager;
 
 import java.io.File;
 import java.util.regex.Pattern;
@@ -131,14 +130,11 @@ public class ApkVersionConfirmDialog extends DialogFragment {
         DynamicAnim.applyPressScale(btnCancel);
 
         try {
-            PersonalizationManager pm = new PersonalizationManager(context);
-            int accent = pm.getAccentColor();
-            if (accent != 0) {
-                title.setTextColor(accent);
-                editVersionName.setBackground(createAccentEditTextBackground(context, accent));
-                btnInstall.setBackgroundTintList(ColorStateList.valueOf(accent));
-                btnInstall.setTextColor(Color.WHITE);
-            }
+            int accent = DialogStyler.accent(context);
+            title.setTextColor(accent);
+            editVersionName.setBackground(createAccentEditTextBackground(context, accent));
+            btnInstall.setBackgroundTintList(ColorStateList.valueOf(accent));
+            btnInstall.setTextColor(Color.WHITE);
         } catch (Exception ignored) {}
 
         return dialog;
