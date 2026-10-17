@@ -53,6 +53,7 @@ public class PersonalizationManager {
     private static final String KEY_BG_POSTER_PATH = "bg_poster_path";
     private static final String KEY_BG_IMAGE_BLUR = "bg_image_blur";
     private static final String KEY_BG_IMAGE_BRIGHTNESS = "bg_image_brightness";
+    private static final String KEY_NAV_BAR_POSITION = "nav_bar_position";
 
     public static final int BG_BLUR_MIN = 0;
     public static final int BG_BLUR_MAX = 25;
@@ -140,6 +141,17 @@ public class PersonalizationManager {
 
     public void clearAccentColor() {
         prefs.edit().remove(KEY_ACCENT_COLOR).apply();
+        sChangeGeneration.incrementAndGet();
+    }
+
+    // "top" (default), "bottom", "left", "right" — BaseActivity rebuilds the
+    // wrapper orientation per activity recreate, so bump the generation too.
+    public String getNavBarPosition() {
+        return prefs.getString(KEY_NAV_BAR_POSITION, "top");
+    }
+
+    public void setNavBarPosition(String position) {
+        prefs.edit().putString(KEY_NAV_BAR_POSITION, position).apply();
         sChangeGeneration.incrementAndGet();
     }
 

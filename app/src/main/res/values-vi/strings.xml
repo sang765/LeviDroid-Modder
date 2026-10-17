@@ -1120,4 +1120,9 @@
     <string name="patch_warning_message">Minecraft Patch thường có thêm các bản vá sửa sẵn vậy nên nếu bạn chạy mod ở trên Minecraft Patch thì có thể game sẽ không hoạt động ổn định so với Minecraft bình thường hoặc thậm chí tệ hơn là crash luôn game, vậy nên hãy cân nhắc trước khi chơi Minecraft Patch với mod của LeviLauncher</string>
     <string name="patch_warning_dont_show">Không hiển thị cảnh báo này trong tương lai</string>
     <string name="patch_warning_ack">Đã Hiểu</string>
+    <string name="nav_bar_position_title">Vị trí thanh điều hướng</string>
+    <string name="nav_position_top">Trên</string>
+    <string name="nav_position_bottom">Dưới</string>
+    <string name="nav_position_left">Trái</string>
+    <string name="nav_position_right">Phải</string>
 </resources>

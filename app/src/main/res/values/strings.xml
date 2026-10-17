@@ -1137,4 +1137,9 @@
     <string name="patch_warning_message">Minecraft Patch builds usually come with fixes and patches already applied, so running mods on top of them can be less stable than on a normal Minecraft build — or even crash the game. Think twice before combining Minecraft Patch with your LeviLauncher mods.</string>
     <string name="patch_warning_dont_show">Do not show this warning again</string>
     <string name="patch_warning_ack">Got it</string>
+    <string name="nav_bar_position_title">Navigation bar position</string>
+    <string name="nav_position_top">Top</string>
+    <string name="nav_position_bottom">Bottom</string>
+    <string name="nav_position_left">Left</string>
+    <string name="nav_position_right">Right</string>
 </resources>
