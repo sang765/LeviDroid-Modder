@@ -234,21 +234,20 @@ public class BaseActivity extends AppCompatActivity {
         navBar.setOnTouchListener((v, event) -> {
             switch (event.getAction()) {
                 case MotionEvent.ACTION_DOWN -> expandRail();
-                case MotionEvent.ACTION_UP:
-                case MotionEvent.ACTION_CANCEL -> collapseRail();
+                case MotionEvent.ACTION_UP, MotionEvent.ACTION_CANCEL -> collapseRail();
             }
             return false;
         });
     }
 
     private void expandRail() {
-        if (railSpring != null) railSpring.animateToValue(railExpandedWidth);
+        if (railSpring != null) railSpring.animateToFinalPosition(railExpandedWidth);
     }
 
     private void collapseRail() {
         // A mouse click inside a hovered rail fires ACTION_UP; keep it open
         // until the pointer actually leaves.
-        if (railSpring != null && !railHovered) railSpring.animateToValue(railCollapsedWidth);
+        if (railSpring != null && !railHovered) railSpring.animateToFinalPosition(railCollapsedWidth);
     }
 
     // In the side-rail layout each label sits in its own wrapper that owns the
