@@ -375,6 +375,19 @@ public class GithubReleaseUpdater {
         return R.string.install_method_system;
     }
 
+    /**
+     * Called right after the user picks Shizuku so the permission prompt shows
+     * immediately, instead of silently deferring to install time. No listener is
+     * registered here — we only want the system dialog; the install path re-checks
+     * grant state later.
+     */
+    public static void ensureShizukuPermission() {
+        if (!Shizuku.pingBinder()) return;
+        if (Shizuku.checkSelfPermission() != PackageManager.PERMISSION_GRANTED) {
+            Shizuku.requestPermission(REQ_SHIZUKU_PERMISSION);
+        }
+    }
+
     private static SharedPreferences prefs(Context context) {
         return context.getSharedPreferences("update_prefs", Context.MODE_PRIVATE);
     }

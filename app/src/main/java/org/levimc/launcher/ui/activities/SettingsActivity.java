@@ -837,7 +837,8 @@ public class SettingsActivity extends BaseActivity {
 
         Button btnInstallMethod = findViewById(R.id.btn_install_method);
         if (btnInstallMethod != null) {
-            btnInstallMethod.setText(GithubReleaseUpdater.getInstallMethodLabel(this));
+            btnInstallMethod.setText(getString(R.string.install_method_button,
+                    getString(GithubReleaseUpdater.getInstallMethodLabel(this))));
             btnInstallMethod.setOnClickListener(v -> showInstallMethodDialog(btnInstallMethod));
         }
 
@@ -883,7 +884,11 @@ public class SettingsActivity extends BaseActivity {
                 .setTitleText(getString(R.string.install_method_title))
                 .setItems(labels, (dialog, which) -> {
                     GithubReleaseUpdater.setInstallMethod(this, methods[which]);
-                    button.setText(GithubReleaseUpdater.getInstallMethodLabel(this));
+                    button.setText(getString(R.string.install_method_button,
+                            getString(GithubReleaseUpdater.getInstallMethodLabel(this))));
+                    if (GithubReleaseUpdater.METHOD_SHIZUKU.equals(methods[which])) {
+                        GithubReleaseUpdater.ensureShizukuPermission();
+                    }
                 })
                 .setNegativeButton(getString(R.string.cancel), null)
                 .show();
