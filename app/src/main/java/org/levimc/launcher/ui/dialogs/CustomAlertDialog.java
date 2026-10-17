@@ -407,7 +407,7 @@ public class CustomAlertDialog extends Dialog {
             textView.setPadding(padding, padding, padding, padding);
             textView.setTextSize(14);
             textView.setTextColor(parent.getContext().getResources().getColor(R.color.text_primary, null));
-            textView.setBackgroundResource(android.R.drawable.list_selector_background);
+            textView.setBackgroundResource(R.drawable.dialog_item_ripple);
             return new ViewHolder(textView);
         }
 
