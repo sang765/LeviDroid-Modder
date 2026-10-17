@@ -1125,6 +1125,8 @@
     <string name="game_crash_close">Close</string>
     <string name="game_crash_open_log">Open crash log</string>
     <string name="game_crash_share_log">Share crash log</string>
+    <string name="crash_logs_title">Crash logs</string>
+    <string name="crash_logs_empty">No crash logs yet</string>
     <string name="mod_impact_title">Possible mod impact</string>
     <string name="mod_impact_message">After analyzing the crash log, we think this crash was most likely caused by one of the mods you have installed. Please give it a check.</string>
     <string name="mod_impact_flagged_label">Flagged mods:</string>

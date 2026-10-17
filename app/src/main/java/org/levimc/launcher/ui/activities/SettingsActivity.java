@@ -31,6 +31,7 @@ import com.google.android.material.switchmaterial.SwitchMaterial;
 import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.core.content.ContextCompat;
+import androidx.core.content.FileProvider;
 
 import org.levimc.launcher.R;
 import org.levimc.launcher.core.crash.CrashReporter;
@@ -41,6 +42,7 @@ import org.levimc.launcher.ui.dialogs.CustomAlertDialog;
 import org.levimc.launcher.ui.dialogs.LogcatOverlayManager;
 import org.levimc.launcher.util.GithubReleaseUpdater;
 import org.levimc.launcher.util.LanguageManager;
+import org.levimc.launcher.util.LauncherStorage;
 import org.levimc.launcher.util.PermissionsHandler;
 import org.levimc.launcher.util.PersonalizationManager;
 import org.levimc.launcher.util.LauncherBackgroundController;
@@ -48,7 +50,9 @@ import org.levimc.launcher.util.ThemeManager;
 import org.levimc.launcher.util.WallpaperColorExtractor;
 
 import java.text.DateFormat;
+import java.io.File;
 import java.lang.ref.WeakReference;
+import java.util.Arrays;
 import java.util.Date;
 import java.util.Locale;
 import java.util.concurrent.ThreadLocalRandom;
@@ -584,6 +588,12 @@ public class SettingsActivity extends BaseActivity {
             btnCheckUpdate.setTextColor(Color.WHITE);
         }
 
+        Button btnCrashLogs = findViewById(R.id.btn_crash_logs);
+        if (btnCrashLogs != null && accent != 0) {
+            btnCrashLogs.setBackgroundTintList(ColorStateList.valueOf(accent));
+            btnCrashLogs.setTextColor(Color.WHITE);
+        }
+
         Button btnUpdatePreloaderSigs = findViewById(R.id.btn_update_preloader_sigs);
         if (btnUpdatePreloaderSigs != null && accent != 0) {
             btnUpdatePreloaderSigs.setBackgroundTintList(ColorStateList.valueOf(accent));
@@ -816,11 +826,44 @@ public class SettingsActivity extends BaseActivity {
         Button btnCheckUpdate = findViewById(R.id.btn_check_update);
         btnCheckUpdate.setOnClickListener(v -> handleUpdateButtonClick());
 
+        Button btnCrashLogs = findViewById(R.id.btn_crash_logs);
+        btnCrashLogs.setOnClickListener(v -> showCrashLogsDialog());
+
         preloaderSigsLastUpdateText = findViewById(R.id.preloader_sigs_last_update);
         preloaderSigsUpdateButton = findViewById(R.id.btn_update_preloader_sigs);
         refreshPreloaderSigsLastUpdateUi();
         if (preloaderSigsUpdateButton != null) {
             preloaderSigsUpdateButton.setOnClickListener(v -> handlePreloaderSigsUpdateClick());
+        }
+    }
+
+    private void showCrashLogsDialog() {
+        File[] files = LauncherStorage.getCrashLogsDir(this).listFiles(File::isFile);
+        if (files == null || files.length == 0) {
+            Toast.makeText(this, R.string.crash_logs_empty, Toast.LENGTH_SHORT).show();
+            return;
+        }
+        Arrays.sort(files, (a, b) -> Long.compare(b.lastModified(), a.lastModified()));
+        DateFormat fmt = DateFormat.getDateTimeInstance(DateFormat.MEDIUM, DateFormat.SHORT);
+        String[] items = new String[files.length];
+        for (int i = 0; i < files.length; i++) {
+            items[i] = fmt.format(new Date(files[i].lastModified())) + " · " + files[i].getName();
+        }
+        new CustomAlertDialog(this)
+                .setTitleText(getString(R.string.crash_logs_title))
+                .setItems(items, (dialog, which) -> openCrashLog(files[which]))
+                .setNegativeButton(getString(R.string.cancel), null)
+                .show();
+    }
+
+    private void openCrashLog(File file) {
+        try {
+            Uri uri = FileProvider.getUriForFile(this, getPackageName() + ".fileprovider", file);
+            Intent intent = new Intent(Intent.ACTION_VIEW)
+                    .setDataAndType(uri, "text/plain")
+                    .addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
+            startActivity(Intent.createChooser(intent, null));
+        } catch (Throwable ignored) {
         }
     }
 

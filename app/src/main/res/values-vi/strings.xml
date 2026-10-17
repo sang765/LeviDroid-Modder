@@ -1108,6 +1108,8 @@
     <string name="game_crash_close">Đóng</string>
     <string name="game_crash_open_log">Mở crash log</string>
     <string name="game_crash_share_log">Share crash log</string>
+    <string name="crash_logs_title">Nhật ký lỗi</string>
+    <string name="crash_logs_empty">Chưa có nhật ký lỗi nào</string>
     <string name="mod_impact_title">Phát hiện ảnh hưởng</string>
     <string name="mod_impact_message">Sau khi phân tích crash log thì chúng mình nhận thấy đây khả năng cao crash một trong số mod mà bạn đã cài đặt, Hãy kiểm tra thử xem như thế nào nhé.</string>
     <string name="mod_impact_flagged_label">Mod bị gắn cờ:</string>
