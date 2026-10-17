@@ -9,7 +9,9 @@ import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.net.Uri;
 import android.os.Build;
+import android.os.Handler;
 import android.os.IBinder;
+import android.os.Looper;
 import android.provider.Settings;
 import android.util.Log;
 import android.view.View;
@@ -351,6 +353,12 @@ public class GithubReleaseUpdater {
     public static final String METHOD_ROOT = "root";
 
     private static final int REQ_SHIZUKU_PERMISSION = 1001;
+    // shortcut: bindUserService has no failure callback — a dead or wedged
+    // Shizuku server would leave the "installing" dialog up forever, so give
+    // the bind a deadline and fail into the help dialog (pattern from
+    // InstallerX Revived, which instead relies on the user backing out).
+    private static final long SHIZUKU_BIND_TIMEOUT_MS = 15_000L;
+    private final AtomicReference<CustomAlertDialog> installingDialogRef = new AtomicReference<>();
 
     public static String getInstallMethod(Context context) {
         return prefs(context).getString("install_method", METHOD_SYSTEM);
@@ -415,9 +423,20 @@ public class GithubReleaseUpdater {
                 .daemon(false)
                 .version(1)
                 .tag("update-installer");
+        // Guards against a connect that arrives after the bind timeout fired.
+        AtomicBoolean connected = new AtomicBoolean(false);
+        Handler mainHandler = new Handler(Looper.getMainLooper());
         ServiceConnection connection = new ServiceConnection() {
             @Override
             public void onServiceConnected(ComponentName name, IBinder binder) {
+                if (!connected.compareAndSet(false, true)) {
+                    try {
+                        Shizuku.unbindUserService(args, this, true);
+                    } catch (Throwable ignored) {
+                    }
+                    return;
+                }
+                mainHandler.removeCallbacksAndMessages(null);
                 IUpdateInstallerService service = IUpdateInstallerService.Stub.asInterface(binder);
                 new Thread(() -> {
                     int exit = -1;
@@ -450,6 +469,16 @@ public class GithubReleaseUpdater {
             }
         };
         Shizuku.bindUserService(args, connection);
+        mainHandler.postDelayed(() -> {
+            if (connected.compareAndSet(false, true)) {
+                try {
+                    Shizuku.unbindUserService(args, connection, true);
+                } catch (Throwable ignored) {
+                }
+                dismissInstallingDialog();
+                showShizukuHelpDialog(R.string.shizuku_not_running);
+            }
+        }, SHIZUKU_BIND_TIMEOUT_MS);
     }
 
     private void rootInstallApk(File apkFile) {
@@ -478,10 +507,22 @@ public class GithubReleaseUpdater {
     }
 
     private void showInstallingDialog() {
-        activity.runOnUiThread(() -> new CustomAlertDialog(activity)
-                .setMessage(activity.getString(R.string.update_installing_message))
-                .setPositiveButton(activity.getString(R.string.close), null)
-                .show());
+        activity.runOnUiThread(() -> {
+            CustomAlertDialog dialog = new CustomAlertDialog(activity)
+                    .setMessage(activity.getString(R.string.update_installing_message))
+                    .setPositiveButton(activity.getString(R.string.close), null);
+            installingDialogRef.set(dialog);
+            dialog.show();
+        });
+    }
+
+    private void dismissInstallingDialog() {
+        activity.runOnUiThread(() -> {
+            CustomAlertDialog dialog = installingDialogRef.getAndSet(null);
+            if (dialog != null && dialog.isShowing()) {
+                dialog.dismissImmediately();
+            }
+        });
     }
 
     private void showShizukuHelpDialog(int messageRes) {
