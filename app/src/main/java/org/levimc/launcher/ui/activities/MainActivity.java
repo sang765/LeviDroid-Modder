@@ -443,7 +443,24 @@ import okhttp3.OkHttpClient;
         });
 
         int edgeMargin = (int) (4 * getResources().getDisplayMetrics().density);
-        popup.showAsDropDown(anchor, -edgeMargin, edgeMargin / 4, Gravity.END);
+        // showAsDropDown always opens below the anchor. The avatar sits near the
+        // bottom edge in all navbar positions (bottom bar, and side rails where a
+        // weight-1 spacer pushes it down), so "below" lands off-screen. Measure the
+        // popup and flip above the anchor when there isn't room underneath.
+        content.measure(
+                View.MeasureSpec.makeMeasureSpec(0, View.MeasureSpec.UNSPECIFIED),
+                View.MeasureSpec.makeMeasureSpec(0, View.MeasureSpec.UNSPECIFIED));
+        int popupHeight = content.getMeasuredHeight();
+        int[] anchorLoc = new int[2];
+        anchor.getLocationOnScreen(anchorLoc);
+        int spaceBelow = getResources().getDisplayMetrics().heightPixels
+                - (anchorLoc[1] + anchor.getHeight());
+        if (spaceBelow < popupHeight + edgeMargin) {
+            int yoff = -(anchor.getHeight() + popupHeight + edgeMargin);
+            popup.showAsDropDown(anchor, -edgeMargin, yoff, Gravity.END);
+        } else {
+            popup.showAsDropDown(anchor, -edgeMargin, edgeMargin / 4, Gravity.END);
+        }
 
         DynamicAnim.springAlphaTo(content, 1f).start();
         DynamicAnim.springTranslationYTo(content, 0f).start();
