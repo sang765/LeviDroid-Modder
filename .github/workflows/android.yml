@@ -117,7 +117,7 @@ jobs:
           path: app/build/outputs/apk/debug/*.apk
 
       - name: Upload R8 mappings
-        if: env.HAS_GOOGLE_SERVICES == 'true'
+        if: always()
         uses: actions/upload-artifact@v4.6.2
         with:
           name: LeviLauncher-r8-mappings-${{ github.sha }}
