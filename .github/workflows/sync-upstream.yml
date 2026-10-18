@@ -23,6 +23,10 @@ jobs:
       UPSTREAM_REPO: LiteLDev/LeviLaunchroid
       SYNC_BRANCH: sync/upstream-main
       SYNC_TITLE: "chore: sync upstream/main into dev"
+      # The step below adds an "upstream" remote; without this, gh would resolve
+      # the repository from it and try to open the PR on LiteLDev/LeviLaunchroid,
+      # where the token has no access.
+      GH_REPO: ${{ github.repository }}
     steps:
       - uses: actions/checkout@v7
         with:
