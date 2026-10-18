@@ -3,7 +3,7 @@ name: Deploy documentation
 on:
   push:
     branches:
-      - main
+      - dev
     paths:
       - .github/workflows/docs.yml
       - docs/**
@@ -46,7 +46,7 @@ jobs:
           path: docs/dist/
 
   deploy:
-    if: github.ref == 'refs/heads/main' && github.event_name == 'push'
+    if: github.ref == 'refs/heads/dev' && github.event_name == 'push'
     needs: build
     runs-on: ubuntu-24.04
     concurrency:
