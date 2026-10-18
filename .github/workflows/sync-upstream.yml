@@ -143,3 +143,38 @@ jobs:
             echo "> close this issue as **completed**."
           } > /tmp/issue.md
           gh issue create --title "${TITLE}" --body-file /tmp/issue.md
+
+      # Runs on every dev push so the sync PR / conflict issue shows up right on the
+      # Actions run page instead of having to look for it.
+      - name: Report sync result
+        if: always()
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          PR_URL=$(gh pr list --base dev --head "${SYNC_BRANCH}" --state open --json url --jq '.[0].url // empty' || true)
+          PR_TITLE=$(gh pr list --base dev --head "${SYNC_BRANCH}" --state open --json title --jq '.[0].title // empty' || true)
+          ISSUE_URL=$(gh issue list --state open --search 'in:title "Upstream sync blocked"' --json url --jq '.[0].url // empty' || true)
+          ISSUE_TITLE=$(gh issue list --state open --search 'in:title "Upstream sync blocked"' --json title --jq '.[0].title // empty' || true)
+
+          COUNT="${{ steps.check.outputs.count }}"
+          CONFLICT="${{ steps.probe.outputs.conflict }}"
+          if [ -z "${COUNT}" ]; then
+            OUTCOME="sync did not run"
+          elif [ "${COUNT}" = "0" ]; then
+            OUTCOME="dev already contains upstream/main"
+          elif [ "${CONFLICT}" = "true" ]; then
+            OUTCOME="conflict issue opened"
+          else
+            OUTCOME="sync pull request opened"
+          fi
+
+          echo "outcome: ${OUTCOME}"
+          echo "sync PR:   ${PR_URL:-none}"
+          echo "sync issue: ${ISSUE_URL:-none}"
+          {
+            echo "## Upstream sync"
+            echo
+            echo "- Outcome: **${OUTCOME}**"
+            echo "- Sync PR: ${PR_URL:-none}${PR_TITLE:+ — ${PR_TITLE}}"
+            echo "- Conflict issue: ${ISSUE_URL:-none}${ISSUE_TITLE:+ — ${ISSUE_TITLE}}"
+          } >> "${GITHUB_STEP_SUMMARY}"
