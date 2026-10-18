@@ -186,7 +186,8 @@
     <string name="theme_title">Chế độ chủ đề</string>
     <string name="theme_follow_system">Theo hệ thống</string>
     <string name="theme_light">Sáng</string>
-    <string name="theme_dark">Tối AMOLED</string>
+    <string name="theme_dark">Tối</string>
+    <string name="theme_amoled">AMOLED</string>
     <string name="theme_amoled_desc">Sử dụng background màu đen thuần giúp tiết kiệm pin trên các thiết bị sử dụng màn hình AMOLED.</string>
 
     <string name="error_no_browser">Không có trình duyệt nào khả dụng</string>

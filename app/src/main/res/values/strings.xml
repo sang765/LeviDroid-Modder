@@ -186,7 +186,8 @@
     <string name="theme_title">Theme Mode</string>
     <string name="theme_follow_system">Follow System</string>
     <string name="theme_light">Light Mode</string>
-    <string name="theme_dark">AMOLED Dark</string>
+    <string name="theme_dark">Dark</string>
+    <string name="theme_amoled">AMOLED</string>
     <string name="theme_amoled_desc">AMOLED Dark uses a pure black background to save battery on screens that support it.</string>
 
     <string name="error_no_browser">No browser available</string>

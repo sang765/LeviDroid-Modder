@@ -392,6 +392,8 @@
                                     android:layout_marginStart="6dp"
                                     android:text="@string/theme_follow_system"
                                     android:fontFamily="@font/misans"
+                                    android:maxLines="1"
+                                    android:ellipsize="end"
                                     android:textColor="@color/on_surface"
                                     android:textSize="12sp" />
                             </LinearLayout>
@@ -426,6 +428,8 @@
                                     android:layout_marginStart="6dp"
                                     android:text="@string/theme_light"
                                     android:fontFamily="@font/misans"
+                                    android:maxLines="1"
+                                    android:ellipsize="end"
                                     android:textColor="@color/on_surface"
                                     android:textSize="12sp" />
                             </LinearLayout>
@@ -460,6 +464,44 @@
                                     android:layout_marginStart="6dp"
                                     android:text="@string/theme_dark"
                                     android:fontFamily="@font/misans"
+                                    android:maxLines="1"
+                                    android:ellipsize="end"
+                                    android:textColor="@color/on_surface"
+                                    android:textSize="12sp" />
+                            </LinearLayout>
+
+                            <View
+                                android:layout_width="1dp"
+                                android:layout_height="match_parent"
+                                android:layout_marginVertical="8dp"
+                                android:background="@color/divider"
+                                android:alpha="0.3" />
+
+                            <LinearLayout
+                                android:id="@+id/theme_item_amoled"
+                                android:layout_width="0dp"
+                                android:layout_height="40dp"
+                                android:layout_weight="1"
+                                android:gravity="center"
+                                android:orientation="horizontal"
+                                android:background="?attr/selectableItemBackground"
+                                android:clickable="true"
+                                android:focusable="true">
+                                <ImageView
+                                    android:id="@+id/theme_icon_amoled"
+                                    android:layout_width="16dp"
+                                    android:layout_height="16dp"
+                                    android:src="@drawable/ic_moon_filled"
+                                    app:tint="@color/text_secondary" />
+                                <TextView
+                                    android:id="@+id/theme_text_amoled"
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:layout_marginStart="6dp"
+                                    android:text="@string/theme_amoled"
+                                    android:fontFamily="@font/misans"
+                                    android:maxLines="1"
+                                    android:ellipsize="end"
                                     android:textColor="@color/on_surface"
                                     android:textSize="12sp" />
                             </LinearLayout>

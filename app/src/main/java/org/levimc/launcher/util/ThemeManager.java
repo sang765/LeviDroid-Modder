@@ -1,6 +1,7 @@
 package org.levimc.launcher.util;
 
 import android.app.Activity;
+import android.content.Context;
 import android.content.SharedPreferences;
 
 import androidx.appcompat.app.AppCompatDelegate;
@@ -8,7 +9,8 @@ import androidx.appcompat.app.AppCompatDelegate;
 public class ThemeManager {
     public static final int MODE_FOLLOW_SYSTEM = 0;
     public static final int MODE_LIGHT = 1;
-    public static final int MODE_DARK = 2;
+    public static final int MODE_AMOLED = 2;
+    public static final int MODE_DARK = 3;
 
     private static final String THEME_PREFS = "theme_prefs";
     private static final String THEME_MODE_KEY = "theme_mode";
@@ -44,11 +46,17 @@ public class ThemeManager {
                 AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO);
                 break;
             case MODE_DARK:
+            case MODE_AMOLED:
                 AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES);
                 break;
             default: // MODE_FOLLOW_SYSTEM
                 AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_FOLLOW_SYSTEM);
         }
+    }
+
+    public static boolean isAmoledMode(Context context) {
+        return context.getSharedPreferences(THEME_PREFS, Context.MODE_PRIVATE)
+                .getInt(THEME_MODE_KEY, MODE_FOLLOW_SYSTEM) == MODE_AMOLED;
     }
 
     public int getCurrentMode() {

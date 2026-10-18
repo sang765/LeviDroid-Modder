@@ -328,13 +328,15 @@ public class SettingsActivity extends BaseActivity {
         View itemSystem = findViewById(R.id.theme_item_system);
         View itemLight = findViewById(R.id.theme_item_light);
         View itemDark = findViewById(R.id.theme_item_dark);
+        View itemAmoled = findViewById(R.id.theme_item_amoled);
 
         refreshThemeSelectionUI();
 
-        if (itemSystem != null && itemLight != null && itemDark != null) {
-            itemSystem.setOnClickListener(v -> { themeManager.setThemeMode(0); });
-            itemLight.setOnClickListener(v -> { themeManager.setThemeMode(1); });
-            itemDark.setOnClickListener(v -> { themeManager.setThemeMode(2); });
+        if (itemSystem != null && itemLight != null && itemDark != null && itemAmoled != null) {
+            itemSystem.setOnClickListener(v -> { themeManager.setThemeMode(ThemeManager.MODE_FOLLOW_SYSTEM); });
+            itemLight.setOnClickListener(v -> { themeManager.setThemeMode(ThemeManager.MODE_LIGHT); });
+            itemDark.setOnClickListener(v -> { themeManager.setThemeMode(ThemeManager.MODE_DARK); });
+            itemAmoled.setOnClickListener(v -> { themeManager.setThemeMode(ThemeManager.MODE_AMOLED); });
         }
 
         setupColorPicker();
@@ -390,31 +392,38 @@ public class SettingsActivity extends BaseActivity {
         TextView textSystem = findViewById(R.id.theme_text_system);
         TextView textLight = findViewById(R.id.theme_text_light);
         TextView textDark = findViewById(R.id.theme_text_dark);
+        TextView textAmoled = findViewById(R.id.theme_text_amoled);
 
         ImageView iconSystem = findViewById(R.id.theme_icon_system);
         ImageView iconLight = findViewById(R.id.theme_icon_light);
         ImageView iconDark = findViewById(R.id.theme_icon_dark);
+        ImageView iconAmoled = findViewById(R.id.theme_icon_amoled);
 
         int accent = personalizationManager.getAccentColor();
         int selectedColor = accent != 0 ? accent : getColor(R.color.on_surface);
         int unselectedColor = getColor(R.color.text_secondary);
 
         if (textSystem != null) {
-            textSystem.setTypeface(null, currentMode == 0 ? android.graphics.Typeface.BOLD : android.graphics.Typeface.NORMAL);
-            textSystem.setTextColor(currentMode == 0 ? selectedColor : getColor(R.color.on_surface));
+            textSystem.setTypeface(null, currentMode == ThemeManager.MODE_FOLLOW_SYSTEM ? android.graphics.Typeface.BOLD : android.graphics.Typeface.NORMAL);
+            textSystem.setTextColor(currentMode == ThemeManager.MODE_FOLLOW_SYSTEM ? selectedColor : getColor(R.color.on_surface));
         }
         if (textLight != null) {
-            textLight.setTypeface(null, currentMode == 1 ? android.graphics.Typeface.BOLD : android.graphics.Typeface.NORMAL);
-            textLight.setTextColor(currentMode == 1 ? selectedColor : getColor(R.color.on_surface));
+            textLight.setTypeface(null, currentMode == ThemeManager.MODE_LIGHT ? android.graphics.Typeface.BOLD : android.graphics.Typeface.NORMAL);
+            textLight.setTextColor(currentMode == ThemeManager.MODE_LIGHT ? selectedColor : getColor(R.color.on_surface));
         }
         if (textDark != null) {
-            textDark.setTypeface(null, currentMode == 2 ? android.graphics.Typeface.BOLD : android.graphics.Typeface.NORMAL);
-            textDark.setTextColor(currentMode == 2 ? selectedColor : getColor(R.color.on_surface));
+            textDark.setTypeface(null, currentMode == ThemeManager.MODE_DARK ? android.graphics.Typeface.BOLD : android.graphics.Typeface.NORMAL);
+            textDark.setTextColor(currentMode == ThemeManager.MODE_DARK ? selectedColor : getColor(R.color.on_surface));
+        }
+        if (textAmoled != null) {
+            textAmoled.setTypeface(null, currentMode == ThemeManager.MODE_AMOLED ? android.graphics.Typeface.BOLD : android.graphics.Typeface.NORMAL);
+            textAmoled.setTextColor(currentMode == ThemeManager.MODE_AMOLED ? selectedColor : getColor(R.color.on_surface));
         }
 
-        if (iconSystem != null) iconSystem.setImageTintList(android.content.res.ColorStateList.valueOf(currentMode == 0 ? selectedColor : unselectedColor));
-        if (iconLight != null) iconLight.setImageTintList(android.content.res.ColorStateList.valueOf(currentMode == 1 ? selectedColor : unselectedColor));
-        if (iconDark != null) iconDark.setImageTintList(android.content.res.ColorStateList.valueOf(currentMode == 2 ? selectedColor : unselectedColor));
+        if (iconSystem != null) iconSystem.setImageTintList(android.content.res.ColorStateList.valueOf(currentMode == ThemeManager.MODE_FOLLOW_SYSTEM ? selectedColor : unselectedColor));
+        if (iconLight != null) iconLight.setImageTintList(android.content.res.ColorStateList.valueOf(currentMode == ThemeManager.MODE_LIGHT ? selectedColor : unselectedColor));
+        if (iconDark != null) iconDark.setImageTintList(android.content.res.ColorStateList.valueOf(currentMode == ThemeManager.MODE_DARK ? selectedColor : unselectedColor));
+        if (iconAmoled != null) iconAmoled.setImageTintList(android.content.res.ColorStateList.valueOf(currentMode == ThemeManager.MODE_AMOLED ? selectedColor : unselectedColor));
     }
 
     private void setupColorPicker() {
