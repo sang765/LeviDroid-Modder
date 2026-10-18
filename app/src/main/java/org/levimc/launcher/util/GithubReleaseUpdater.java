@@ -12,6 +12,7 @@ import android.os.Build;
 import android.os.Handler;
 import android.os.IBinder;
 import android.os.Looper;
+import android.os.ParcelFileDescriptor;
 import android.provider.Settings;
 import android.util.Log;
 import android.view.View;
@@ -467,8 +468,9 @@ public class GithubReleaseUpdater {
                 new Thread(() -> {
                     int exit = -1;
                     String output = "";
-                    try {
-                        exit = service.install(apkFile.getAbsolutePath());
+                    try (ParcelFileDescriptor apk = ParcelFileDescriptor.open(
+                            apkFile, ParcelFileDescriptor.MODE_READ_ONLY)) {
+                        exit = service.install(apk, apkFile.length());
                         output = service.getOutput();
                     } catch (Throwable t) {
                         output = String.valueOf(t.getMessage());

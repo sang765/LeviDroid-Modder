@@ -1,12 +1,17 @@
 package org.levimc.launcher.util;
 
 import android.os.Parcel;
+import android.os.ParcelFileDescriptor;
 import android.os.RemoteException;
 
 import androidx.annotation.Keep;
 
 import java.io.BufferedReader;
+import java.io.FileInputStream;
+import java.io.IOException;
+import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.io.OutputStream;
 
 /**
  * Runs inside the Shizuku user service process with shell (or root) privileges.
@@ -19,15 +24,32 @@ public class UpdateInstallerService extends IUpdateInstallerService.Stub {
     private String output = "";
 
     @Override
-    public int install(String apkPath) {
+    public int install(ParcelFileDescriptor apk, long size) {
+        Process process = null;
         try {
-            Process process = Runtime.getRuntime().exec(new String[]{
-                    "sh", "-c", "pm install -r '" + apkPath + "' 2>&1"});
+            // This process runs as shell/root, which cannot read the app-private
+            // file the update was downloaded to, so the APK is streamed straight
+            // into pm's stdin the same way `adb install` does.
+            process = Runtime.getRuntime().exec(new String[]{
+                    "sh", "-c", "pm install -r -S " + size + " 2>&1"});
+            try (InputStream in = new FileInputStream(apk.getFileDescriptor());
+                 OutputStream out = process.getOutputStream()) {
+                byte[] buf = new byte[64 * 1024];
+                int len;
+                while ((len = in.read(buf)) > 0) {
+                    out.write(buf, 0, len);
+                }
+            } catch (IOException ignored) {
+                // pm can exit before the whole APK lands; its own message says
+                // more than a broken-pipe exception would.
+            }
             output = readAll(process);
             return process.waitFor();
         } catch (Exception e) {
             output = String.valueOf(e.getMessage());
             return -1;
+        } finally {
+            if (process != null) process.destroy();
         }
     }
 
