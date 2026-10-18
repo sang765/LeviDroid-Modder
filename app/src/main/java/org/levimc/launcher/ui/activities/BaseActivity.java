@@ -43,6 +43,7 @@ import org.levimc.launcher.core.news.NewsRepository;
 import org.levimc.launcher.core.news.NewsState;
 import org.levimc.launcher.ui.animation.DynamicAnim;
 import org.levimc.launcher.util.AccountTextUtils;
+import org.levimc.launcher.util.AmoledContext;
 import org.levimc.launcher.util.PersonalizationManager;
 import org.levimc.launcher.util.LauncherBackgroundController;
 import org.levimc.launcher.util.ThemeManager;
@@ -107,13 +108,10 @@ public class BaseActivity extends AppCompatActivity {
         Resources res = newBase.getResources();
         Configuration config = new Configuration(res.getConfiguration());
         config.setLocale(locale);
-        if (ThemeManager.isAmoledMode(newBase)) {
-            // The appliance uiMode type acts purely as a resource qualifier selector
-            // so values-appliance-night (pure black) wins over values-night (M3 dark).
-            config.uiMode = (config.uiMode & ~Configuration.UI_MODE_TYPE_MASK)
-                    | Configuration.UI_MODE_TYPE_APPLIANCE;
-        }
         Context localizedContext = newBase.createConfigurationContext(config);
+        if (ThemeManager.isAmoledMode(newBase)) {
+            localizedContext = new AmoledContext(localizedContext);
+        }
         super.attachBaseContext(localizedContext);
     }
 
