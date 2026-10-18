@@ -69,6 +69,7 @@ Keeps the original feature set and adds changes made for this community. Compare
 - **CurseForge made optional** – CurseForge browsing is hidden automatically in builds compiled without a CurseForge API key, instead of being always present and failing on requests.
 - **Wallpaper accent color** – The theme color settings include a "Use wallpaper color" option that picks the accent color from your wallpaper. On Android 11 and below, this asks for Storage access when the wallpaper cannot be read.
 - **Rebranded UI and credits** – The app is named "LeviLauncher Modder", with a credit card for [sang765](https://github.com/sang765) on the About screen.
+- **Other update menthod** - Unlike the original version, the Modder version can also be installed via Shizuku or Root.
 
 ---
 
