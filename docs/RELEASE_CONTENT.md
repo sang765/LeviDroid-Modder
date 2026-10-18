@@ -4,7 +4,7 @@ LeviLauncher Modder uses two small JSON files as the source of truth. Both files
 
 ## Prepare a launcher release
 
-1. Replace the text in `resources/launcher/changelog.json` with everything that changed in the release. Each item requires `text` and may include a clickable `url`. Keep the existing keys and add as many sections or items as needed.
+1. Optionally refresh `resources/launcher/changelog.json` as a seed. On a tag build the release workflow regenerates it with Gemini from the commits since the previous tag, validates the result, and bundles it into the APK, so a manual edit is only needed when you want to steer the wording or when the API is unavailable. Each item requires `text` and may include a clickable `url`.
 2. Run `python3 scripts/validate_release_content.py`.
 3. Commit the release content, create the version tag, and push both the commit and tag:
 
@@ -18,7 +18,7 @@ git push origin main
 git push origin v1.5.16
 ```
 
-The version is written only in the Git tag. `app/build.gradle` turns the most recent `v...` tag into `BuildConfig.VERSION_NAME`, so the version is not duplicated in the changelog file. The Android release workflow also converts the same changelog JSON into the GitHub Release description.
+The version is written only in the Git tag. `app/build.gradle` turns the most recent `v...` tag into `BuildConfig.VERSION_NAME`, so the version is not duplicated in the changelog file. The Android release workflow converts the same changelog JSON into `RELEASE_NOTES.md` and publishes it as the GitHub Release description, keeping the committed file when note generation fails.
 
 The What’s new dialog is skipped on a clean installation. It appears once when Android reports that an existing installation was updated, and later updates are tracked with the APK version code.
 
