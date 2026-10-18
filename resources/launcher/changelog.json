@@ -1,28 +1,39 @@
-
 {
   "schemaVersion": 1,
-  "headline": "LeviLauncher Modder v1.5.27",
-  "summary": "Redesigned the CurseForge interface, fixed Microsoft and Xbox login issues, and simplified storage access and permissions.",
+  "headline": "LeviLauncher Modder v1.5.27-modder.35",
+  "summary": "This release resolves an issue when installing app updates and refreshes the documentation site while staying synchronized with upstream updates.",
   "sections": [
     {
       "title": "Improvements",
       "items": [
         {
-          "text": "Completely redesigned the CurseForge interface with a cleaner, more compact layout and better usability on smaller screens.",
-          "url": "https://github.com/sang765/LeviDroid-Modder/commit/d6c32c1a0cb750a9c31e913b0abae3ea101d62e1"
+          "text": "Stream APK updates directly to the package manager instead of passing a private file path.",
+          "url": "https://github.com/sang765/LeviDroid-Modder/commit/47215abac185a44cf91c84f323262cc6d5b94d03"
         },
         {
-          "text": "Refactored storage access and permissions management, removing the old storage migration system.",
-          "url": "https://github.com/sang765/LeviDroid-Modder/commit/22d074d1b38afd565eb531bc17c645365cdba3b8"
+          "text": "Migrate the documentation site to levimc-kit using Impression and Craft.",
+          "url": "https://github.com/sang765/LeviDroid-Modder/commit/0579d2ad11872977222acb57b784c75ddde91184"
+        },
+        {
+          "text": "Enable GitHub Pages and configure automated documentation deployment.",
+          "url": "https://github.com/sang765/LeviDroid-Modder/commit/81c2735c4ae8809fe46c9646bd8acbd5edb5134f"
         }
       ]
     },
     {
-      "title": "Fixes",
+      "title": "Under the hood",
       "items": [
         {
-          "text": "Fixed Microsoft and Xbox login issues",
-          "url": "https://github.com/sang765/LeviDroid-Modder/commit/e9777f9e996def8a5f8c224e138e1d4691e0849e"
+          "text": "Synchronize the main branch with upstream updates while preserving fork workflows.",
+          "url": "https://github.com/sang765/LeviDroid-Modder/commit/48df0c66ede89b275919526fbc3608df2a8a08c9"
+        },
+        {
+          "text": "Restore R8 mapping file uploads during the release build process.",
+          "url": "https://github.com/sang765/LeviDroid-Modder/commit/a50854d0285fe78f5220de830e67039d88d551c6"
+        },
+        {
+          "text": "Improve repository synchronization workflows to automatically track upstream changes and conflicts.",
+          "url": "https://github.com/sang765/LeviDroid-Modder/commit/a4c0be58bf6811022b4d0d67b910c3a06461b7cc"
         }
       ]
     }

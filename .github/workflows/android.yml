@@ -24,6 +24,17 @@ jobs:
           fetch-depth: 0
           submodules: "recursive"
 
+      # Runs before the build so the generated changelog is bundled into the APK
+      # and the "What's new" dialog shows this release's notes after an update.
+      - name: Generate release notes with Gemini
+        if: startsWith(github.ref, 'refs/tags/')
+        env:
+          GOOGLE_API_KEY: ${{ secrets.GOOGLE_API_KEY }}
+          RELEASE_NOTES_MODEL: gemini-flash-latest
+        run: |
+          git fetch --tags --force
+          python3 scripts/generate_release_notes.py
+
       - name: Validate release content
         run: python3 scripts/validate_release_content.py
 
@@ -184,7 +195,7 @@ jobs:
             LeviLauncher-Modder-${{ github.ref_name }}-universal-release.apk
             LeviLauncher-Modder-${{ github.ref_name }}-arm64-v8a-release.apk
             LeviLauncher-Modder-${{ github.ref_name }}-armeabi-v7a-release.apk
-          generate_release_notes: true
+          body_path: RELEASE_NOTES.md
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
