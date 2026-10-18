@@ -305,7 +305,7 @@ public class MsftLoginActivity extends BaseActivity {
                 completeLogin(account, generation);
             } catch (InterruptedException ignored) {
                 Thread.currentThread().interrupt();
-            } catch (Exception e) {
+            } catch (Throwable e) {
                 if (isCurrentLogin(generation)) {
                     showFailure(e, generation);
                 }
@@ -427,7 +427,7 @@ public class MsftLoginActivity extends BaseActivity {
                 completeLogin(account, generation);
             } catch (InterruptedException ignored) {
                 Thread.currentThread().interrupt();
-            } catch (Exception e) {
+            } catch (Throwable e) {
                 if (isCurrentLogin(generation)) {
                     showFailure(e, generation);
                 }
