@@ -2,6 +2,7 @@ package org.levimc.launcher.ui.activities;
 
 import android.content.ActivityNotFoundException;
 import android.content.Intent;
+import android.content.res.ColorStateList;
 import android.graphics.Rect;
 import android.net.Uri;
 import android.os.Bundle;
@@ -40,6 +41,7 @@ import org.levimc.launcher.ui.dialogs.CustomAlertDialog;
 import org.levimc.launcher.ui.dialogs.InstallProgressDialog;
 import org.levimc.launcher.ui.views.MainViewModel;
 import org.levimc.launcher.ui.views.MainViewModelFactory;
+import org.levimc.launcher.util.PersonalizationManager;
 
 import java.util.ArrayList;
 import java.util.Comparator;
@@ -87,6 +89,13 @@ public final class ExternalModsActivity extends BaseActivity {
         setupRecycler();
         setupControls();
         setupFilters();
+
+        // applyPersonalization() re-tints the filter's label but not a
+        // MaterialButton stroke, which would leave the outline theme green
+        // next to accent-colored text.
+        int accent = new PersonalizationManager(this).getAccentColor();
+        if (accent == 0) accent = getColor(R.color.primary);
+        compatibleFilter.setStrokeColor(ColorStateList.valueOf(accent));
 
         TextView subtitle = findViewById(R.id.external_mods_subtitle);
         subtitle.setText(minecraftVersion.isEmpty()

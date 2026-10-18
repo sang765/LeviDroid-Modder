@@ -136,6 +136,14 @@ public final class ExternalModsAdapter extends RecyclerView.Adapter<ExternalMods
         holder.action.setOnClickListener(canInstall && listener != null
                 ? v -> listener.onClick(mod, release) : null);
         DynamicAnim.applyPressScale(holder.action);
+
+        // RecyclerView rows are inflated after applyPersonalization() walked the
+        // view tree, so — like every other adapter — the accent has to be
+        // re-applied at bind time or the row keeps the theme green.
+        android.content.Context context = holder.itemView.getContext();
+        org.levimc.launcher.util.PersonalizationManager pm =
+                new org.levimc.launcher.util.PersonalizationManager(context);
+        pm.applyAccentToView(holder.itemView, context);
     }
 
     @Override
