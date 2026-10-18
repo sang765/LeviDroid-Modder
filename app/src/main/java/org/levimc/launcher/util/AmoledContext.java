@@ -6,6 +6,8 @@ import android.content.res.Configuration;
 import android.content.res.Resources;
 import android.util.Log;
 
+import org.levimc.launcher.R;
+
 /**
  * Hands out a Resources instance pinned to the values-appliance-night (pure black)
  * palette. The configuration is built directly on the wrapped Resources so that
