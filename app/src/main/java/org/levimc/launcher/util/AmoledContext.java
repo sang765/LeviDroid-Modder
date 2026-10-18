@@ -31,10 +31,15 @@ public final class AmoledContext extends ContextWrapper {
                     | Configuration.UI_MODE_TYPE_APPLIANCE
                     | Configuration.UI_MODE_NIGHT_YES;
             Resources amoled = new Resources(base.getAssets(), base.getDisplayMetrics(), config);
+            // The deprecated ctor does not push the configuration into the shared
+            // AssetManager, and matching happens there — push it explicitly.
+            amoled.updateConfiguration(config, base.getDisplayMetrics());
             // Self-check: if the appliance qualifier is not honored, degrade to the
             // M3 dark palette instead of showing a mixed screen.
-            if (amoled.getColor(R.color.background, null) != 0xFF000000) {
-                Log.w(TAG, "AMOLED palette did not resolve, falling back to base resources");
+            int background = amoled.getColor(R.color.background, null);
+            if (background != 0xFF000000) {
+                Log.w(TAG, "AMOLED palette did not resolve (background=#"
+                        + Integer.toHexString(background) + "), falling back to base resources");
                 resources = base;
             } else {
                 resources = amoled;
