@@ -18,6 +18,7 @@ import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.RadioGroup;
 import android.widget.ScrollView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -31,6 +32,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import org.levimc.launcher.R;
 import org.levimc.launcher.core.versions.GameVersion;
+import org.levimc.launcher.settings.FeatureSettings;
 import org.levimc.launcher.util.PersonalizationManager;
 import org.levimc.launcher.core.versions.VersionManager;
 import org.levimc.launcher.ui.animation.DynamicAnim;
@@ -38,11 +40,17 @@ import org.levimc.launcher.ui.dialogs.CustomAlertDialog;
 import org.levimc.launcher.ui.dialogs.InstallProgressDialog;
 import org.levimc.launcher.util.ApkImportManager;
 import org.levimc.launcher.util.InstanceBackupManager;
+import org.levimc.launcher.util.LauncherStorage;
+import org.levimc.launcher.util.ProfileTransfer;
 import org.levimc.launcher.util.StorageAccess;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.LinkedHashSet;
 import java.util.List;
+import java.util.Set;
+import java.util.function.Consumer;
 
 public class InstancesActivity extends BaseActivity {
     public static final String EXTRA_RESTORE_BACKUP_ON_OPEN = "restore_backup_on_open";
@@ -56,6 +64,12 @@ public class InstancesActivity extends BaseActivity {
     private static final int CARD_TEXT_PRIMARY_LIGHT = Color.rgb(27, 31, 35);
     private static final int CARD_TEXT_SECONDARY_LIGHT = Color.rgb(68, 75, 82);
     private static final int CARD_TEXT_SECONDARY_DARK = Color.rgb(224, 228, 232);
+    private static final String KIND_MODS = "mods";
+    private static final String KIND_WORLDS = "worlds";
+    private static final String KIND_RESOURCE_PACKS = "resource_packs";
+    private static final String KIND_BEHAVIOR_PACKS = "behavior_packs";
+    private static final String KIND_SKIN_PACKS = "skin_packs";
+    private static final String KIND_SCREENSHOTS = "screenshots";
 
     private VersionManager versionManager;
     private RecyclerView recyclerView;
@@ -72,6 +86,7 @@ public class InstancesActivity extends BaseActivity {
     private InstallProgressDialog restoreProgressDialog;
     private InstallProgressDialog batchBackupProgressDialog;
     private TextView batchBackupButton;
+    private TextView transferContentButton;
     private List<GameVersion> pendingBatchBackupVersions = new ArrayList<>();
     private List<String> batchBackupPaths = new ArrayList<>();
     private List<String> batchBackupFailures = new ArrayList<>();
@@ -178,6 +193,7 @@ public class InstancesActivity extends BaseActivity {
         setupImportButton();
         setupBackupImportButton();
         setupBatchBackupButton();
+        setupTransferContentButton();
         updateCount();
         handleBackupOpenIntent(getIntent());
 
@@ -304,6 +320,171 @@ public class InstancesActivity extends BaseActivity {
         batchBackupButton.setSelected(true);
         applyAccentButtonStyle(batchBackupButton);
         batchBackupButton.setOnClickListener(v -> showBatchBackupSelection());
+    }
+
+    private void setupTransferContentButton() {
+        transferContentButton = findViewById(R.id.btn_transfer_content);
+        if (transferContentButton == null) return;
+        transferContentButton.setSelected(true);
+        applyAccentButtonStyle(transferContentButton);
+        transferContentButton.setOnClickListener(v -> {
+            if (allVersions.isEmpty()) return;
+            showVersionPicker(getString(R.string.transfer_pick_source), allVersions, this::showTransferTargetPicker);
+        });
+    }
+
+    private void showTransferTargetPicker(GameVersion source) {
+        List<GameVersion> targets = new ArrayList<>();
+        for (GameVersion version : allVersions) {
+            if (!version.getStorageProfileId().equals(source.getStorageProfileId())) {
+                targets.add(version);
+            }
+        }
+        if (targets.isEmpty()) return;
+        showVersionPicker(getString(R.string.transfer_pick_target), targets,
+                target -> showTransferOptionsDialog(source, target));
+    }
+
+    private void showVersionPicker(String title, List<GameVersion> versions, Consumer<GameVersion> onPick) {
+        String[] labels = new String[versions.size()];
+        for (int i = 0; i < versions.size(); i++) {
+            GameVersion version = versions.get(i);
+            labels[i] = version.displayName + " (" + version.versionCode + ")";
+        }
+        new CustomAlertDialog(this)
+                .setTitleText(title)
+                .setItems(labels, (dialog, which) -> onPick.accept(versions.get(which)))
+                .setNegativeButton(getString(R.string.cancel), null)
+                .setBlurBackground(true)
+                .show();
+    }
+
+    private void showTransferOptionsDialog(GameVersion source, GameVersion target) {
+        View dialogView = getLayoutInflater().inflate(R.layout.dialog_transfer_profile, null);
+        RadioGroup modeGroup = dialogView.findViewById(R.id.transfer_mode_group);
+        new CustomAlertDialog(this)
+                .setTitleText(getString(R.string.transfer_profile_title) + "\n"
+                        + source.displayName + " → " + target.displayName)
+                .setCustomView(dialogView)
+                .setPositiveButton(getString(R.string.transfer), v -> {
+                    Set<String> kinds = new LinkedHashSet<>();
+                    if (((CheckBox) dialogView.findViewById(R.id.check_mods)).isChecked()) kinds.add(KIND_MODS);
+                    if (((CheckBox) dialogView.findViewById(R.id.check_worlds)).isChecked()) kinds.add(KIND_WORLDS);
+                    if (((CheckBox) dialogView.findViewById(R.id.check_resource_packs)).isChecked()) kinds.add(KIND_RESOURCE_PACKS);
+                    if (((CheckBox) dialogView.findViewById(R.id.check_behavior_packs)).isChecked()) kinds.add(KIND_BEHAVIOR_PACKS);
+                    if (((CheckBox) dialogView.findViewById(R.id.check_skin_packs)).isChecked()) kinds.add(KIND_SKIN_PACKS);
+                    if (((CheckBox) dialogView.findViewById(R.id.check_screenshots)).isChecked()) kinds.add(KIND_SCREENSHOTS);
+                    boolean move = modeGroup.getCheckedRadioButtonId() == R.id.radio_move;
+                    runProfileTransfer(source, target, kinds, move);
+                })
+                .setNegativeButton(getString(R.string.cancel), null)
+                .setBlurBackground(true)
+                .show();
+    }
+
+    private void runProfileTransfer(GameVersion source, GameVersion target, Set<String> kinds, boolean move) {
+        InstallProgressDialog progressDialog = new InstallProgressDialog(this);
+        progressDialog.setTitleText(getString(R.string.transfer_profile_title));
+        progressDialog.setStatusText(getString(R.string.transfer_progress_preparing));
+        progressDialog.setProgress(0);
+        progressDialog.show();
+
+        new Thread(() -> {
+            File sourceBase = contentBaseDir(source);
+            File targetBase = contentBaseDir(target);
+            List<File[]> pairs = new ArrayList<>();
+            List<String> labels = new ArrayList<>();
+            int grandTotal = 0;
+            for (String kind : kinds) {
+                File srcDir;
+                File dstDir;
+                if (KIND_MODS.equals(kind)) {
+                    srcDir = LauncherStorage.getProfileModsDir(this, source.getStorageProfileId());
+                    dstDir = LauncherStorage.getProfileModsDir(this, target.getStorageProfileId());
+                } else {
+                    srcDir = new File(sourceBase, contentDirName(kind));
+                    dstDir = new File(targetBase, contentDirName(kind));
+                }
+                if (srcDir.equals(dstDir) || !srcDir.isDirectory()) continue;
+                pairs.add(new File[]{srcDir, dstDir});
+                labels.add(getString(kindLabelRes(kind)));
+                grandTotal += ProfileTransfer.countFiles(srcDir);
+            }
+
+            int[] overall = {0, -1}; // processed files, last shown percent
+            int copied = 0;
+            int skipped = 0;
+            for (int i = 0; i < pairs.size(); i++) {
+                File[] pair = pairs.get(i);
+                String kindLabel = labels.get(i);
+                int totalForKind = grandTotal;
+                int[] kindTotal = {0};
+                ProfileTransfer.Result result = ProfileTransfer.transferDir(pair[0], pair[1], move,
+                        (done, total) -> {
+                            kindTotal[0] = total;
+                            int percent = totalForKind == 0 ? 100 : (overall[0] + done) * 100 / totalForKind;
+                            if (percent == overall[1]) return;
+                            overall[1] = percent;
+                            String status = kindLabel + " · " + done + "/" + total;
+                            runOnUiThread(() -> {
+                                progressDialog.setStatusText(status);
+                                progressDialog.setProgress(percent);
+                            });
+                        });
+                overall[0] += kindTotal[0];
+                copied += result.copied;
+                skipped += result.skipped;
+            }
+
+            int finalCopied = copied;
+            int finalSkipped = skipped;
+            runOnUiThread(() -> {
+                progressDialog.setProgress(100);
+                progressDialog.setStatusText(getString(R.string.transfer_summary,
+                        finalCopied, finalSkipped));
+                View decor = progressDialog.getWindow() != null
+                        ? progressDialog.getWindow().getDecorView() : null;
+                if (decor != null) {
+                    decor.postDelayed(progressDialog::dismiss, 1000);
+                } else {
+                    progressDialog.dismiss();
+                }
+            });
+        }, "profile-transfer").start();
+    }
+
+    private int kindLabelRes(String kind) {
+        return switch (kind) {
+            case KIND_MODS -> R.string.mods_section_title;
+            case KIND_WORLDS -> R.string.worlds_category;
+            case KIND_RESOURCE_PACKS -> R.string.resource_packs_category;
+            case KIND_BEHAVIOR_PACKS -> R.string.behavior_packs_category;
+            case KIND_SKIN_PACKS -> R.string.skin_packs_category;
+            default -> R.string.screenshots_category;
+        };
+    }
+
+    private File contentBaseDir(GameVersion version) {
+        String savedType = getSharedPreferences("content_management", MODE_PRIVATE)
+                .getString("storage_type", "INTERNAL");
+        FeatureSettings.StorageType storageType;
+        try {
+            storageType = FeatureSettings.StorageType.valueOf(savedType);
+        } catch (IllegalArgumentException e) {
+            storageType = FeatureSettings.StorageType.INTERNAL;
+        }
+        return LauncherStorage.getContentGameDataDir(this, version.getStorageProfileId(),
+                LauncherStorage.normalizeContentStorageType(storageType, version.versionIsolation));
+    }
+
+    private static String contentDirName(String kind) {
+        return switch (kind) {
+            case KIND_WORLDS -> "minecraftWorlds";
+            case KIND_RESOURCE_PACKS -> "resource_packs";
+            case KIND_BEHAVIOR_PACKS -> "behavior_packs";
+            case KIND_SKIN_PACKS -> "skin_packs";
+            default -> "Screenshots";
+        };
     }
 
     private void applyAccentButtonStyle(TextView button) {
@@ -812,6 +993,7 @@ public class InstancesActivity extends BaseActivity {
         setupImportButton();
         setupBackupImportButton();
         setupBatchBackupButton();
+        setupTransferContentButton();
         applyFilters();
     }
 
@@ -941,7 +1123,7 @@ public class InstancesActivity extends BaseActivity {
                     holder.typeTag.setBackgroundResource(R.drawable.bg_release_tag);
                 }
             } else {
-                holder.typeTag.setText(R.string.tag_custom);
+                holder.typeTag.setText(v.isMinecraftPatch() ? R.string.tag_patch : R.string.tag_custom);
                 int tagColor = hasBackgroundImage
                         ? secondaryTextColor
                         : holder.itemView.getContext().getResources().getColor(R.color.text_secondary, holder.itemView.getContext().getTheme());

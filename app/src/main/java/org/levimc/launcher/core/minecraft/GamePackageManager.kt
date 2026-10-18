@@ -25,28 +25,69 @@ class GamePackageManager private constructor(
     private val progressListener: MinecraftRuntimePreparer.ProgressListener?
 ) {
 
-    private val packageContext: Context
+    private val packageContext: Context?
     private val assetManager: AssetManager
     private val nativeLibDir: String
     private val applicationInfo: ApplicationInfo
 
     private val knownPackages = arrayOf(MinecraftLauncher.MC_PACKAGE_NAME)
 
-    private val requiredLibs = buildList {
-        add("libc++_shared.so")
-        add("libfmod.so")
-        add("libMediaDecoders_Android.so")
-        if (shouldLoadMallocRedirect()) {
-            add("libMallocRedirect.so")
+    // Lazy: nativeLibDir is only assigned in the init block below.
+    private val requiredLibs by lazy {
+        buildList {
+            add("libc++_shared.so")
+            add("libfmod.so")
+            add("libMediaDecoders_Android.so")
+            if (shouldLoadMallocRedirect()) {
+                add("libMallocRedirect.so")
+            }
+            addAll(patchInjectedLibs)
+            add("libminecraftpe.so")
+        }.toTypedArray()
+    }
+
+    // Libs that libminecraftpe.so links against but the launcher does not
+    // manage itself: patch builds (MCPatch etc.) inject their own loader
+    // libs and the set differs per patch, so it is discovered from the ELF
+    // DT_NEEDED closure instead of a hardcoded list. They are preloaded
+    // via System.load before libminecraftpe.so; see dropUnusedPatchDeps for
+    // the step that removes the unresolvable by-name dependency edge.
+    // shortcut: patch builds on the pre-1.21.110 legacy load path in
+    // MinecraftRuntimePreparer are not covered by this.
+    private val patchInjectedLibs: List<String> by lazy {
+        val known = setOf(
+            "libc++_shared.so",
+            "libfmod.so",
+            "libMediaDecoders_Android.so",
+            "libMallocRedirect.so",
+            "libHttpClient.Android.so",
+            "libPlayFabMultiplayer.so",
+            "libmaesdk.so",
+            "libgxcore.so",
+            "libbgxcore.so",
+        )
+        val ordered = mutableListOf<String>()
+        val visited = mutableSetOf<String>()
+        fun visit(name: String) {
+            if (!visited.add(name)) return
+            for (dep in ElfNeededReader.readNeeded(File(nativeLibDir, name))) {
+                if (!known.contains(dep) && File(nativeLibDir, dep).exists()) {
+                    visit(dep)
+                }
+            }
+            if (name != "libminecraftpe.so" && !known.contains(name)) {
+                ordered.add(name)
+            }
         }
-        add("libminecraftpe.so")
-    }.toTypedArray()
+        visit("libminecraftpe.so")
+        ordered
+    }
 
     private val optionalLibs = arrayOf(
         "libHttpClient.Android.so",
     )
 
-    private val extractableLibs = requiredLibs + optionalLibs
+    private val extractableLibs by lazy { requiredLibs + optionalLibs }
 
     private val systemLoadedLibs = arrayOf(
         "libPlayFabMultiplayer.so",
@@ -65,18 +106,20 @@ class GamePackageManager private constructor(
 
     init {
         report("GamePackageManager init started")
-        val packageName = detectGamePackage() ?: throw IllegalStateException("Minecraft not found")
-        report("Detected Minecraft package: $packageName")
-        packageContext = context.createPackageContext(
-            packageName,
-            Context.CONTEXT_IGNORE_SECURITY or Context.CONTEXT_INCLUDE_CODE
-        )
-        
         if (version != null && !version.isInstalled) {
+            // Isolated instances run from their own APK copy, no installed package needed.
+            packageContext = null
             applicationInfo = MinecraftLauncher(context).createFakeApplicationInfo(version, MinecraftLauncher.MC_PACKAGE_NAME)
             nativeLibDir = applicationInfo.nativeLibraryDir
         } else {
-            applicationInfo = packageContext.applicationInfo
+            val packageName = detectGamePackage() ?: throw IllegalStateException("Minecraft not found")
+            report("Detected Minecraft package: $packageName")
+            val pkgContext = context.createPackageContext(
+                packageName,
+                Context.CONTEXT_IGNORE_SECURITY or Context.CONTEXT_INCLUDE_CODE
+            )
+            packageContext = pkgContext
+            applicationInfo = pkgContext.applicationInfo
             nativeLibDir = resolveNativeLibDir()
         }
         
@@ -175,7 +218,7 @@ class GamePackageManager private constructor(
                 }
             }
         } else {
-            val appInfo = packageContext.applicationInfo
+            val appInfo = requireNotNull(packageContext).applicationInfo
             if (File(appInfo.nativeLibraryDir).exists()) {
                 copyFromNativeDir(appInfo.nativeLibraryDir, outputDir)
             }
@@ -202,7 +245,7 @@ class GamePackageManager private constructor(
             applicationInfo.sourceDir?.let { paths.add(it) }
             applicationInfo.splitSourceDirs?.let { paths.addAll(it) }
         } else {
-            val appInfo = packageContext.applicationInfo
+            val appInfo = requireNotNull(packageContext).applicationInfo
             appInfo.sourceDir?.let { paths.add(it) }
             appInfo.splitPublicSourceDirs?.let { paths.addAll(it) }
         }
@@ -380,6 +423,9 @@ class GamePackageManager private constructor(
     }
 
     fun shouldLoadMallocRedirect(): Boolean {
+        // libgxcore.so ships for arm64 only; a 32-bit process (v7a APK on any
+        // device) cannot load it, so keep those devices on the legacy path.
+        if (!android.os.Process.is64Bit()) return false
         val versionCode = version?.versionCode ?: try {
             context.packageManager.getPackageInfo(MinecraftLauncher.MC_PACKAGE_NAME, 0).versionName
         } catch (_: Exception) {
@@ -451,8 +497,9 @@ class GamePackageManager private constructor(
                 }
             }
         } else {
-            paths.add(packageContext.packageResourcePath)
-            val splitPath = packageContext.packageResourcePath.replace("base.apk", "split_install_pack.apk")
+            val resourcePath = requireNotNull(packageContext).packageResourcePath
+            paths.add(resourcePath)
+            val splitPath = resourcePath.replace("base.apk", "split_install_pack.apk")
             if (File(splitPath).exists()) paths.add(splitPath)
         }
         
@@ -562,6 +609,9 @@ class GamePackageManager private constructor(
         progressEnd: Int = 74,
         excludeReasons: Map<String, String> = emptyMap()
     ): List<LibraryLoadResult> {
+        if (patchInjectedLibs.isNotEmpty()) {
+            dropUnusedPatchDeps(listener)
+        }
         val allLibs = requiredLibs + systemLoadedLibs
         val loadableLibs = allLibs.filterNot { lib ->
             val libName = normalizeLibraryName(lib)
@@ -604,6 +654,35 @@ class GamePackageManager private constructor(
         }
 
         return results
+    }
+
+    // Patch loader libs are built without DT_SONAME, so libminecraftpe.so's
+    // by-name DT_NEEDED lookup never resolves in the app namespace (the
+    // version lib dir is not a search path there). The loader is preloaded
+    // before libminecraftpe.so anyway - same init order the installed patch
+    // app gets - and the game imports no symbol it defines, so the edge is
+    // dropped instead. Also undoes the DT_SONAME injection of earlier
+    // launches, which aborted the loader on bionic's .dynstr bounds check.
+    private fun dropUnusedPatchDeps(listener: MinecraftRuntimePreparer.ProgressListener?) {
+        val gameLib = File(nativeLibDir, "libminecraftpe.so")
+        for (lib in patchInjectedLibs) {
+            try {
+                if (PatchDependencyPatcher.repairInjectedSoname(File(nativeLibDir, lib), lib)) {
+                    listener?.onLog("Repaired injected DT_SONAME: $lib")
+                }
+                val skipReason = PatchDependencyPatcher.dropUnusedNeeded(gameLib, File(nativeLibDir, lib), lib)
+                if (skipReason == null) {
+                    listener?.onLog("Dropped unused DT_NEEDED: $lib")
+                } else {
+                    Log.w(TAG, "DT_NEEDED drop skipped for $lib: $skipReason")
+                    listener?.onLog("DT_NEEDED drop skipped: $lib ($skipReason)")
+                }
+            } catch (error: Throwable) {
+                val detail = error.message ?: error.javaClass.simpleName
+                Log.w(TAG, "Patch dep handling failed for $lib: $detail")
+                listener?.onLog("DT_NEEDED drop skipped: $lib ($detail)")
+            }
+        }
     }
 
     private fun toLibraryFileName(name: String): String {
@@ -652,13 +731,18 @@ class GamePackageManager private constructor(
         }
     }
 
-    fun getPackageContext(): Context = packageContext
+    fun getPackageContext(): Context? = packageContext
 
     fun getApplicationInfo(): ApplicationInfo = applicationInfo
 
     fun getVersionName(): String? {
         return try {
-            context.packageManager.getPackageInfo(packageContext.packageName, 0).versionName
+            val pkgContext = packageContext
+            if (pkgContext != null) {
+                context.packageManager.getPackageInfo(pkgContext.packageName, 0).versionName
+            } else {
+                version?.versionCode
+            }
         } catch (e: Exception) {
             version?.versionCode
         }

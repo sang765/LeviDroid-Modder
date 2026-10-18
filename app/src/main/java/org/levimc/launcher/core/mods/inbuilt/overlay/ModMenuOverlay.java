@@ -36,6 +36,7 @@ import org.levimc.launcher.core.mods.inbuilt.ExternalModuleProvider;
 import org.levimc.launcher.core.mods.inbuilt.InbuiltModuleProvider;
 import org.levimc.launcher.core.mods.inbuilt.UnifiedMod;
 import org.levimc.launcher.core.mods.inbuilt.manager.InbuiltModManager;
+import org.levimc.launcher.ui.dialogs.DialogStyler;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.HashMap;
@@ -599,6 +600,7 @@ public class ModMenuOverlay {
             return true;
         });
         dialog.show();
+        DialogStyler.applyAccent(dialog);
     }
 
     private void restoreLastSection() {

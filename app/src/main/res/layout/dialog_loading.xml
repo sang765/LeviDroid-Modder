@@ -5,7 +5,7 @@
     android:gravity="center_vertical"
     android:paddingHorizontal="24dp"
     android:paddingVertical="20dp"
-    android:background="@drawable/bg_rounded_card"
+    android:background="@drawable/dialog_background"
     android:layout_width="wrap_content"
     android:layout_height="wrap_content"
     android:layout_gravity="center"

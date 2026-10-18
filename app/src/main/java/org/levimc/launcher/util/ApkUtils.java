@@ -6,6 +6,8 @@ import android.net.Uri;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 
+import org.levimc.launcher.core.minecraft.MinecraftLauncher;
+
 import java.io.BufferedInputStream;
 import java.io.File;
 import java.io.FileInputStream;
@@ -23,16 +25,8 @@ public class ApkUtils {
 
     public static String extractMinecraftVersionNameFromUri(Context context, Uri uri) {
         if ("file".equals(uri.getScheme()) && uri.getPath() != null) {
-            PackageManager pm = context.getPackageManager();
-            PackageInfo info = pm.getPackageArchiveInfo(uri.getPath(), 0);
-            if (info != null) {
-                String packageName = info.packageName;
-                String versionName = info.versionName;
-                if ("com.mojang.minecraftpe".equals(packageName) && versionName != null && !versionName.isEmpty()) {
-                    return "Minecraft_" + versionName;
-                }
-            }
-            return "Error Apk";
+            String name = readVersionName(context, new File(uri.getPath()));
+            return name != null ? name : "Error Apk";
         }
 
         File tempFile = null;
@@ -47,16 +41,8 @@ public class ApkUtils {
                     os.write(buffer, 0, len);
                 }
             }
-            PackageManager pm = context.getPackageManager();
-            PackageInfo info = pm.getPackageArchiveInfo(tempFile.getAbsolutePath(), 0);
-            if (info != null) {
-                String packageName = info.packageName;
-                String versionName = info.versionName;
-
-                if ("com.mojang.minecraftpe".equals(packageName) && versionName != null && !versionName.isEmpty()) {
-                    return "Minecraft_" + versionName;
-                }
-            }
+            String name = readVersionName(context, tempFile);
+            if (name != null) return name;
         } catch (Exception e) {
             e.printStackTrace();
         } finally {
@@ -84,15 +70,8 @@ public class ApkUtils {
                             }
                         }
                         
-                        PackageManager pm = context.getPackageManager();
-                        PackageInfo info = pm.getPackageArchiveInfo(tempApkFile.getAbsolutePath(), 0);
-                        if (info != null) {
-                            String packageName = info.packageName;
-                            String versionName = info.versionName;
-                            if ("com.mojang.minecraftpe".equals(packageName) && versionName != null && !versionName.isEmpty()) {
-                                return "Minecraft_" + versionName;
-                            }
-                        }
+                        String name = readVersionName(context, tempApkFile);
+                        if (name != null) return name;
                         break;
                     }
                     zis.closeEntry();
@@ -106,6 +85,40 @@ public class ApkUtils {
             }
         }
         return "Error Apk";
+    }
+
+    /** "Minecraft_<version>" for official and patch repacks, null otherwise. */
+    private static String readVersionName(Context context, File apkFile) {
+        try {
+            PackageManager pm = context.getPackageManager();
+            PackageInfo info = pm.getPackageArchiveInfo(apkFile.getAbsolutePath(), 0);
+            if (info == null || info.versionName == null || info.versionName.isEmpty()) {
+                return null;
+            }
+            if (!MinecraftLauncher.MC_PACKAGE_NAME.equals(info.packageName)
+                    && !containsMinecraftNativeLib(apkFile)) {
+                return null;
+            }
+            return "Minecraft_" + info.versionName;
+        } catch (Exception e) {
+            return null;
+        }
+    }
+
+    // Patch builds (MCPatch and friends) rename the package but keep the
+    // game library; that is what tells them apart from random APKs.
+    private static boolean containsMinecraftNativeLib(File apkFile) {
+        try (ZipInputStream zis = new ZipInputStream(new BufferedInputStream(new FileInputStream(apkFile)))) {
+            ZipEntry entry;
+            while ((entry = zis.getNextEntry()) != null) {
+                String name = entry.getName();
+                if (!entry.isDirectory() && name.startsWith("lib/") && name.endsWith("/libminecraftpe.so")) {
+                    return true;
+                }
+            }
+        } catch (Exception ignored) {
+        }
+        return false;
     }
 
     public static String abiToSystemLibDir(String abi) {

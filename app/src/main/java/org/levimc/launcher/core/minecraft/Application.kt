@@ -8,6 +8,7 @@ import org.levimc.launcher.core.crash.CrashReporter
 import org.levimc.launcher.core.news.NewsNotificationHelper
 import org.levimc.launcher.settings.FeatureSettings
 import org.levimc.launcher.ui.dialogs.LogcatOverlayManager
+import org.levimc.launcher.util.PersonalizationManager
 
 class LauncherApplication : Application() {
 
@@ -21,6 +22,7 @@ class LauncherApplication : Application() {
 
         NewsNotificationHelper.initialize(this)
         LogcatOverlayManager.init(this)
+        PersonalizationManager.startWallpaperAccentTracking(this)
 
         preferences = PreferenceManager.getDefaultSharedPreferences(this)
     }

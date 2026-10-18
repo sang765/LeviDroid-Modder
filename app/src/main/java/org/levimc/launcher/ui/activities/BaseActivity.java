@@ -14,11 +14,13 @@ import android.os.Build;
 import android.os.Bundle;
 import android.util.Pair;
 import android.view.LayoutInflater;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.WindowInsets;
 import android.view.WindowInsetsController;
 import android.view.WindowManager;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.TextView;
@@ -30,6 +32,9 @@ import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.content.ContextCompat;
 import androidx.core.widget.TextViewCompat;
+import androidx.dynamicanimation.animation.FloatPropertyCompat;
+import androidx.dynamicanimation.animation.SpringAnimation;
+import androidx.dynamicanimation.animation.SpringForce;
 
 import org.levimc.launcher.R;
 import org.levimc.launcher.core.auth.MsftAccountStore;
@@ -55,6 +60,32 @@ public class BaseActivity extends AppCompatActivity {
     private int appliedPersonalizationGeneration = -1;
     private int appliedBackgroundEffectGeneration = -1;
     private boolean navBarInjected = false;
+    private TextView[] railLabels;
+    private int railCollapsedWidth;
+    private int railExpandedWidth;
+    private SpringAnimation railSpring;
+    private boolean railHovered;
+
+    // Rail width animation reflows the wrapper every frame; syncing label
+    // alpha here keeps the text fade locked to the spring motion.
+    private final FloatPropertyCompat<View> railWidthProperty = new FloatPropertyCompat<View>("railWidth") {
+        @Override
+        public float getValue(View view) {
+            return view.getLayoutParams().width;
+        }
+
+        @Override
+        public void setValue(View view, float value) {
+            view.getLayoutParams().width = Math.round(value);
+            view.requestLayout();
+            if (railLabels != null && railExpandedWidth > railCollapsedWidth) {
+                float progress = (value - railCollapsedWidth) / (railExpandedWidth - railCollapsedWidth);
+                for (TextView label : railLabels) {
+                    if (label != null) label.setAlpha(progress);
+                }
+            }
+        }
+    };
     private final OkHttpClient navAvatarClient = new OkHttpClient();
     private final ExecutorService navAccountExecutor = Executors.newSingleThreadExecutor();
     private ActivityResultLauncher<Intent> navAccountLoginLauncher;
@@ -119,20 +150,33 @@ public class BaseActivity extends AppCompatActivity {
             return;
         }
 
+        String navPos = new PersonalizationManager(this).getNavBarPosition();
+        boolean sideRail = "left".equals(navPos) || "right".equals(navPos);
+        boolean navFirst = "top".equals(navPos) || "left".equals(navPos);
+
         LinearLayout wrapper = new LinearLayout(this);
-        wrapper.setOrientation(LinearLayout.VERTICAL);
+        wrapper.setOrientation(sideRail ? LinearLayout.HORIZONTAL : LinearLayout.VERTICAL);
         wrapper.setLayoutParams(new ViewGroup.LayoutParams(
                 ViewGroup.LayoutParams.MATCH_PARENT,
                 ViewGroup.LayoutParams.MATCH_PARENT
         ));
 
-        View navBar = LayoutInflater.from(this).inflate(R.layout.nav_bar, wrapper, false);
-        wrapper.addView(navBar);
+        View navBar = LayoutInflater.from(this).inflate(
+                sideRail ? R.layout.nav_bar_side : R.layout.nav_bar, wrapper, false);
+        if (sideRail) setupSideRail(navBar);
 
-        LinearLayout.LayoutParams contentParams = new LinearLayout.LayoutParams(
-                ViewGroup.LayoutParams.MATCH_PARENT, 0, 1f);
+        LinearLayout.LayoutParams contentParams = sideRail
+                ? new LinearLayout.LayoutParams(0, ViewGroup.LayoutParams.MATCH_PARENT, 1f)
+                : new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, 0, 1f);
         contentView.setLayoutParams(contentParams);
-        wrapper.addView(contentView);
+
+        if (navFirst) {
+            wrapper.addView(navBar);
+            wrapper.addView(contentView);
+        } else {
+            wrapper.addView(contentView);
+            wrapper.addView(navBar);
+        }
 
         contentView.setAlpha(0f);
         contentView.setTranslationY(8f * getResources().getDisplayMetrics().density);
@@ -147,6 +191,89 @@ public class BaseActivity extends AppCompatActivity {
             DynamicAnim.springAlphaTo(contentView, 1f).start();
             DynamicAnim.springTranslationYTo(contentView, 0f).start();
         });
+    }
+
+    private void setupSideRail(View navBar) {
+        float density = getResources().getDisplayMetrics().density;
+        railCollapsedWidth = (int) (56 * density);
+        railExpandedWidth = navBar.getLayoutParams().width;
+
+        railLabels = new TextView[]{
+                findViewById(R.id.nav_tab_launch),
+                findViewById(R.id.nav_tab_instances),
+                findViewById(R.id.nav_tab_about),
+                findViewById(R.id.nav_tab_settings)
+        };
+        for (TextView label : railLabels) {
+            if (label != null) label.setAlpha(0f);
+        }
+        navBar.getLayoutParams().width = railCollapsedWidth;
+
+        railSpring = new SpringAnimation(navBar, railWidthProperty);
+        railSpring.setSpring(new SpringForce(railCollapsedWidth)
+                .setStiffness(SpringForce.STIFFNESS_MEDIUM)
+                .setDampingRatio(SpringForce.DAMPING_RATIO_NO_BOUNCY));
+        railSpring.setStartValue(railCollapsedWidth);
+
+        navBar.setOnHoverListener((v, event) -> {
+            switch (event.getAction()) {
+                case MotionEvent.ACTION_HOVER_ENTER -> {
+                    railHovered = true;
+                    expandRail();
+                }
+                case MotionEvent.ACTION_HOVER_EXIT -> {
+                    railHovered = false;
+                    collapseRail();
+                }
+            }
+            return false;
+        });
+
+        // Touch peek: expand while the finger is down and collapse on release.
+        // Events are never consumed, so taps on the tab wrappers still fire.
+        navBar.setOnTouchListener((v, event) -> {
+            switch (event.getAction()) {
+                case MotionEvent.ACTION_DOWN -> expandRail();
+                case MotionEvent.ACTION_UP, MotionEvent.ACTION_CANCEL -> collapseRail();
+            }
+            return false;
+        });
+    }
+
+    private void expandRail() {
+        if (railSpring != null) railSpring.animateToFinalPosition(railExpandedWidth);
+    }
+
+    private void collapseRail() {
+        // A mouse click inside a hovered rail fires ACTION_UP; keep it open
+        // until the pointer actually leaves.
+        if (railSpring != null && !railHovered) railSpring.animateToFinalPosition(railCollapsedWidth);
+    }
+
+    // In the side-rail layout each label sits in its own wrapper that owns the
+    // click, so taps on the icon register too; in the bar layout the parent is
+    // the shared tabs row, so keep binding the TextView itself.
+    private void bindNavTab(int tabId, Runnable action) {
+        TextView tab = findViewById(tabId);
+        if (tab == null) return;
+        View parent = tab.getParent() instanceof View ? (View) tab.getParent() : null;
+        View hit = parent != null && parent.getId() != View.NO_ID ? parent : tab;
+        hit.setOnClickListener(v -> action.run());
+    }
+
+    private void tintRailIcon(int tabId, int color) {
+        int iconId = railIconId(tabId);
+        if (iconId == 0) return;
+        ImageView icon = findViewById(iconId);
+        if (icon != null) icon.setImageTintList(ColorStateList.valueOf(color));
+    }
+
+    private int railIconId(int tabId) {
+        if (tabId == R.id.nav_tab_launch) return R.id.nav_tab_icon_launch;
+        if (tabId == R.id.nav_tab_instances) return R.id.nav_tab_icon_instances;
+        if (tabId == R.id.nav_tab_about) return R.id.nav_tab_icon_about;
+        if (tabId == R.id.nav_tab_settings) return R.id.nav_tab_icon_settings;
+        return 0;
     }
 
     private void applyPersonalization() {
@@ -174,6 +301,7 @@ public class BaseActivity extends AppCompatActivity {
             tab.setTextColor(color);
             tab.setTypeface(tab.getTypeface(), android.graphics.Typeface.NORMAL);
             TextViewCompat.setCompoundDrawableTintList(tab, ColorStateList.valueOf(color));
+            tintRailIcon(id, color);
         }
 
         if (pm.hasBackgroundImage()) {
@@ -223,24 +351,24 @@ public class BaseActivity extends AppCompatActivity {
             DynamicAnim.applyPressScale(news);
         }
 
-        findViewById(R.id.nav_tab_launch).setOnClickListener(v -> {
+        bindNavTab(R.id.nav_tab_launch, () -> {
             if (!(this instanceof MainActivity)) {
                 Intent intent = new Intent(this, MainActivity.class);
                 intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_SINGLE_TOP);
                 startActivity(intent);
             }
         });
-        findViewById(R.id.nav_tab_instances).setOnClickListener(v -> {
+        bindNavTab(R.id.nav_tab_instances, () -> {
             if (!(this instanceof InstancesActivity)) {
                 startActivity(new Intent(this, InstancesActivity.class));
             }
         });
-        findViewById(R.id.nav_tab_about).setOnClickListener(v -> {
+        bindNavTab(R.id.nav_tab_about, () -> {
             if (!(this instanceof AboutActivity)) {
                 startActivity(new Intent(this, AboutActivity.class));
             }
         });
-        findViewById(R.id.nav_tab_settings).setOnClickListener(v -> {
+        bindNavTab(R.id.nav_tab_settings, () -> {
             if (!(this instanceof SettingsActivity)) {
                 startActivity(new Intent(this, SettingsActivity.class));
             }
@@ -387,6 +515,7 @@ public class BaseActivity extends AppCompatActivity {
                 tab.setTypeface(tab.getTypeface(), android.graphics.Typeface.NORMAL);
             }
             TextViewCompat.setCompoundDrawableTintList(tab, ColorStateList.valueOf(color));
+            tintRailIcon(id, color);
         }
     }
 

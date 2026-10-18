@@ -1,6 +1,6 @@
 # Build from Source
 
-This page is for contributors who want to build LeviLaunchroid itself. Native mod build notes live in [Native Mod Quick Start](/guide/developer).
+This page is for contributors who want to build LeviLauncher Modder itself. Native mod build notes live in [Native Mod Quick Start](/guide/developer).
 
 ## Prerequisites
 
@@ -13,11 +13,11 @@ This page is for contributors who want to build LeviLaunchroid itself. Native mo
 ## Open the Project
 
 ```bash
-git clone https://github.com/LiteLDev/LeviLaunchroid.git
-cd LeviLaunchroid
+git clone https://github.com/sang765/LeviDroid-Modder.git
+cd LeviDroid-Modder
 ```
 
-Open the project directory in Android Studio and allow Gradle sync to finish. The project root is named `levilauncher` in Gradle settings, while the repository remains `LeviLaunchroid`.
+Open the project directory in Android Studio and allow Gradle sync to finish. The project root is named `levilauncher` in Gradle settings, while the repository is `LeviDroid-Modder`.
 
 ## Build and Run
 

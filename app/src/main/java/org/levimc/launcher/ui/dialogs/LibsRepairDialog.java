@@ -17,7 +17,6 @@ import android.widget.TextView;
 
 import org.levimc.launcher.R;
 import org.levimc.launcher.ui.animation.DynamicAnim;
-import org.levimc.launcher.util.PersonalizationManager;
 
 import java.util.Locale;
 import java.util.Objects;
@@ -122,24 +121,23 @@ public class LibsRepairDialog extends Dialog {
 
     private void applyPersonalization() {
         try {
-            PersonalizationManager pm = new PersonalizationManager(getContext());
-            int accent = pm.getAccentColor();
-            if (accent != 0 && progressBar != null) {
+            int accent = DialogStyler.accent(getContext());
+            if (progressBar != null) {
                 progressBar.setProgressTintList(ColorStateList.valueOf(accent));
                 progressBar.setProgressBackgroundTintList(ColorStateList.valueOf(withAlpha(accent, 42)));
                 progressBar.setIndeterminateTintList(ColorStateList.valueOf(accent));
             }
-            if (accent != 0 && progressText != null) {
+            if (progressText != null) {
                 progressText.setTextColor(accent);
             }
-            if (accent != 0 && titleText != null) {
+            if (titleText != null) {
                 titleText.setTextColor(accent);
             }
-            if (accent != 0 && pauseButton != null) {
+            if (pauseButton != null) {
                 pauseButton.setBackgroundTintList(ColorStateList.valueOf(accent));
                 pauseButton.setTextColor(Color.WHITE);
             }
-            if (accent != 0 && iconContainer != null) {
+            if (iconContainer != null) {
                 iconContainer.setBackgroundTintList(ColorStateList.valueOf(withAlpha(accent, 34)));
             }
         } catch (Exception ignored) {}

@@ -129,6 +129,7 @@ public final class MsftAuthManager {
         long nextPollAt = SystemClock.elapsedRealtime() + intervalMs;
         int emptyBadRequestCount = 0;
         int transientFailureCount = 0;
+        boolean loggedPollError = false;
 
         while (!deviceCode.isExpired()) {
             ensureNotCancelled(cancelled);
@@ -198,6 +199,20 @@ public final class MsftAuthManager {
                     continue;
                 }
                 throw e;
+            } catch (Error e) {
+                // An Error while handling the pending response is invisible to our callers and
+                // would abort the sign-in silently, so keep polling: the success path still works
+                // once Microsoft approves the code.
+                if (e instanceof VirtualMachineError || e instanceof ThreadDeath) {
+                    throw e;
+                }
+                if (!loggedPollError) {
+                    loggedPollError = true;
+                    Log.w(TAG, "Device code poll hit an unexpected error", e);
+                }
+                transientFailureCount++;
+                emitState(stateConsumer, DeviceCodeState.RETRYING);
+                nextPollAt = SystemClock.elapsedRealtime() + transientRetryDelay(intervalMs, transientFailureCount);
             }
         }
 
@@ -525,7 +540,7 @@ public final class MsftAuthManager {
 
     private static HttpClient createHttpClient() {
         String version = TextUtils.isEmpty(BuildConfig.VERSION_NAME) ? "unknown" : BuildConfig.VERSION_NAME;
-        return MinecraftAuth.createHttpClient("LeviLauncher/" + version + " Android");
+        return MinecraftAuth.createHttpClient("LeviLauncher Modder/" + version + " Android");
     }
 
     private static String normalizeError(String error) {

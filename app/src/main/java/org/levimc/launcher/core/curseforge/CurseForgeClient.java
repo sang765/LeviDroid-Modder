@@ -50,6 +50,10 @@ public class CurseForgeClient {
         return instance;
     }
 
+    public static boolean isConfigured() {
+        return API_KEY != null && !API_KEY.isEmpty();
+    }
+
     public interface CurseForgeCallback<T> {
         void onSuccess(T result);
         void onError(Throwable t);

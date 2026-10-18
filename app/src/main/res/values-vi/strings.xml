@@ -8,7 +8,7 @@
 
 <resources>
     <!-- Common -->
-    <string name="app_name">LeviLauncher</string>
+    <string name="app_name">LeviLauncher Modder</string>
     <string name="minecraft">Minecraft</string>
     <string name="launch">Khởi Chạy</string>
     <string name="beta_badge">Thử Nghiệm</string>
@@ -32,7 +32,7 @@
     <string name="about_title">☕ Về</string>
     <string name="copyright">©2024–2026 LeviMC. Mọi quyền được bảo lưu.</string>
     <string name="font_license">Ứng dụng đang sử dụng phông chữ Misans.</string>
-    <string name="about_footer_github">GitHub: https://github.com/LiteLDev/LeviLaunchroid</string>
+    <string name="about_footer_github">GitHub: https://github.com/sang765/LeviDroid-Modder</string>
     <string name="quick_actions_title">Thao tác nhanh</string>
     <string name="content_mgmt_section_title">Quản lý nội dung</string>
     <string name="misc_section_title">Khác</string>
@@ -146,10 +146,26 @@
     <string name="ignore_this_version">Bỏ qua phiên bản này</string>
     <string name="update_progress">Tiến trình tải xuống: %1$d%%</string>
     <string name="update_failed">Tải xuống không thành công: %1$s</string>
+    <string name="update_check_failed">Kiểm tra cập nhật thất bại: %1$s</string>
     <string name="install_failed">Không thể cài đặt bản cập nhật: %1$s</string>
     <string name="already_latest_version">Đang ở phiên bản mới nhất (%1$s)</string>
     <string name="version_ignored">Phiên bản này đã bị bỏ qua</string>
     <string name="downloading_update">Đang tải bản cập nhật…</string>
+    <string name="update_download_background">Tải trong nền</string>
+    <string name="install_method_title">Phương pháp cài đặt</string>
+    <string name="install_method_button">Phương thức cài đặt cập nhật: %1$s</string>
+    <string name="install_method_system">Hệ thống</string>
+    <string name="install_method_shizuku">Shizuku</string>
+    <string name="install_method_root">Root</string>
+    <string name="update_installing_message">Đang cài đặt, ứng dụng sẽ bị tắt để hoàn tất cập nhật.</string>
+    <string name="shizuku_failed_title">Cài đặt qua Shizuku thất bại</string>
+    <string name="shizuku_not_running">Shizuku chưa chạy. Hãy khởi động Shizuku rồi thử lại.</string>
+    <string name="shizuku_failed">Hãy đảm bảo ứng dụng có quyền truy cập với Shizuku và bật tính năng cài đặt qua USB.</string>
+    <string name="enable_usb_install">Bật cài đặt qua USB</string>
+    <string name="root_failed_title">Cài đặt qua Root thất bại</string>
+    <string name="root_failed_message">Không thể cài đặt bằng quyền root. Hãy kiểm tra trình quản lý Superuser rồi thử lại.</string>
+    <string name="update_installed_restart">Đã cài bản cập nhật, mở lại ứng dụng để hoàn tất.</string>
+    <string name="update_download_progress">%1$d%% · %2$s / %3$s</string>
 
     <string name="repair_libs_in_progress">Sửa chữa các file thư viện trò chơi…</string>
     <string name="repair_completed">Sửa chữa hoàn tất.</string>
@@ -170,12 +186,13 @@
     <string name="theme_title">Chế độ chủ đề</string>
     <string name="theme_follow_system">Theo hệ thống</string>
     <string name="theme_light">Sáng</string>
-    <string name="theme_dark">Tối</string>
+    <string name="theme_dark">Tối AMOLED</string>
+    <string name="theme_amoled_desc">Sử dụng background màu đen thuần giúp tiết kiệm pin trên các thiết bị sử dụng màn hình AMOLED.</string>
 
     <string name="error_no_browser">Không có trình duyệt nào khả dụng</string>
     <!-- License & Security -->
-    <string name="eula_title">Thỏa thuận cấp phép LeviLauncher</string>
-    <string name="eula_message"><b>Chào mừng bạn đến với LeviLauncher</b>\n\nBằng cách sử dụng phần mềm này, bạn đồng ý với các điều khoản sau:\n\n• Đây là trình khởi chạy Minecraft  <b>không chính thức</b>\n• Bạn phải sở hữu một bản sao Minecraft <b>được cấp phép</b> \n• Mọi hình thức vi phạm bản quyền hoặc gian lận đều bị nghiêm cấm\n• Việc sử dụng các bản Mods/gói tài nguyên là do bạn tự chịu rủi ro\n• Không liên kết với Mojang/Microsoft\n\nViệc tiếp tục sử dụng đồng nghĩa với việc bạn đồng ý</string>
+    <string name="eula_title">Thỏa thuận cấp phép LeviLauncher Modder</string>
+    <string name="eula_message"><b>Chào mừng bạn đến với LeviLauncher Modder</b>\n\nBằng cách sử dụng phần mềm này, bạn đồng ý với các điều khoản sau:\n\n• Đây là trình khởi chạy Minecraft  <b>không chính thức</b>\n• Bạn phải sở hữu một bản sao Minecraft <b>được cấp phép</b> \n• Mọi hình thức vi phạm bản quyền hoặc gian lận đều bị nghiêm cấm\n• Việc sử dụng các bản Mods/gói tài nguyên là do bạn tự chịu rủi ro\n• Không liên kết với Mojang/Microsoft\n\nViệc tiếp tục sử dụng đồng nghĩa với việc bạn đồng ý</string>
     <string name="eula_agree">Đồng ý</string>
     <string name="eula_exit">Từ chối</string>
 
@@ -228,7 +245,7 @@
     <string name="instance_delete_confirm_title">Xóa phiên bản</string>
     <string name="instance_delete_confirm_msg">Bạn có chắc chắn muốn xóa phiên bản này không? Tất cả dữ liệu, bao gồm cả thế giới, sẽ bị xóa vĩnh viễn.</string>
     <string name="instance_backup_title">Sao lưu phiên bản</string>
-    <string name="instance_backup_desc">Tạo bản sao lưu đầy đủ của phiên bản này trong Download/LeviLauncher/Backups.</string>
+    <string name="instance_backup_desc">Tạo bản sao lưu đầy đủ của phiên bản này trong Download/LeviLauncher Modder/Backups.</string>
     <string name="instance_backup_button">Sao lưu phiên bản</string>
     <string name="instance_backup_confirm_message">Tạo bản sao lưu đầy đủ của phiên bản này ngay bây giờ? Nếu Minecraft đang chạy, hãy thoát trước để tránh làm thay đổi các file trong quá trình sao lưu.</string>
     <string name="instance_backup_in_progress">Đang sao lưu phiên bản…</string>
@@ -306,7 +323,15 @@
     <string name="transfer_to">Chuyển tới:</string>
     <string name="transfer_success">Chuyển đổi đã hoàn tất</string>
     <string name="transfer_failed">Chuyển đổi thất bại</string>
+    <string name="transfer_profile_button">Chuyển dữ liệu</string>
+    <string name="transfer_profile_title">Chuyển giữa các phiên bản</string>
+    <string name="transfer_pick_source">Phiên bản nguồn:</string>
+    <string name="transfer_pick_target">Phiên bản đích:</string>
+    <string name="transfer_copy">Sao chép</string>
+    <string name="transfer_move">Chuyển đi</string>
+    <string name="transfer_summary">%1$d mục đã chuyển, %2$d bỏ qua (đã tồn tại)</string>
     <string name="transfer_same_location">Nội dung đã có sẵn tại vị trí này</string>
+    <string name="transfer_progress_preparing">Đang chuẩn bị…</string>
     <string name="import_content">Nhập</string>
     <string name="import_content_title">Nhập nội dung</string>
     <string name="import_content_message">Chọn file .mcworld, .mcpack, hoặc .mcaddon để nhập</string>
@@ -394,11 +419,8 @@
     </plurals>
 
     <!-- Play Store Validation -->
-    <string name="minecraft_playstore_required_title">Cần có phiên bản Play Store</string>
-    <string name="minecraft_playstore_required_message">Trình khởi chạy này chỉ hoạt động với ứng dụng Minecraft chính thức từ Google Play Store. Vui lòng cài đặt phiên bản từ Play Store để tiếp tục.</string>
-    <string name="buy_minecraft">Lấy Minecraft</string>
     <string name="minecraft_not_installed_title">Minecraft chưa được cài đặt</string>
-    <string name="minecraft_not_installed_message">Minecraft chưa được cài đặt trên thiết bị của bạn. Vui lòng cài đặt trò chơi từ Google Play Store để sử dụng launcher này.</string>
+    <string name="minecraft_not_installed_message">Minecraft chưa được cài đặt trên thiết bị của bạn. Hãy cài Minecraft từ Google Play hoặc nguồn khác bạn tin tưởng để dùng launcher này.</string>
     <string name="install_minecraft">Cài đặt Minecraft</string>
     <string name="genuine_badge_label">Giấy phép chưa được xác minh</string>
     <string name="invalid_license_detected_toast">Đã phát hiện Minecraft không phải bản chính hãng. Hãy đảm bảo Minecraft của bạn được tải từ Google Play Store.</string>
@@ -435,8 +457,8 @@
     <string name="external_mods_open_link">Mở liên kết</string>
     <string name="external_mods_external_dialog_title">Tải xuống bên ngoài</string>
     <string name="external_mods_ad_dialog_title">Tải xuống có quảng cáo</string>
-    <string name="external_mods_external_dialog_message">%1$s sử dụng trang tải xuống bên ngoài LeviLauncher.\n\n1. Nhấn Mở liên kết và tải tệp .levipack hoặc .so.\n2. Quay lại LeviLauncher và mở Mod.\n3. Nhấn Quét.\n4. Nhấn Thêm bên cạnh mod bạn muốn nhập.\n\nQuét chỉ kiểm tra thư mục Tải xuống chính. Hãy chuyển tệp vào đó nếu trình duyệt đã lưu ở nơi khác.</string>
-    <string name="external_mods_ad_dialog_message">%1$s sử dụng trang tải xuống có quảng cáo do nhà phát triển chọn. LeviLauncher không kiểm soát trang đó hoặc quảng cáo trên đó.\n\n1. Nhấn Mở liên kết và tải tệp .levipack hoặc .so.\n2. Quay lại LeviLauncher và mở Mod.\n3. Nhấn Quét.\n4. Nhấn Thêm bên cạnh mod bạn muốn nhập.\n\nQuét chỉ kiểm tra thư mục Tải xuống chính. Chỉ tải tệp mod; không cài ứng dụng không liên quan hoặc cho phép thông báo.</string>
+    <string name="external_mods_external_dialog_message">%1$s sử dụng trang tải xuống bên ngoài LeviLauncher Modder.\n\n1. Nhấn Mở liên kết và tải tệp .levipack hoặc .so.\n2. Quay lại LeviLauncher Modder và mở Mod.\n3. Nhấn Quét.\n4. Nhấn Thêm bên cạnh mod bạn muốn nhập.\n\nQuét chỉ kiểm tra thư mục Tải xuống chính. Hãy chuyển tệp vào đó nếu trình duyệt đã lưu ở nơi khác.</string>
+    <string name="external_mods_ad_dialog_message">%1$s sử dụng trang tải xuống có quảng cáo do nhà phát triển chọn. LeviLauncher Modder không kiểm soát trang đó hoặc quảng cáo trên đó.\n\n1. Nhấn Mở liên kết và tải tệp .levipack hoặc .so.\n2. Quay lại LeviLauncher Modder và mở Mod.\n3. Nhấn Quét.\n4. Nhấn Thêm bên cạnh mod bạn muốn nhập.\n\nQuét chỉ kiểm tra thư mục Tải xuống chính. Chỉ tải tệp mod; không cài ứng dụng không liên quan hoặc cho phép thông báo.</string>
     <string name="external_mods_by_author">bởi %1$s</string>
     <string name="external_mods_version">Mod %1$s</string>
     <string name="external_mods_minecraft_versions">Minecraft %1$s</string>
@@ -463,6 +485,9 @@
     <string name="mod_entry_label">Tệp chính</string>
     <string name="mod_id_label">Mod ID</string>
     <string name="mod_config_files_label">Cấu hình Files</string>
+    <string name="mod_file_label">Tệp</string>
+    <string name="mod_compat_warning">⚠ Dành cho %1$s</string>
+    <string name="total_mods_size">Dung lượng:</string>
     <string name="mod_unknown_author">Không rõ Tác giả</string>
     <string name="mod_unknown_version">Không rõ phiên bản</string>
     <string name="mod_all_versions">Tất cả các phiên bản được hỗ trợ</string>
@@ -518,6 +543,8 @@
     <string name="minecraft_loading_entering_game">Đang vào Minecraft</string>
     <string name="minecraft_loading_failed">Khởi chạy thất bại</string>
     <string name="minecraft_loading_return">Quay về Launcher</string>
+    <string name="minecraft_loading_copy_log">Sao chép log</string>
+    <string name="minecraft_loading_log_copied">Đã sao chép log khởi chạy</string>
     <string name="launcher_restart_title">Quay về Launcher</string>
     <string name="launcher_restart_subtitle">Chờ một chút trong khi chúng tôi đưa bạn trở lại</string>
     <string name="launcher_restart_status">Gần đến rồi…</string>
@@ -549,9 +576,9 @@
     <string name="ms_device_code_login_desc">Mở phiên trình duyệt riêng tư với mã thiết bị đã được điền sẵn.</string>
     <string name="ms_webview_login">Mở đăng nhập nhúng</string>
     <string name="ms_webview_option_title">WebView nhúng</string>
-    <string name="ms_webview_login_desc">Đăng nhập mà không rời LeviLauncher. Dùng tùy chọn này khi luồng trình duyệt không khả dụng.</string>
+    <string name="ms_webview_login_desc">Đăng nhập mà không rời LeviLauncher Modder. Dùng tùy chọn này khi luồng trình duyệt không khả dụng.</string>
     <string name="ms_device_code_title">Đăng nhập bằng Mã thiết bị</string>
-    <string name="ms_device_code_instructions">Mở trang đăng nhập thiết bị của Microsoft, nhập mã này rồi chấp thuận quyền truy cập. LeviLauncher sẽ tự động hoàn tất.</string>
+    <string name="ms_device_code_instructions">Mở trang đăng nhập thiết bị của Microsoft, nhập mã này rồi chấp thuận quyền truy cập. LeviLauncher Modder sẽ tự động hoàn tất.</string>
     <string name="ms_device_code_label">Mã thiết bị Microsoft</string>
     <string name="ms_device_code_requesting">Đang yêu cầu mã bảo mật…</string>
     <string name="ms_device_code_waiting_code">--------</string>
@@ -565,7 +592,7 @@
     <string name="ms_device_code_copied">Đã sao chép mã</string>
     <string name="ms_device_code_open_browser">Mở đăng nhập Microsoft</string>
     <string name="ms_device_code_step_title">Hoàn tất đăng nhập trong trình duyệt</string>
-    <string name="ms_device_code_browser_note">LeviLauncher mở trình duyệt mặc định trong phiên riêng tư, tự động điền mã và yêu cầu đăng nhập Microsoft mới.</string>
+    <string name="ms_device_code_browser_note">LeviLauncher Modder mở trình duyệt mặc định trong phiên riêng tư, tự động điền mã và yêu cầu đăng nhập Microsoft mới.</string>
     <string name="ms_choose_other_method">Phương thức khác</string>
     <string name="ms_no_browser">Không có trình duyệt nào trên thiết bị này.</string>
     <string name="ms_default_browser_no_private_mode">Trình duyệt mặc định của bạn không hỗ trợ đăng nhập riêng tư. Hãy cập nhật hoặc dùng đăng nhập WebView.</string>
@@ -578,14 +605,14 @@
     <string name="ms_active_badge">Bật</string>
     <string name="ms_account_subtitle_format">ID người dùng: %1$s • Đã cập nhật: %2$s</string>
     <string name="xbox_avatar">Ảnh đại diện Xbox</string>
-    <string name="launcher_managed_mc_login">Đăng nhập vào Minecraft bằng LeviLauncher</string>
+    <string name="launcher_managed_mc_login">Đăng nhập vào Minecraft bằng LeviLauncher Modder</string>
     <string name="dialog_title_login_required">Cần đăng nhập</string>
     <string name="dialog_message_login_required">Tính năng đăng nhập do launcher quản lý đã được bật, nhưng chưa có tài khoản nào được đăng nhập. Vui lòng vào mục Tài khoản để đăng nhập.</string>
     <string name="go_to_accounts">Tài khoản</string>
     <string name="disable_launcher_login_and_continue">Đóng</string>
 
     <string name="ms_feature_disabled_title">Tính năng bị tắt</string>
-    <string name="ms_feature_disabled_desc">Hãy bật “Đăng nhập Minecraft bằng LeviLauncher” trong Cài đặt để quản lý tài khoản Microsoft.</string>
+    <string name="ms_feature_disabled_desc">Hãy bật “Đăng nhập Minecraft bằng LeviLauncher Modder” trong Cài đặt để quản lý tài khoản Microsoft.</string>
     <string name="ms_activated">Đã kích hoạt</string>
 
     <!-- Popup labels -->
@@ -864,25 +891,29 @@
     <string name="vanilla_prefix">Vanilla %s</string>
 
     <string name="about_page_title">Về</string>
-    <string name="about_subtitle">LeviLauncher — Một Launcher Hiện Đại Cho Minecraft Bedrock</string>
+    <string name="about_subtitle">LeviLauncher Modder — Một Launcher Hiện Đại Cho Minecraft Bedrock</string>
     <string name="about_authors_title">👥 Tác giả &amp; Người bảo trì</string>
     <string name="about_author_name">DreamGuXiang</string>
     <string name="about_author_badge">Tác giả</string>
-    <string name="about_author_role">Tác giả LeviLauncher</string>
+    <string name="about_author_role">Tác giả LeviLauncher Modder</string>
+    <string name="about_modder_name">sang765</string>
+    <string name="about_modder_badge">Modder</string>
+    <string name="about_modder_role">Modder Version bởi sang765</string>
+    <string name="about_modder_github">GitHub · sang765</string>
     <string name="about_afdian">Afdian</string>
     <string name="about_patreon">Patreon</string>
     <string name="about_source_title">Mã nguồn &amp; Mã nguồn mở</string>
-    <string name="about_github_repo">GitHub · LeviLauncher</string>
-    <string name="about_github_org">LiteLDev</string>
+    <string name="about_github_repo">GitHub · LeviLauncher Modder</string>
+    <string name="about_github_org">sang765</string>
     <string name="about_license_note">Xem file LICENSE trong kho lưu trữ để biết chi tiết về giấy phép.</string>
     <string name="about_contribute_title">Đóng góp</string>
-    <string name="about_contribute_desc">Chúng tôi hoan nghênh các đóng góp thông qua Issues hoặc Pull Requests để cải thiện LeviLauncher.</string>
+    <string name="about_contribute_desc">Chúng tôi hoan nghênh các đóng góp thông qua Issues hoặc Pull Requests để cải thiện LeviLauncher Modder.</string>
     <string name="about_issues">Issue</string>
     <string name="about_star_fork">Star / Fork</string>
 
     <string-array name="launcher_tips">
         <item>Phần Cài đặt cho phép bạn điều chỉnh chủ đề, màu sắc, hình nền và các tùy chọn hiển thị khác sao cho phù hợp với thiết lập của mình.</item>
-        <item>LeviLauncher là mã nguồn mở. Vui lòng sử dụng GitHub Issues để báo cáo sự cố hoặc đề xuất cải tiến.</item>
+        <item>LeviLauncher Modder là mã nguồn mở. Vui lòng sử dụng GitHub Issues để báo cáo sự cố hoặc đề xuất cải tiến.</item>
         <item>Sử dụng menu thả xuống phiên bản để nhanh chóng chuyển đổi giữa các phiên bản hiện tại.</item>
         <item>Liệu mọi người có thực sự đọc những thứ này không:)?</item>
         <item>Bạn có thể kéo các mod để thay đổi thứ tự ưu tiên tải của chúng.</item>
@@ -895,7 +926,7 @@
     </string-array>
     <!-- Personalization -->
     <string name="theme_color_title">Màu chủ đề</string>
-    <string name="theme_color_desc">Màu nhấn chủ đạo của ứng dụng</string>
+    <string name="theme_color_desc">Màu nhấn chủ đạo của ứng dụng. Nếu bạn chưa chọn, màu sẽ được lấy từ hình nền.</string>
     <string name="preset_colors">MÀU SẮC CÀI SẴN</string>
     <string name="more_colors">NHIỀU MÀU SẮC HƠN</string>
     <string name="bg_image_title">Hình nền</string>
@@ -960,6 +991,11 @@
     <string name="mod_load_order_placeholder">Thứ tự tải: 1</string>
     <string name="custom_color_hex_rgb">Màu tùy chỉnh (HEX/RGB)</string>
     <string name="custom_color_hint">#RRGGBB hoặc R,G,B</string>
+    <string name="wallpaper_color_from_wallpaper">Lấy màu từ hình nền</string>
+    <string name="wallpaper_color_applied">Đã lấy màu chủ đề từ hình nền</string>
+    <string name="wallpaper_color_failed">Không lấy được màu từ hình nền</string>
+    <string name="wallpaper_color_failed_title">Không đọc được hình nền</string>
+    <string name="wallpaper_color_failed_storage_message">Android 11 trở xuống cần quyền truy cập bộ nhớ để đọc hình nền. Hãy cấp quyền rồi thử lại.</string>
     <string name="screenshot_name_placeholder">Tên ảnh chụp màn hình</string>
     <string name="screenshot_date_placeholder">Ngày: 2024-01-01 12:00:00</string>
 
@@ -1033,10 +1069,10 @@
     <string name="mod_config_hotbar_slot_opacity">Độ mờ ô thanh nhanh %1$d</string>
     <!-- Changelog & News -->
     <string name="changelog_title">Có gì mới</string>
-    <string name="changelog_version">LeviLauncher %1$s</string>
+    <string name="changelog_version">LeviLauncher Modder %1$s</string>
     <string name="changelog_continue">Tiếp tục</string>
     <string name="news_title">Tin tức launcher</string>
-    <string name="news_subtitle">Cập nhật, thông báo và các lưu ý quan trọng từ đội ngũ LeviLauncher.</string>
+    <string name="news_subtitle">Cập nhật, thông báo và các lưu ý quan trọng từ đội ngũ LeviLauncher Modder.</string>
     <string name="news_enable_notifications">Bật thông báo</string>
     <string name="news_refresh">Làm mới tin tức</string>
     <string name="news_empty">Chưa có tin tức nào được đăng.</string>
@@ -1046,7 +1082,7 @@
     <string name="news_refresh_failed">Không thể làm mới. Đang hiển thị tin đã lưu.</string>
     <string name="news_unread_description">Tin tức launcher, %1$d chưa đọc</string>
     <string name="news_notification_channel">Tin tức launcher</string>
-    <string name="news_notification_channel_description">Thông báo mới và các lưu ý quan trọng từ LeviLauncher</string>
+    <string name="news_notification_channel_description">Thông báo mới và các lưu ý quan trọng từ LeviLauncher Modder</string>
     <string name="mod_config_category_slots">Ô</string>
     <string name="mod_config_category_appearance">Giao diện</string>
     <string name="mod_config_category_behavior">Hành vi</string>
@@ -1081,4 +1117,29 @@
     <string name="batch_transferring">Đang chuyển %1$d trên %2$d…</string>
     <string name="batch_result">%1$d hoàn tất, %2$d thất bại</string>
     <string name="choose_export_folder">Chọn thư mục xuất</string>
+    <string name="game_crash_title">Uh oh!</string>
+    <string name="game_crash_message">Hình như game của bạn vừa bị crash nè, xem chuyện gì vừa xảy ra đi.</string>
+    <string name="game_crash_log_unavailable">Không đọc được nhật ký crash.</string>
+    <string name="game_crash_close">Đóng</string>
+    <string name="game_crash_open_log">Mở crash log</string>
+    <string name="game_crash_share_log">Share crash log</string>
+    <string name="crash_logs_title">Nhật ký lỗi</string>
+    <string name="crash_logs_empty">Chưa có nhật ký lỗi nào</string>
+    <string name="mod_impact_title">Phát hiện ảnh hưởng</string>
+    <string name="mod_impact_message">Sau khi phân tích crash log thì chúng mình nhận thấy đây khả năng cao crash một trong số mod mà bạn đã cài đặt, Hãy kiểm tra thử xem như thế nào nhé.</string>
+    <string name="mod_impact_flagged_label">Mod bị gắn cờ:</string>
+    <string name="mod_impact_check_later">Sẽ check sau</string>
+    <string name="mod_impact_disable_flagged">Tắt các bản mod bị flag</string>
+    <string name="mod_impact_relaunch">Khởi động lại game</string>
+    <string name="mod_impact_disabled_toast">Đã tắt các mod bị flag</string>
+    <string name="tag_patch">Minecraft Patch</string>
+    <string name="patch_warning_title">Cảnh báo trước khi chơi</string>
+    <string name="patch_warning_message">Minecraft Patch thường có thêm các bản vá sửa sẵn vậy nên nếu bạn chạy mod ở trên Minecraft Patch thì có thể game sẽ không hoạt động ổn định so với Minecraft bình thường hoặc thậm chí tệ hơn là crash luôn game, vậy nên hãy cân nhắc trước khi chơi Minecraft Patch với mod của LeviLauncher</string>
+    <string name="patch_warning_dont_show">Không hiển thị cảnh báo này trong tương lai</string>
+    <string name="patch_warning_ack">Đã Hiểu</string>
+    <string name="nav_bar_position_title">Vị trí thanh điều hướng</string>
+    <string name="nav_position_top">Trên</string>
+    <string name="nav_position_bottom">Dưới</string>
+    <string name="nav_position_left">Trái</string>
+    <string name="nav_position_right">Phải</string>
 </resources>

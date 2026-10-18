@@ -8,6 +8,7 @@ import android.graphics.Color
 import android.os.Bundle
 import android.provider.OpenableColumns
 import android.text.InputType
+import android.util.Log
 import android.view.InputDevice
 import android.view.KeyEvent
 import android.view.MotionEvent
@@ -26,6 +27,7 @@ import org.levimc.launcher.core.mods.inbuilt.overlay.InbuiltOverlayManager
 import org.levimc.launcher.preloader.PreloaderInput
 import org.levimc.launcher.settings.FeatureSettings
 import org.levimc.launcher.util.LauncherBackgroundController
+import org.levimc.launcher.util.LauncherStorage
 import org.levimc.pojavcontrols.PojavControls
 import org.levimc.pojavcontrols.PojavControlsHost
 import java.io.File
@@ -116,6 +118,7 @@ class MinecraftActivity : MainActivity(), PojavControlsHost {
             trace.mark("Prepared runtime consumed")
         } catch (throwable: Throwable) {
             trace.error("MinecraftActivity prepare failed", formatLaunchFailure(throwable))
+            persistLaunchFailure("prepare failed", throwable)
             returnToLauncherAfterLaunchFailure()
             return
         }
@@ -129,6 +132,7 @@ class MinecraftActivity : MainActivity(), PojavControlsHost {
             super.onCreate(savedInstanceState)
         } catch (throwable: Throwable) {
             trace.error("Mojang MainActivity super.onCreate failed", formatLaunchFailure(throwable))
+            persistLaunchFailure("super.onCreate failed", throwable)
             returnToLauncherAfterLaunchFailure()
             return
         }
@@ -169,6 +173,27 @@ class MinecraftActivity : MainActivity(), PojavControlsHost {
         MinecraftLaunchSession.clear()
         MinecraftProcessRestarter.restartLauncherAfterMinecraftExit(this)
         finish()
+    }
+
+    // Both launch guards swallow the real throwable and only log it, which
+    // is invisible on devices where xcrash cannot read logcat (MIUI). Keep a
+    // copy next to the crash logs so the failure can be diagnosed after the
+    // process dies.
+    private fun persistLaunchFailure(stage: String, throwable: Throwable) {
+        try {
+            val file = File(
+                LauncherStorage.getCrashLogsDir(this),
+                "launch_failure_${trace.sessionId}.txt"
+            )
+            file.writeText(
+                "stage: $stage\n" +
+                    "elapsed: ${trace.elapsedMs()}ms\n" +
+                    "session: ${trace.sessionId}\n\n" +
+                    Log.getStackTraceString(throwable)
+            )
+        } catch (persistError: Throwable) {
+            trace.warning("Launch failure persist failed", persistError.message)
+        }
     }
 
     private fun formatLaunchFailure(throwable: Throwable): String {

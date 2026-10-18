@@ -255,14 +255,11 @@ public class CustomAlertDialog extends Dialog {
         DynamicAnim.applyPressScale(btnNegative);
         DynamicAnim.applyPressScale(btnNeutral);
 
-        try {
-            org.levimc.launcher.util.PersonalizationManager pm = new org.levimc.launcher.util.PersonalizationManager(getContext());
-            int accent = pm.getAccentColor();
-            if (accent != 0) {
-                btnPositive.setBackgroundTintList(android.content.res.ColorStateList.valueOf(accent));
-                btnPositive.setTextColor(Color.WHITE);
-            }
-        } catch (Exception ignored) {}
+        int accent = DialogStyler.accent(getContext());
+        btnPositive.setBackgroundTintList(android.content.res.ColorStateList.valueOf(accent));
+        btnPositive.setTextColor(Color.WHITE);
+        btnNegative.setTextColor(accent);
+        btnNeutral.setTextColor(accent);
     }
 
     @Override
@@ -407,7 +404,7 @@ public class CustomAlertDialog extends Dialog {
             textView.setPadding(padding, padding, padding, padding);
             textView.setTextSize(14);
             textView.setTextColor(parent.getContext().getResources().getColor(R.color.text_primary, null));
-            textView.setBackgroundResource(android.R.drawable.list_selector_background);
+            textView.setBackgroundResource(R.drawable.dialog_item_ripple);
             return new ViewHolder(textView);
         }
 

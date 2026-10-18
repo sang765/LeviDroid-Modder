@@ -464,6 +464,15 @@
                                     android:textSize="12sp" />
                             </LinearLayout>
                         </LinearLayout>
+
+                        <TextView
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="8dp"
+                            android:text="@string/theme_amoled_desc"
+                            android:fontFamily="@font/misans"
+                            android:textColor="@color/text_secondary"
+                            android:textSize="11sp" />
                     </LinearLayout>
 
                     <LinearLayout
@@ -578,6 +587,18 @@
                                 android:textColor="@color/on_primary"
                                 android:backgroundTint="@color/primary" />
                         </LinearLayout>
+
+                        <Button
+                            android:id="@+id/btn_wallpaper_color"
+                            android:layout_width="match_parent"
+                            android:layout_height="40dp"
+                            android:layout_marginTop="12dp"
+                            android:text="@string/wallpaper_color_from_wallpaper"
+                            android:textAllCaps="false"
+                            android:fontFamily="@font/misans"
+                            android:textSize="12sp"
+                            android:textColor="@color/on_primary"
+                            android:backgroundTint="@color/primary" />
                     </LinearLayout>
 
                     <LinearLayout
@@ -749,6 +770,54 @@
                                 android:backgroundTint="@color/primary" />
                         </LinearLayout>
                     </LinearLayout>
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="12dp"
+                        android:background="@drawable/card_background"
+                        android:orientation="vertical"
+                        android:padding="16dp">
+
+                        <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:gravity="center_vertical"
+                            android:orientation="horizontal">
+
+                            <LinearLayout
+                                android:layout_width="0dp"
+                                android:layout_height="wrap_content"
+                                android:layout_weight="1"
+                                android:orientation="vertical">
+
+                                <TextView
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:text="@string/nav_bar_position_title"
+                                    android:fontFamily="@font/misans"
+                                    android:textColor="@color/on_surface"
+                                    android:textSize="15sp"
+                                    android:textStyle="bold" />
+
+                                <TextView
+                                    android:id="@+id/nav_bar_position_current"
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:layout_marginTop="2dp"
+                                    android:fontFamily="@font/misans"
+                                    android:textColor="@color/text_secondary"
+                                    android:textSize="12sp" />
+                            </LinearLayout>
+
+                            <Spinner
+                                android:id="@+id/nav_bar_position_spinner"
+                                android:layout_width="wrap_content"
+                                android:layout_height="36dp"
+                                android:minWidth="120dp"
+                                android:background="@drawable/bg_spinner_outline" />
+                        </LinearLayout>
+                    </LinearLayout>
                 </LinearLayout>
 
                 <LinearLayout
@@ -826,6 +895,39 @@
                             android:layout_height="40dp"
                             android:layout_marginTop="12dp"
                             android:text="@string/preloader_sigs_update"
+                            android:fontFamily="@font/misans"
+                            android:textSize="13sp"
+                            android:textColor="@color/on_primary"
+                            android:backgroundTint="@color/primary"
+                            android:paddingHorizontal="20dp"
+                            android:textAllCaps="false" />
+
+                        <View
+                            android:layout_width="match_parent"
+                            android:layout_height="1dp"
+                            android:layout_marginTop="14dp"
+                            android:layout_marginBottom="14dp"
+                            android:background="@color/divider"
+                            android:alpha="0.3" />
+
+                        <Button
+                            android:id="@+id/btn_crash_logs"
+                            android:layout_width="wrap_content"
+                            android:layout_height="40dp"
+                            android:text="@string/crash_logs_title"
+                            android:fontFamily="@font/misans"
+                            android:textSize="13sp"
+                            android:textColor="@color/on_primary"
+                            android:backgroundTint="@color/primary"
+                            android:paddingHorizontal="20dp"
+                            android:textAllCaps="false" />
+
+                        <Button
+                            android:id="@+id/btn_install_method"
+                            android:layout_width="wrap_content"
+                            android:layout_height="40dp"
+                            android:layout_marginTop="12dp"
+                            android:text="@string/install_method_title"
                             android:fontFamily="@font/misans"
                             android:textSize="13sp"
                             android:textColor="@color/on_primary"

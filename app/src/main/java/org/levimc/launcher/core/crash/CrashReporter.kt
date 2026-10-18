@@ -8,8 +8,10 @@ import android.os.SystemClock
 import com.google.firebase.FirebaseApp
 import com.google.firebase.crashlytics.FirebaseCrashlytics
 import org.levimc.launcher.BuildConfig
+import org.levimc.launcher.core.minecraft.MinecraftActivityState
 import org.levimc.launcher.settings.FeatureSettings
 import org.levimc.launcher.ui.activities.CrashActivity
+import org.levimc.launcher.ui.activities.MainActivity
 import org.levimc.launcher.util.LauncherStorage
 import xcrash.ICrashCallback
 import xcrash.XCrash
@@ -82,7 +84,25 @@ object CrashReporter {
             val summary = buildCrashSummary(crashType, emergency)
             recordXCrashToCrashlytics(crashType, logPath, emergency, summary)
             sendUnsentReports()
-            launchCrashActivity(appContext, crashType, logPath, emergency, summary)
+            if (MinecraftActivityState.isRunning(appContext) && !logPath.isNullOrBlank()) {
+                // Crash while the game was running: persist the log and let the
+                // launcher show its own dialog after the restart.
+                PendingGameCrash.save(appContext, logPath)
+                launchMainActivity(appContext)
+            } else {
+                launchCrashActivity(appContext, crashType, logPath, emergency, summary)
+            }
+        }
+    }
+
+    private fun launchMainActivity(context: Context) {
+        try {
+            val intent = Intent(context, MainActivity::class.java).apply {
+                addFlags(Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK)
+            }
+            context.startActivity(intent)
+        } catch (error: Throwable) {
+            recordHandlerError(error)
         }
     }
 

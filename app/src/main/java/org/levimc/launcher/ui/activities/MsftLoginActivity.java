@@ -217,7 +217,7 @@ public class MsftLoginActivity extends BaseActivity {
         settings.setDomStorageEnabled(true);
         settings.setDatabaseEnabled(true);
         settings.setCacheMode(WebSettings.LOAD_DEFAULT);
-        settings.setUserAgentString(settings.getUserAgentString() + " LeviLauncher");
+        settings.setUserAgentString(settings.getUserAgentString() + " LeviLauncher Modder");
         settings.setSupportMultipleWindows(false);
         settings.setJavaScriptCanOpenWindowsAutomatically(false);
         settings.setMixedContentMode(WebSettings.MIXED_CONTENT_NEVER_ALLOW);
@@ -305,7 +305,7 @@ public class MsftLoginActivity extends BaseActivity {
                 completeLogin(account, generation);
             } catch (InterruptedException ignored) {
                 Thread.currentThread().interrupt();
-            } catch (Exception e) {
+            } catch (Throwable e) {
                 if (isCurrentLogin(generation)) {
                     showFailure(e, generation);
                 }
@@ -427,7 +427,7 @@ public class MsftLoginActivity extends BaseActivity {
                 completeLogin(account, generation);
             } catch (InterruptedException ignored) {
                 Thread.currentThread().interrupt();
-            } catch (Exception e) {
+            } catch (Throwable e) {
                 if (isCurrentLogin(generation)) {
                     showFailure(e, generation);
                 }

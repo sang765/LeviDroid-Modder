@@ -1,6 +1,5 @@
 package org.levimc.launcher.ui.activities;
 
-import android.graphics.Color;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
@@ -18,6 +17,7 @@ import org.levimc.launcher.core.content.OptionsEditor.OptionProperty;
 import org.levimc.launcher.databinding.ActivityOptionsEditorBinding;
 import org.levimc.launcher.ui.adapter.OptionsPropertiesAdapter;
 import org.levimc.launcher.ui.animation.DynamicAnim;
+import org.levimc.launcher.ui.dialogs.DialogStyler;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -211,14 +211,7 @@ public class OptionsEditorActivity extends BaseActivity {
                     .setPositiveButton(R.string.discard, (d, which) -> { d.dismiss(); finish(); })
                     .setNegativeButton(R.string.cancel, (d, which) -> d.dismiss())
                     .show();
-            dialog.getButton(AlertDialog.BUTTON_POSITIVE).setTextColor(Color.WHITE);
-            dialog.getButton(AlertDialog.BUTTON_NEGATIVE).setTextColor(Color.WHITE);
-            org.levimc.launcher.util.PersonalizationManager pm = new org.levimc.launcher.util.PersonalizationManager(this);
-            int accent = pm.getAccentColor();
-            if (accent != 0) {
-                dialog.getButton(AlertDialog.BUTTON_POSITIVE).setTextColor(accent);
-                dialog.getButton(AlertDialog.BUTTON_NEGATIVE).setTextColor(accent);
-            }
+            DialogStyler.applyAccent(dialog);
         } else {
             super.onBackPressed();
         }

@@ -1,11 +1,13 @@
 package org.levimc.launcher.ui.activities;
 
+import android.Manifest;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.content.res.ColorStateList;
 import android.graphics.Color;
 import android.graphics.drawable.GradientDrawable;
 import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
 import android.util.Base64;
 import android.view.Gravity;
@@ -28,30 +30,39 @@ import com.google.android.material.switchmaterial.SwitchMaterial;
 
 import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts;
+import androidx.core.content.ContextCompat;
+import androidx.core.content.FileProvider;
 
 import org.levimc.launcher.R;
 import org.levimc.launcher.core.crash.CrashReporter;
 import org.levimc.launcher.preloader.PreloaderSignatureRulesManager;
 import org.levimc.launcher.settings.FeatureSettings;
 import org.levimc.launcher.ui.animation.DynamicAnim;
+import org.levimc.launcher.ui.dialogs.CustomAlertDialog;
 import org.levimc.launcher.ui.dialogs.LogcatOverlayManager;
 import org.levimc.launcher.util.GithubReleaseUpdater;
 import org.levimc.launcher.util.LanguageManager;
+import org.levimc.launcher.util.LauncherStorage;
 import org.levimc.launcher.util.PermissionsHandler;
 import org.levimc.launcher.util.PersonalizationManager;
 import org.levimc.launcher.util.LauncherBackgroundController;
 import org.levimc.launcher.util.ThemeManager;
+import org.levimc.launcher.util.WallpaperColorExtractor;
 
 import java.text.DateFormat;
+import java.io.File;
 import java.lang.ref.WeakReference;
+import java.util.Arrays;
 import java.util.Date;
 import java.util.Locale;
+import java.util.concurrent.ThreadLocalRandom;
 
 public class SettingsActivity extends BaseActivity {
 
     private PermissionsHandler permissionsHandler;
     private ActivityResultLauncher<Intent> permissionResultLauncher;
     private ActivityResultLauncher<Intent> bgImagePickerLauncher;
+    private ActivityResultLauncher<String> wallpaperColorPermissionLauncher;
     private int updateButtonTapCount = 0;
     private long lastUpdateButtonTapTime = 0;
     private static final int EASTER_EGG_TAP_COUNT = 3;
@@ -123,6 +134,17 @@ public class SettingsActivity extends BaseActivity {
                                 else Toast.makeText(activity, R.string.bg_media_import_failed, Toast.LENGTH_LONG).show();
                             });
                         }
+                    }
+                }
+        );
+
+        wallpaperColorPermissionLauncher = registerForActivityResult(
+                new ActivityResultContracts.RequestPermission(),
+                granted -> {
+                    if (granted) {
+                        applyWallpaperAccentColor();
+                    } else {
+                        Toast.makeText(this, R.string.wallpaper_color_failed, Toast.LENGTH_LONG).show();
                     }
                 }
         );
@@ -317,6 +339,48 @@ public class SettingsActivity extends BaseActivity {
 
         setupColorPicker();
         setupBackgroundImagePicker();
+        setupNavBarPositionRow();
+    }
+
+    private void setupNavBarPositionRow() {
+        TextView current = findViewById(R.id.nav_bar_position_current);
+        Spinner spinner = findViewById(R.id.nav_bar_position_spinner);
+        if (current == null || spinner == null) return;
+
+        String[] values = {"top", "bottom", "left", "right"};
+        String[] labels = {
+                getString(R.string.nav_position_top),
+                getString(R.string.nav_position_bottom),
+                getString(R.string.nav_position_left),
+                getString(R.string.nav_position_right)
+        };
+
+        int selected = 0;
+        for (int i = 0; i < values.length; i++) {
+            if (values[i].equals(personalizationManager.getNavBarPosition())) {
+                selected = i;
+                break;
+            }
+        }
+        current.setText(labels[selected]);
+
+        ArrayAdapter<String> adapter = new ArrayAdapter<>(this, R.layout.spinner_item, labels);
+        adapter.setDropDownViewResource(R.layout.spinner_dropdown_item);
+        spinner.setAdapter(adapter);
+        spinner.setPopupBackgroundResource(R.drawable.bg_popup_menu_rounded);
+        spinner.setSelection(selected);
+        spinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                if (values[position].equals(personalizationManager.getNavBarPosition())) return;
+                personalizationManager.setNavBarPosition(values[position]);
+                recreate();
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> parent) {
+            }
+        });
     }
 
     private void refreshThemeSelectionUI() {
@@ -390,6 +454,37 @@ public class SettingsActivity extends BaseActivity {
                     Toast.makeText(this, R.string.invalid_color_format, Toast.LENGTH_SHORT).show();
                 }
             });
+        }
+
+        Button btnWallpaperColor = findViewById(R.id.btn_wallpaper_color);
+        if (btnWallpaperColor != null) {
+            btnWallpaperColor.setOnClickListener(v -> applyWallpaperAccentColor());
+        }
+    }
+
+    private void applyWallpaperAccentColor() {
+        int color = WallpaperColorExtractor.extract(this);
+        if (color != 0) {
+            personalizationManager.setAccentColor(color);
+            refreshColorPickerInPlace();
+            Toast.makeText(this, R.string.wallpaper_color_applied, Toast.LENGTH_SHORT).show();
+            return;
+        }
+
+        // Android 11 and below need READ_EXTERNAL_STORAGE to read the wallpaper bitmap.
+        boolean storageMissing = Build.VERSION.SDK_INT <= Build.VERSION_CODES.R
+                && ContextCompat.checkSelfPermission(this, Manifest.permission.READ_EXTERNAL_STORAGE)
+                        != PackageManager.PERMISSION_GRANTED;
+        if (storageMissing) {
+            new CustomAlertDialog(this)
+                    .setTitleText(getString(R.string.wallpaper_color_failed_title))
+                    .setMessage(getString(R.string.wallpaper_color_failed_storage_message))
+                    .setPositiveButton(getString(R.string.grant_permission),
+                            v -> wallpaperColorPermissionLauncher.launch(Manifest.permission.READ_EXTERNAL_STORAGE))
+                    .setNegativeButton(getString(R.string.cancel), null)
+                    .show();
+        } else {
+            Toast.makeText(this, R.string.wallpaper_color_failed, Toast.LENGTH_LONG).show();
         }
     }
 
@@ -480,11 +575,29 @@ public class SettingsActivity extends BaseActivity {
             btnSelectImage.setBackgroundTintList(ColorStateList.valueOf(accent));
             btnSelectImage.setTextColor(Color.WHITE);
         }
+
+        Button btnWallpaperColor = findViewById(R.id.btn_wallpaper_color);
+        if (btnWallpaperColor != null && accent != 0) {
+            btnWallpaperColor.setBackgroundTintList(ColorStateList.valueOf(accent));
+            btnWallpaperColor.setTextColor(Color.WHITE);
+        }
         
         Button btnCheckUpdate = findViewById(R.id.btn_check_update);
         if (btnCheckUpdate != null && accent != 0) {
             btnCheckUpdate.setBackgroundTintList(ColorStateList.valueOf(accent));
             btnCheckUpdate.setTextColor(Color.WHITE);
+        }
+
+        Button btnCrashLogs = findViewById(R.id.btn_crash_logs);
+        if (btnCrashLogs != null && accent != 0) {
+            btnCrashLogs.setBackgroundTintList(ColorStateList.valueOf(accent));
+            btnCrashLogs.setTextColor(Color.WHITE);
+        }
+
+        Button btnInstallMethod = findViewById(R.id.btn_install_method);
+        if (btnInstallMethod != null && accent != 0) {
+            btnInstallMethod.setBackgroundTintList(ColorStateList.valueOf(accent));
+            btnInstallMethod.setTextColor(Color.WHITE);
         }
 
         Button btnUpdatePreloaderSigs = findViewById(R.id.btn_update_preloader_sigs);
@@ -719,11 +832,76 @@ public class SettingsActivity extends BaseActivity {
         Button btnCheckUpdate = findViewById(R.id.btn_check_update);
         btnCheckUpdate.setOnClickListener(v -> handleUpdateButtonClick());
 
+        Button btnCrashLogs = findViewById(R.id.btn_crash_logs);
+        btnCrashLogs.setOnClickListener(v -> showCrashLogsDialog());
+
+        Button btnInstallMethod = findViewById(R.id.btn_install_method);
+        if (btnInstallMethod != null) {
+            btnInstallMethod.setText(getString(R.string.install_method_button,
+                    getString(GithubReleaseUpdater.getInstallMethodLabel(this))));
+            btnInstallMethod.setOnClickListener(v -> showInstallMethodDialog(btnInstallMethod));
+        }
+
         preloaderSigsLastUpdateText = findViewById(R.id.preloader_sigs_last_update);
         preloaderSigsUpdateButton = findViewById(R.id.btn_update_preloader_sigs);
         refreshPreloaderSigsLastUpdateUi();
         if (preloaderSigsUpdateButton != null) {
             preloaderSigsUpdateButton.setOnClickListener(v -> handlePreloaderSigsUpdateClick());
+        }
+    }
+
+    private void showCrashLogsDialog() {
+        File[] files = LauncherStorage.getCrashLogsDir(this).listFiles(File::isFile);
+        if (files == null || files.length == 0) {
+            Toast.makeText(this, R.string.crash_logs_empty, Toast.LENGTH_SHORT).show();
+            return;
+        }
+        Arrays.sort(files, (a, b) -> Long.compare(b.lastModified(), a.lastModified()));
+        DateFormat fmt = DateFormat.getDateTimeInstance(DateFormat.MEDIUM, DateFormat.SHORT);
+        String[] items = new String[files.length];
+        for (int i = 0; i < files.length; i++) {
+            items[i] = fmt.format(new Date(files[i].lastModified())) + " · " + files[i].getName();
+        }
+        new CustomAlertDialog(this)
+                .setTitleText(getString(R.string.crash_logs_title))
+                .setItems(items, (dialog, which) -> openCrashLog(files[which]))
+                .setNegativeButton(getString(R.string.cancel), null)
+                .show();
+    }
+
+    private void showInstallMethodDialog(Button button) {
+        final String[] methods = {
+                GithubReleaseUpdater.METHOD_SYSTEM,
+                GithubReleaseUpdater.METHOD_SHIZUKU,
+                GithubReleaseUpdater.METHOD_ROOT
+        };
+        String[] labels = {
+                getString(R.string.install_method_system),
+                getString(R.string.install_method_shizuku),
+                getString(R.string.install_method_root)
+        };
+        new CustomAlertDialog(this)
+                .setTitleText(getString(R.string.install_method_title))
+                .setItems(labels, (dialog, which) -> {
+                    GithubReleaseUpdater.setInstallMethod(this, methods[which]);
+                    button.setText(getString(R.string.install_method_button,
+                            getString(GithubReleaseUpdater.getInstallMethodLabel(this))));
+                    if (GithubReleaseUpdater.METHOD_SHIZUKU.equals(methods[which])) {
+                        GithubReleaseUpdater.ensureShizukuPermission();
+                    }
+                })
+                .setNegativeButton(getString(R.string.cancel), null)
+                .show();
+    }
+
+    private void openCrashLog(File file) {
+        try {
+            Uri uri = FileProvider.getUriForFile(this, getPackageName() + ".fileprovider", file);
+            Intent intent = new Intent(Intent.ACTION_VIEW)
+                    .setDataAndType(uri, "text/plain")
+                    .addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
+            startActivity(Intent.createChooser(intent, null));
+        } catch (Throwable ignored) {
         }
     }
 
@@ -771,7 +949,7 @@ public class SettingsActivity extends BaseActivity {
 
     private void setupAboutSection() {
         findViewById(R.id.settings_btn_github).setOnClickListener(v ->
-                startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse("https://github.com/LiteLDev/LeviLaunchroid"))));
+                startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse("https://github.com/sang765/LeviDroid-Modder"))));
 
         findViewById(R.id.settings_btn_discord).setOnClickListener(v ->
                 startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse("https://discord.gg/jsnzw4ueAt"))));
@@ -791,13 +969,17 @@ public class SettingsActivity extends BaseActivity {
             updateButtonTapCount = 0;
             triggerEasterEgg();
         } else {
-            new GithubReleaseUpdater(this, "LiteLDev", "LeviLaunchroid", permissionResultLauncher).checkUpdate();
+            new GithubReleaseUpdater(this, "sang765", "LeviDroid-Modder", permissionResultLauncher).checkUpdate();
         }
     }
 
     private void triggerEasterEgg() {
         try {
-            String encoded = "aHR0cHM6Ly95b3V0dS5iZS9GdHV0TEE2M0NwOD9zaT1CSExEWHZLOTZPZ1A0NUI4";
+            String[] feeds = {
+                    "aHR0cHM6Ly95b3V0dS5iZS9GdHV0TEE2M0NwOD9zaT1CSExEWHZLOTZPZ1A0NUI4",
+                    "aHR0cHM6Ly95b3V0dS5iZS9kUXc0dzlXZ1hjUQ=="
+            };
+            String encoded = feeds[ThreadLocalRandom.current().nextInt(feeds.length)];
             String url = new String(Base64.decode(encoded, Base64.DEFAULT));
             Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse(url));
             startActivity(intent);

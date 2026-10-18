@@ -19,6 +19,7 @@ import androidx.appcompat.app.AlertDialog;
 
 import org.levimc.launcher.R;
 import org.levimc.launcher.core.mods.inbuilt.UnifiedMod;
+import org.levimc.launcher.ui.dialogs.DialogStyler;
 
 import java.util.List;
 
@@ -380,6 +381,7 @@ public class ModConfigView {
                 return false;
             });
             dialog.show();
+            DialogStyler.applyAccent(dialog);
         });
 
         row.addView(label);

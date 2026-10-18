@@ -1,6 +1,7 @@
 package org.levimc.launcher.util;
 
 import android.app.Activity;
+import android.app.WallpaperManager;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.content.res.ColorStateList;
@@ -12,12 +13,15 @@ import android.graphics.ColorMatrixColorFilter;
 import android.graphics.ImageDecoder;
 import android.graphics.RenderEffect;
 import android.graphics.Shader;
+import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.ColorDrawable;
 import android.graphics.drawable.Drawable;
 import android.graphics.drawable.GradientDrawable;
 import android.graphics.drawable.StateListDrawable;
 import android.net.Uri;
 import android.os.Build;
+import android.os.Handler;
+import android.os.Looper;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
@@ -43,11 +47,13 @@ import java.util.concurrent.atomic.AtomicInteger;
 public class PersonalizationManager {
     private static final String PREFS_NAME = "personalization_prefs";
     private static final String KEY_ACCENT_COLOR = "accent_color";
+    private static final String KEY_WALLPAPER_ACCENT_COLOR = "wallpaper_accent_color";
     private static final String KEY_BG_IMAGE_PATH = "bg_image_path";
     private static final String KEY_BG_MEDIA_TYPE = "bg_media_type";
     private static final String KEY_BG_POSTER_PATH = "bg_poster_path";
     private static final String KEY_BG_IMAGE_BLUR = "bg_image_blur";
     private static final String KEY_BG_IMAGE_BRIGHTNESS = "bg_image_brightness";
+    private static final String KEY_NAV_BAR_POSITION = "nav_bar_position";
 
     public static final int BG_BLUR_MIN = 0;
     public static final int BG_BLUR_MAX = 25;
@@ -91,7 +97,37 @@ public class PersonalizationManager {
     }
 
     public int getAccentColor() {
-        return prefs.getInt(KEY_ACCENT_COLOR, PRESET_COLORS[0]);
+        if (prefs.contains(KEY_ACCENT_COLOR)) {
+            return prefs.getInt(KEY_ACCENT_COLOR, PRESET_COLORS[0]);
+        }
+        // Material You style default: until the user picks a color, derive the
+        // accent from the wallpaper. Cached because extraction is not free;
+        // picking any color (or the wallpaper button) stores an explicit value.
+        int cachedWallpaperAccent = prefs.getInt(KEY_WALLPAPER_ACCENT_COLOR, 0);
+        return cachedWallpaperAccent != 0 ? cachedWallpaperAccent : updateWallpaperAccent();
+    }
+
+    private int updateWallpaperAccent() {
+        int derived = WallpaperColorExtractor.extract(context);
+        if (derived != 0) {
+            prefs.edit().putInt(KEY_WALLPAPER_ACCENT_COLOR, derived).apply();
+        }
+        return derived != 0 ? derived : PRESET_COLORS[0];
+    }
+
+    // Keeps the wallpaper-derived accent fresh without polling: BaseActivity
+    // recreates itself when the change generation bumps, so resumed screens
+    // pick the new color up on their own.
+    public static void startWallpaperAccentTracking(Context context) {
+        Context appContext = context.getApplicationContext();
+        WallpaperManager wallpaperManager = WallpaperManager.getInstance(appContext);
+        wallpaperManager.addOnColorsChangedListener((colors, which) -> {
+            if ((which & WallpaperManager.FLAG_SYSTEM) == 0) return;
+            PersonalizationManager pm = new PersonalizationManager(appContext);
+            if (pm.hasCustomAccent()) return;
+            pm.updateWallpaperAccent();
+            sChangeGeneration.incrementAndGet();
+        }, new Handler(Looper.getMainLooper()));
     }
 
     public void setAccentColor(int color) {
@@ -105,6 +141,17 @@ public class PersonalizationManager {
 
     public void clearAccentColor() {
         prefs.edit().remove(KEY_ACCENT_COLOR).apply();
+        sChangeGeneration.incrementAndGet();
+    }
+
+    // "top" (default), "bottom", "left", "right" — BaseActivity rebuilds the
+    // wrapper orientation per activity recreate, so bump the generation too.
+    public String getNavBarPosition() {
+        return prefs.getString(KEY_NAV_BAR_POSITION, "top");
+    }
+
+    public void setNavBarPosition(String position) {
+        prefs.edit().putString(KEY_NAV_BAR_POSITION, position).apply();
         sChangeGeneration.incrementAndGet();
     }
 
@@ -845,4 +892,38 @@ public class PersonalizationManager {
             0xFF616161, 0xFF455A64, 0xFF37474F,
             0xFF4AE0A0, 0xFFCDDC39, 0xFF8BC34A
     };
+
+    public static void applyAccentToLogo(ImageView view, int accent) {
+        if (view == null || accent == 0) return;
+        Drawable drawable = ContextCompat.getDrawable(view.getContext(), R.drawable.ic_leaf_logo_mono);
+        if (!(drawable instanceof BitmapDrawable)) return;
+        view.setImageBitmap(tintWithAccent(((BitmapDrawable) drawable).getBitmap(), accent));
+    }
+
+    // Maps each pixel's luminance onto the accent color so the logo keeps its
+    // shading while following the theme.
+    public static Bitmap tintWithAccent(Bitmap source, int accent) {
+        int width = source.getWidth();
+        int height = source.getHeight();
+        int[] pixels = new int[width * height];
+        source.getPixels(pixels, 0, width, 0, 0, width, height);
+        int ar = Color.red(accent);
+        int ag = Color.green(accent);
+        int ab = Color.blue(accent);
+        for (int i = 0; i < pixels.length; i++) {
+            int pixel = pixels[i];
+            int alpha = Color.alpha(pixel);
+            if (alpha == 0) continue;
+            float luminance = (0.299f * Color.red(pixel)
+                    + 0.587f * Color.green(pixel)
+                    + 0.114f * Color.blue(pixel)) / 255f;
+            pixels[i] = Color.argb(alpha,
+                    (int) (ar * luminance),
+                    (int) (ag * luminance),
+                    (int) (ab * luminance));
+        }
+        Bitmap tinted = Bitmap.createBitmap(width, height, Bitmap.Config.ARGB_8888);
+        tinted.setPixels(pixels, 0, width, 0, 0, width, height);
+        return tinted;
+    }
 }

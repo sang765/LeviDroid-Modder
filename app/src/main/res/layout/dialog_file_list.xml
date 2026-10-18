@@ -4,7 +4,7 @@
     android:layout_height="wrap_content"
     android:orientation="vertical"
     android:paddingTop="14dp"
-    android:background="@drawable/bg_rounded_card">
+    android:background="@drawable/dialog_background">
 
     <TextView
         android:id="@+id/dialog_title"

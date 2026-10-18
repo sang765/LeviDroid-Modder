@@ -180,6 +180,10 @@
                 <include
                     android:id="@+id/mod_config_files_row"
                     layout="@layout/item_mod_detail_meta_row" />
+
+                <include
+                    android:id="@+id/mod_file_name_row"
+                    layout="@layout/item_mod_detail_meta_row" />
             </LinearLayout>
 
             <LinearLayout

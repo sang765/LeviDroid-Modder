@@ -269,6 +269,10 @@ public class VersionProfileMetadataStore {
         }
 
         public static Defaults custom(String directoryName, String versionName) {
+            return custom(directoryName, versionName, null);
+        }
+
+        public static Defaults custom(String directoryName, String versionName, String packageName) {
             String safeDirectoryName = directoryName == null ? "default" : directoryName;
             String safeVersionName = isBlank(versionName) ? safeDirectoryName : versionName;
             return new Defaults(
@@ -279,7 +283,7 @@ public class VersionProfileMetadataStore {
                     true,
                     false,
                     false,
-                    null
+                    packageName
             );
         }
 

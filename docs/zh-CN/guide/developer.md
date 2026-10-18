@@ -1,10 +1,10 @@
 # Native Mod 快速开始
 
-本页面描述 LeviLaunchroid native mod 的受支持开发路径。公开 SDK 位于
+本页面描述 LeviLauncher Modder native mod 的受支持开发路径。公开 SDK 位于
 [LiteLDev/preloader-android](https://github.com/LiteLDev/preloader-android)。
 
 独立第三方 mod 建议从
-[LeviLauncher Android mod template](https://github.com/QYCottage/levilauncher-android-mod-template)
+[LeviLauncher Modder Android mod template](https://github.com/QYCottage/levilauncher-android-mod-template)
 开始。
 
 推荐以 `examples/full-cpp-mod` 作为参考实现。它包含生命周期注册、类型化

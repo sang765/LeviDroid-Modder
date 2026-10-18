@@ -2,12 +2,12 @@
 layout: home
 
 hero:
-  name: LeviLauncher
+  name: LeviLauncher Modder
   text: 面向 Minecraft 基岩版的轻量 Android 启动器
   tagline: 启动官方 Minecraft，管理隔离版本、账号、世界、资源包与备份，并通过 native 模块扩展游戏能力。
   image:
     src: /appicon.png
-    alt: LeviLauncher
+    alt: LeviLauncher Modder
   actions:
     - theme: brand
       text: 快速开始
@@ -20,11 +20,11 @@ hero:
       link: /zh-CN/guide/developer
     - theme: alt
       text: 下载
-      link: https://github.com/LiteLDev/LeviLaunchroid/releases/latest
+      link: https://github.com/sang765/LeviDroid-Modder/releases/latest
 
 features:
   - title: 官方游戏优先
-    details: LeviLauncher 面向合法 Minecraft 基岩版玩家，要求设备上存在来自 Google Play 的官方 Minecraft。
+    details: LeviLauncher Modder 面向合法 Minecraft 基岩版玩家，要求设备上存在来自 Google Play 的官方 Minecraft。
   - title: 多版本隔离
     details: 独立管理多个 Minecraft 版本和数据目录，测试、游玩、回退互不干扰。
   - title: 内容管理
@@ -43,7 +43,7 @@ Use the language selector or open [English](/).
 
 ## 本站覆盖内容
 
-LeviLauncher 是一个开源 Android Minecraft 基岩版启动器。本文档优先讲清楚启动器本身：如何安装、准备官方 Minecraft、管理版本、启动游戏、整理玩家内容，以及如何处理兼容性问题。
+LeviLauncher Modder 是一个开源 Android Minecraft 基岩版启动器。本文档优先讲清楚启动器本身：如何安装、准备官方 Minecraft、管理版本、启动游戏、整理玩家内容，以及如何处理兼容性问题。
 
 Preloader API 仍然保留在本站，但它属于“开发者”分类，不再是文档的主入口。
 

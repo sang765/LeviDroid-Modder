@@ -17,8 +17,18 @@
         android:src="@drawable/ic_drag_handle"
         android:contentDescription="@string/drag_to_reorder"
         android:alpha="0.6"
+        android:visibility="gone"
         android:background="?attr/selectableItemBackgroundBorderless"
         android:padding="4dp"/>
+
+    <ImageView
+        android:id="@+id/mod_icon"
+        android:layout_width="40dp"
+        android:layout_height="40dp"
+        android:layout_marginEnd="10dp"
+        android:contentDescription="@string/mod_name_placeholder"
+        android:scaleType="centerCrop"
+        android:src="@drawable/ic_plugin" />
 
     <LinearLayout
         android:layout_width="220dp"
@@ -38,6 +48,17 @@
             android:textStyle="bold"/>
 
         <TextView
+            android:id="@+id/mod_meta"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:ellipsize="end"
+            android:fontFamily="@font/misans"
+            android:maxLines="1"
+            android:textColor="@color/text_secondary"
+            android:textSize="11sp"
+            android:visibility="gone"/>
+
+        <TextView
             android:id="@+id/mod_order"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -45,6 +66,17 @@
             android:textSize="12sp"
             android:fontFamily="@font/misans"
             android:textColor="@color/text_secondary"
+            android:visibility="gone"/>
+
+        <TextView
+            android:id="@+id/mod_compat_warning"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="2dp"
+            android:fontFamily="@font/misans"
+            android:textColor="@color/error"
+            android:textSize="11sp"
+            android:textStyle="bold"
             android:visibility="gone"/>
 
         <TextView

@@ -12,6 +12,7 @@ import android.os.Bundle;
 import android.text.TextUtils;
 import android.view.View;
 import android.widget.ImageView;
+import android.widget.CheckBox;
 import android.widget.TextView;
 
 import androidx.activity.OnBackPressedCallback;
@@ -26,6 +27,7 @@ import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.lifecycle.ViewModelProvider;
 
 import org.levimc.launcher.R;
+import org.levimc.launcher.core.curseforge.CurseForgeClient;
 import org.levimc.launcher.core.minecraft.MinecraftImportIntents;
 import org.levimc.launcher.core.minecraft.LaunchTrace;
 import org.levimc.launcher.core.minecraft.MinecraftLauncher;
@@ -40,6 +42,7 @@ import org.levimc.launcher.settings.FeatureSettings;
 
 import org.levimc.launcher.ui.animation.DynamicAnim;
 import org.levimc.launcher.ui.dialogs.CustomAlertDialog;
+import org.levimc.launcher.ui.dialogs.GameCrashDialogs;
 
 import org.levimc.launcher.ui.dialogs.PlayStoreValidationDialog;
 import org.levimc.launcher.ui.views.MainViewModel;
@@ -128,7 +131,7 @@ import okhttp3.OkHttpClient;
         setupNavBar();
         setupManagersAndHandlers();
         if (!isInstanceShortcutIntent()) {
-            new GithubReleaseUpdater(this, "LiteLDev", "LeviLaunchroid", permissionResultLauncher).checkUpdateOnLaunch();
+            new GithubReleaseUpdater(this, "sang765", "LeviDroid-Modder", permissionResultLauncher).checkUpdateOnLaunch();
         }
         showEulaIfNeeded();
         setupOnBackPressedCallback();
@@ -440,7 +443,24 @@ import okhttp3.OkHttpClient;
         });
 
         int edgeMargin = (int) (4 * getResources().getDisplayMetrics().density);
-        popup.showAsDropDown(anchor, -edgeMargin, edgeMargin / 4, Gravity.END);
+        // showAsDropDown always opens below the anchor. The avatar sits near the
+        // bottom edge in all navbar positions (bottom bar, and side rails where a
+        // weight-1 spacer pushes it down), so "below" lands off-screen. Measure the
+        // popup and flip above the anchor when there isn't room underneath.
+        content.measure(
+                View.MeasureSpec.makeMeasureSpec(0, View.MeasureSpec.UNSPECIFIED),
+                View.MeasureSpec.makeMeasureSpec(0, View.MeasureSpec.UNSPECIFIED));
+        int popupHeight = content.getMeasuredHeight();
+        int[] anchorLoc = new int[2];
+        anchor.getLocationOnScreen(anchorLoc);
+        int spaceBelow = getResources().getDisplayMetrics().heightPixels
+                - (anchorLoc[1] + anchor.getHeight());
+        if (spaceBelow < popupHeight + edgeMargin) {
+            int yoff = -(anchor.getHeight() + popupHeight + edgeMargin);
+            popup.showAsDropDown(anchor, -edgeMargin, yoff, Gravity.END);
+        } else {
+            popup.showAsDropDown(anchor, -edgeMargin, edgeMargin / 4, Gravity.END);
+        }
 
         DynamicAnim.springAlphaTo(content, 1f).start();
         DynamicAnim.springTranslationYTo(content, 0f).start();
@@ -525,6 +545,8 @@ import okhttp3.OkHttpClient;
             handleVersionDependentIntent();
         }
         refreshContentCounts();
+        binding.getRoot().post(() ->
+                new GameCrashDialogs(this, this::performActualLaunch).showIfPending());
     }
 
     private void handleVersionDependentIntent() {
@@ -795,7 +817,11 @@ import okhttp3.OkHttpClient;
     }
 
     private void initMiscellaneousSection() {
-        binding.miscCurseforgeRow.setOnClickListener(v -> startActivity(new Intent(this, CurseForgeActivity.class)));
+        if (CurseForgeClient.isConfigured()) {
+            binding.miscCurseforgeRow.setOnClickListener(v -> startActivity(new Intent(this, CurseForgeActivity.class)));
+        } else {
+            binding.miscCurseforgeRow.setVisibility(View.GONE);
+        }
         binding.miscAccountsRow.setOnClickListener(v -> startActivity(new Intent(this, AccountsActivity.class)));
         binding.miscQuickLaunchRow.setOnClickListener(v -> startActivity(new Intent(this, QuickLaunchActivity.class)));
     }
@@ -827,6 +853,15 @@ import okhttp3.OkHttpClient;
             return;
         }
 
+        if (version.isMinecraftPatch()
+                && !FeatureSettings.getInstance().isPatchWarningSkipped()
+                && !version.directoryName.equals(patchWarningShownFor)) {
+            trace.mark("Minecraft Patch launch warning shown");
+            binding.launchButton.setEnabled(true);
+            showMinecraftPatchWarning(version);
+            return;
+        }
+
         if (FeatureSettings.getInstance().isLauncherManagedMcLoginEnabled()) {
             trace.mark("Checking launcher-managed login");
             MsftAccountStore.MsftAccount active = getActiveAccount();
@@ -846,10 +881,10 @@ import okhttp3.OkHttpClient;
             }
         }
 
-        if (!PlayStoreValidator.isMinecraftFromPlayStore(this)) {
-            trace.warning("Launch cancelled", "Minecraft is not verified as Play Store install");
+        if (version.isInstalled && !PlayStoreValidator.isMinecraftInstalled(this)) {
+            trace.warning("Launch cancelled", "Minecraft is not installed");
             binding.launchButton.setEnabled(true);
-            PlayStoreValidationDialog.showNotFromPlayStoreDialog(this);
+            PlayStoreValidationDialog.showNotInstalledDialog(this);
             return;
         }
 
@@ -882,6 +917,38 @@ import okhttp3.OkHttpClient;
                     .setPositiveButton(getString(R.string.dialog_positive_ok), null)
                     .show();
         }
+    }
+
+    private String patchWarningShownFor;
+
+    private void showMinecraftPatchWarning(GameVersion version) {
+        LinearLayout content = new LinearLayout(this);
+        content.setOrientation(LinearLayout.VERTICAL);
+        int padding = (int) (16 * getResources().getDisplayMetrics().density);
+
+        TextView message = new TextView(this);
+        message.setText(R.string.patch_warning_message);
+        message.setTextSize(15);
+        LinearLayout.LayoutParams messageParams = new LinearLayout.LayoutParams(
+                LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT);
+        messageParams.bottomMargin = padding;
+        content.addView(message, messageParams);
+
+        CheckBox checkBox = new CheckBox(this);
+        checkBox.setText(R.string.patch_warning_dont_show);
+        content.addView(checkBox);
+
+        new CustomAlertDialog(this)
+                .setTitleText(getString(R.string.patch_warning_title))
+                .setCustomView(content)
+                .setPositiveButton(getString(R.string.patch_warning_ack), v -> {
+                    if (checkBox.isChecked()) {
+                        FeatureSettings.getInstance().setPatchWarningSkipped(true);
+                    }
+                    patchWarningShownFor = version.directoryName;
+                    binding.getRoot().post(this::performActualLaunch);
+                })
+                .show();
     }
 
     private Intent createMinecraftLaunchIntent() {

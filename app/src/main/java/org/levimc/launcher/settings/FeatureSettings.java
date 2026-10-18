@@ -7,6 +7,7 @@ public class FeatureSettings {
     private static Context appContext;
     private boolean versionIsolationEnabled = false;
     private boolean launcherManagedMcLoginEnabled = false;
+    private boolean patchWarningSkipped = false;
     private boolean logcatOverlayEnabled = false;
     private boolean foregroundServiceEnabled = false;
     private Boolean crashUploadEnabled = true;
@@ -42,6 +43,9 @@ public class FeatureSettings {
 
     public boolean isLauncherManagedMcLoginEnabled() { return launcherManagedMcLoginEnabled; }
     public void setLauncherManagedMcLoginEnabled(boolean enabled) { this.launcherManagedMcLoginEnabled = enabled; autoSave(); }
+
+    public boolean isPatchWarningSkipped() { return patchWarningSkipped; }
+    public void setPatchWarningSkipped(boolean skipped) { this.patchWarningSkipped = skipped; autoSave(); }
 
     public boolean isLogcatOverlayEnabled() { return logcatOverlayEnabled; }
     public void setLogcatOverlayEnabled(boolean enabled) { this.logcatOverlayEnabled = enabled; autoSave(); }

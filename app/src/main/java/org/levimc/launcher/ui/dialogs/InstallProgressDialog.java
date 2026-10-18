@@ -15,7 +15,6 @@ import android.widget.TextView;
 
 import org.levimc.launcher.R;
 import org.levimc.launcher.ui.animation.DynamicAnim;
-import org.levimc.launcher.util.PersonalizationManager;
 
 import java.util.Locale;
 
@@ -127,9 +126,7 @@ public class InstallProgressDialog extends Dialog {
 
     private void applyPersonalization() {
         try {
-            PersonalizationManager pm = new PersonalizationManager(getContext());
-            int accent = pm.getAccentColor();
-            if (accent == 0) return;
+            int accent = DialogStyler.accent(getContext());
 
             if (titleText != null) {
                 titleText.setTextColor(accent);

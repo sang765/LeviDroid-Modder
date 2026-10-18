@@ -166,18 +166,8 @@ public final class WorldUi {
     public static AlertDialog show(Context c, MaterialAlertDialogBuilder builder) {
         builder.setBackground(background(c, color(c, R.color.surface), 16));
         AlertDialog dialog = builder.create();
-        dialog.setOnShowListener(
-                d -> {
-                    for (int id :
-                            new int[] {
-                                AlertDialog.BUTTON_POSITIVE,
-                                AlertDialog.BUTTON_NEGATIVE,
-                                AlertDialog.BUTTON_NEUTRAL
-                            })
-                        if (dialog.getButton(id) != null)
-                            dialog.getButton(id).setTextColor(accent(c));
-                });
         dialog.show();
+        org.levimc.launcher.ui.dialogs.DialogStyler.applyAccent(dialog);
         return dialog;
     }
 }

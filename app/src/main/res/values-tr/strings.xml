@@ -8,7 +8,7 @@
 
 <resources>
     <!-- Common -->
-    <string name="app_name">LeviLauncher</string>
+    <string name="app_name">LeviLauncher Modder</string>
     <string name="minecraft">Minecraft</string>
     <string name="launch">Başlat</string>
     <string name="beta_badge">Beta</string>
@@ -32,7 +32,7 @@
     <string name="about_title">☕ Hakkında</string>
     <string name="copyright">©2024–2026 LeviMC. Tüm hakları saklıdır.</string>
     <string name="font_license">Bu uygulama Misans yazı tipini kullanmaktadır.</string>
-    <string name="about_footer_github">GitHub: https://github.com/LiteLDev/LeviLaunchroid</string>
+    <string name="about_footer_github">GitHub: https://github.com/sang765/LeviDroid-Modder</string>
     <string name="quick_actions_title">Hızlı İşlemler</string>
     <string name="content_mgmt_section_title">İçerik Yönetimi</string>
     <string name="misc_section_title">Çeşitli</string>
@@ -174,8 +174,8 @@
 
     <string name="error_no_browser">Kullanılabilir tarayıcı yok</string>
     <!-- License & Security -->
-    <string name="eula_title">LeviLauncher Lisans Sözleşmesi</string>
-    <string name="eula_message"><b>LeviLauncher\'a Hoş Geldiniz</b>\n\nBu yazılımı kullanarak aşağıdakileri kabul etmiş olursunuz:\n\n• Bu <b>resmi olmayan</b> bir Minecraft başlatıcısıdır\n• <b>Lisanslı</b> bir Minecraft kopyasına sahip olmanız gerekir\n• Her türlü korsan kullanım veya hile yasaktır\n• Modlar/kaynak paketleri kendi sorumluluğunuzda kullanılır\n• Mojang/Microsoft ile bağlantılı değildir\n\nKullanmaya devam etmek kabul anlamına gelir</string>
+    <string name="eula_title">LeviLauncher Modder Lisans Sözleşmesi</string>
+    <string name="eula_message"><b>LeviLauncher Modder\'a Hoş Geldiniz</b>\n\nBu yazılımı kullanarak aşağıdakileri kabul etmiş olursunuz:\n\n• Bu <b>resmi olmayan</b> bir Minecraft başlatıcısıdır\n• <b>Lisanslı</b> bir Minecraft kopyasına sahip olmanız gerekir\n• Her türlü korsan kullanım veya hile yasaktır\n• Modlar/kaynak paketleri kendi sorumluluğunuzda kullanılır\n• Mojang/Microsoft ile bağlantılı değildir\n\nKullanmaya devam etmek kabul anlamına gelir</string>
     <string name="eula_agree">Kabul Et</string>
     <string name="eula_exit">Reddet</string>
 
@@ -228,7 +228,7 @@
     <string name="instance_delete_confirm_title">Örneği Sil</string>
     <string name="instance_delete_confirm_msg">Bu örneği silmek istediğinizden emin misiniz? Dünyalar dahil tüm veriler kalıcı olarak kaldırılacak.</string>
     <string name="instance_backup_title">Örneği Yedekle</string>
-    <string name="instance_backup_desc">Bu örneğin tam yedeklemesini İndirilenler/LeviLauncher/Yedekler konumuna oluştur.</string>
+    <string name="instance_backup_desc">Bu örneğin tam yedeklemesini İndirilenler/LeviLauncher Modder/Yedekler konumuna oluştur.</string>
     <string name="instance_backup_button">Örneği Yedekle</string>
     <string name="instance_backup_confirm_message">Bu örneğin tam yedeği şimdi oluşturulsun mu? Yedekleme sırasında dosyaların değişmemesi için Minecraft çalışıyorsa önce çıkın.</string>
     <string name="instance_backup_in_progress">Örnek yedekleniyor…</string>
@@ -394,11 +394,8 @@
     </plurals>
 
     <!-- Play Store Validation -->
-    <string name="minecraft_playstore_required_title">Play Store Sürümü Gerekli</string>
-    <string name="minecraft_playstore_required_message">Bu başlatıcı yalnızca Google Play Store\'daki resmi Minecraft uygulamasıyla çalışır. Devam etmek için Play Store sürümünü yükleyin.</string>
-    <string name="buy_minecraft">Minecraft\'ı Edin</string>
     <string name="minecraft_not_installed_title">Minecraft Yüklü Değil</string>
-    <string name="minecraft_not_installed_message">Cihazınızda Minecraft yüklü değil. Bu başlatıcıyı kullanmak için Google Play Store\'dan yükleyin.</string>
+    <string name="minecraft_not_installed_message">Cihazınızda Minecraft yüklü değil. Bu başlatıcıyı kullanmak için Google Play veya güvendiğiniz başka bir kaynaktan yükleyin.</string>
     <string name="install_minecraft">Minecraft\'ı Yükle</string>
     <string name="genuine_badge_label">Lisans doğrulanmadı</string>
     <string name="invalid_license_detected_toast">Orijinal olmayan Minecraft algılandı. Minecraft\'ın Google Play Store\'dan olduğundan emin olun</string>
@@ -435,8 +432,8 @@
     <string name="external_mods_open_link">Bağlantıyı Aç</string>
     <string name="external_mods_external_dialog_title">Harici İndirme</string>
     <string name="external_mods_ad_dialog_title">Reklam Destekli İndirme</string>
-    <string name="external_mods_external_dialog_message">%1$s, LeviLauncher dışında bir indirme sayfası kullanıyor.\n\n1. Bağlantıyı Aç’a dokunun ve .levipack veya .so dosyasını indirin.\n2. LeviLauncher’a dönün ve Modlar’ı açın.\n3. Tara’ya dokunun.\n4. İçe aktarmak istediğiniz modun yanındaki Ekle’ye dokunun.\n\nTarama yalnızca ana İndirilenler klasörünü kontrol eder. Tarayıcınız dosyayı başka bir yere kaydettiyse buraya taşıyın.</string>
-    <string name="external_mods_ad_dialog_message">%1$s, geliştiricisi tarafından seçilen reklam destekli bir indirme sayfası kullanıyor. LeviLauncher bu sayfayı veya reklamlarını kontrol etmez.\n\n1. Bağlantıyı Aç’a dokunun ve .levipack veya .so dosyasını indirin.\n2. LeviLauncher’a dönün ve Modlar’ı açın.\n3. Tara’ya dokunun.\n4. İçe aktarmak istediğiniz modun yanındaki Ekle’ye dokunun.\n\nTarama yalnızca ana İndirilenler klasörünü kontrol eder. Yalnızca mod dosyasını indirin; ilgisiz uygulamalar yüklemeyin veya bildirimlere izin vermeyin.</string>
+    <string name="external_mods_external_dialog_message">%1$s, LeviLauncher Modder dışında bir indirme sayfası kullanıyor.\n\n1. Bağlantıyı Aç’a dokunun ve .levipack veya .so dosyasını indirin.\n2. LeviLauncher Modder’a dönün ve Modlar’ı açın.\n3. Tara’ya dokunun.\n4. İçe aktarmak istediğiniz modun yanındaki Ekle’ye dokunun.\n\nTarama yalnızca ana İndirilenler klasörünü kontrol eder. Tarayıcınız dosyayı başka bir yere kaydettiyse buraya taşıyın.</string>
+    <string name="external_mods_ad_dialog_message">%1$s, geliştiricisi tarafından seçilen reklam destekli bir indirme sayfası kullanıyor. LeviLauncher Modder bu sayfayı veya reklamlarını kontrol etmez.\n\n1. Bağlantıyı Aç’a dokunun ve .levipack veya .so dosyasını indirin.\n2. LeviLauncher Modder’a dönün ve Modlar’ı açın.\n3. Tara’ya dokunun.\n4. İçe aktarmak istediğiniz modun yanındaki Ekle’ye dokunun.\n\nTarama yalnızca ana İndirilenler klasörünü kontrol eder. Yalnızca mod dosyasını indirin; ilgisiz uygulamalar yüklemeyin veya bildirimlere izin vermeyin.</string>
     <string name="external_mods_by_author">%1$s tarafından</string>
     <string name="external_mods_version">Mod %1$s</string>
     <string name="external_mods_minecraft_versions">Minecraft %1$s</string>
@@ -549,9 +546,9 @@
     <string name="ms_device_code_login_desc">Cihaz kodu önceden doldurulmuş özel bir tarayıcı oturumu açın.</string>
     <string name="ms_webview_login">Gömülü oturum açmayı aç</string>
     <string name="ms_webview_option_title">Gömülü WebView</string>
-    <string name="ms_webview_login_desc">LeviLauncher’dan çıkmadan oturum açın. Tarayıcı akışı kullanılamadığında bunu kullanın.</string>
+    <string name="ms_webview_login_desc">LeviLauncher Modder’dan çıkmadan oturum açın. Tarayıcı akışı kullanılamadığında bunu kullanın.</string>
     <string name="ms_device_code_title">Cihaz Koduyla Oturum Aç</string>
-    <string name="ms_device_code_instructions">Microsoft’un cihaz oturum açma sayfasını açın, bu kodu girin ve erişimi onaylayın. LeviLauncher otomatik olarak tamamlayacaktır.</string>
+    <string name="ms_device_code_instructions">Microsoft’un cihaz oturum açma sayfasını açın, bu kodu girin ve erişimi onaylayın. LeviLauncher Modder otomatik olarak tamamlayacaktır.</string>
     <string name="ms_device_code_label">Microsoft cihaz kodu</string>
     <string name="ms_device_code_requesting">Güvenli kod isteniyor…</string>
     <string name="ms_device_code_waiting_code">--------</string>
@@ -565,7 +562,7 @@
     <string name="ms_device_code_copied">Kod kopyalandı</string>
     <string name="ms_device_code_open_browser">Microsoft oturum açmayı aç</string>
     <string name="ms_device_code_step_title">Oturum açmayı tarayıcınızda tamamlayın</string>
-    <string name="ms_device_code_browser_note">LeviLauncher varsayılan tarayıcınızı özel bir oturumda açar, kodu otomatik doldurur ve yeni bir Microsoft oturum açması ister.</string>
+    <string name="ms_device_code_browser_note">LeviLauncher Modder varsayılan tarayıcınızı özel bir oturumda açar, kodu otomatik doldurur ve yeni bir Microsoft oturum açması ister.</string>
     <string name="ms_choose_other_method">Diğer yöntem</string>
     <string name="ms_no_browser">Bu cihazda kullanılabilir tarayıcı yok.</string>
     <string name="ms_default_browser_no_private_mode">Varsayılan tarayıcınız özel oturum açmayı desteklemiyor. Güncelleyin veya WebView oturum açmayı kullanın.</string>
@@ -578,14 +575,14 @@
     <string name="ms_active_badge">Etkin</string>
     <string name="ms_account_subtitle_format">Kullanıcı Kimliği: %1$s • Güncelleme: %2$s</string>
     <string name="xbox_avatar">Xbox avatarı</string>
-    <string name="launcher_managed_mc_login">LeviLauncher ile Minecraft\'ta oturum aç</string>
+    <string name="launcher_managed_mc_login">LeviLauncher Modder ile Minecraft\'ta oturum aç</string>
     <string name="dialog_title_login_required">Oturum açma gerekli</string>
     <string name="dialog_message_login_required">Başlatıcı yönetimli giriş etkin, ancak oturum açılmamış. Oturum açmak için Hesaplar\'a gidin.</string>
     <string name="go_to_accounts">Hesaplar</string>
     <string name="disable_launcher_login_and_continue">Kapat</string>
 
     <string name="ms_feature_disabled_title">Özellik Devre Dışı</string>
-    <string name="ms_feature_disabled_desc">Microsoft hesaplarını yönetmek için Ayarlar’da “LeviLauncher ile Minecraft’ta oturum aç” seçeneğini etkinleştirin.</string>
+    <string name="ms_feature_disabled_desc">Microsoft hesaplarını yönetmek için Ayarlar’da “LeviLauncher Modder ile Minecraft’ta oturum aç” seçeneğini etkinleştirin.</string>
     <string name="ms_activated">Etkinleştirildi</string>
 
     <!-- Popup labels -->
@@ -864,25 +861,25 @@
     <string name="vanilla_prefix">Vanilla %s</string>
 
     <string name="about_page_title">Hakkında</string>
-    <string name="about_subtitle">LeviLauncher — Modern Bir Minecraft Bedrock Başlatıcısı</string>
+    <string name="about_subtitle">LeviLauncher Modder — Modern Bir Minecraft Bedrock Başlatıcısı</string>
     <string name="about_authors_title">👥 Yazarlar ve Bakımcılar</string>
     <string name="about_author_name">DreamGuXiang</string>
     <string name="about_author_badge">Yazar</string>
-    <string name="about_author_role">LeviLauncher Yazarları</string>
+    <string name="about_author_role">LeviLauncher Modder Yazarları</string>
     <string name="about_afdian">Afdian</string>
     <string name="about_patreon">Patreon</string>
     <string name="about_source_title">Kaynak Kodu ve Açık Kaynak</string>
-    <string name="about_github_repo">GitHub · LeviLauncher</string>
-    <string name="about_github_org">LiteLDev</string>
+    <string name="about_github_repo">GitHub · LeviLauncher Modder</string>
+    <string name="about_github_org">sang765</string>
     <string name="about_license_note">Lisans ayrıntıları için depo içindeki LICENSE dosyasına bakın.</string>
     <string name="about_contribute_title">Katkıda Bulun</string>
-    <string name="about_contribute_desc">LeviLauncher\'ı geliştirmek için Issue veya Pull Request aracılığıyla katkıda bulunabilirsiniz.</string>
+    <string name="about_contribute_desc">LeviLauncher Modder\'ı geliştirmek için Issue veya Pull Request aracılığıyla katkıda bulunabilirsiniz.</string>
     <string name="about_issues">Sorun Bildir</string>
     <string name="about_star_fork">Yıldızla / Çatalla</string>
 
     <string-array name="launcher_tips">
         <item>Ayarlar; tema, renk, arka plan ve diğer görünüm seçeneklerini isteğinize göre düzenlemenizi sağlar.</item>
-        <item>LeviLauncher açık kaynaklıdır. Başlatıcı sorunlarını bildirmek veya iyileştirme önermek için GitHub sorunlarını kullanın.</item>
+        <item>LeviLauncher Modder açık kaynaklıdır. Başlatıcı sorunlarını bildirmek veya iyileştirme önermek için GitHub sorunlarını kullanın.</item>
         <item>Mevcut örneği hızlıca değiştirmek için sürüm açılır menüsünü kullanın.</item>
         <item>İnsanlar gerçekten bunları okuyor mu?</item>
         <item>Modları yükleme önceliğini değiştirmek için sürükleyebilirsiniz.</item>
@@ -1033,10 +1030,10 @@
     <string name="mod_config_hotbar_slot_opacity">Hotbar yuvası %1$d opaklığı</string>
     <!-- Changelog & News -->
     <string name="changelog_title">Yenilikler</string>
-    <string name="changelog_version">LeviLauncher %1$s</string>
+    <string name="changelog_version">LeviLauncher Modder %1$s</string>
     <string name="changelog_continue">Devam Et</string>
     <string name="news_title">Başlatıcı haberleri</string>
-    <string name="news_subtitle">LeviLauncher ekibinden güncellemeler, duyurular ve önemli bildirimler.</string>
+    <string name="news_subtitle">LeviLauncher Modder ekibinden güncellemeler, duyurular ve önemli bildirimler.</string>
     <string name="news_enable_notifications">Bildirimleri etkinleştir</string>
     <string name="news_refresh">Haberleri yenile</string>
     <string name="news_empty">Henüz haber yayımlanmadı.</string>
@@ -1046,7 +1043,7 @@
     <string name="news_refresh_failed">Yenilenemedi. Kaydedilmiş haberler gösteriliyor.</string>
     <string name="news_unread_description">Başlatıcı haberleri, %1$d okunmamış</string>
     <string name="news_notification_channel">Başlatıcı haberleri</string>
-    <string name="news_notification_channel_description">Yeni LeviLauncher duyuruları ve önemli bildirimler</string>
+    <string name="news_notification_channel_description">Yeni LeviLauncher Modder duyuruları ve önemli bildirimler</string>
     <string name="mod_config_category_slots">Yuvalar</string>
     <string name="mod_config_category_appearance">Görünüm</string>
     <string name="mod_config_category_behavior">Davranış</string>

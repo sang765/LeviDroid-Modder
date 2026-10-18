@@ -47,8 +47,7 @@ android {
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
         buildConfigField "String", "CURSEFORGE_API_KEY", "\"${localProperties.getProperty('curseforge.api_key', '')}\""
         ndk {
-            //noinspection ChromeOsAbiSupport
-            abiFilters 'arm64-v8a'
+            abiFilters 'arm64-v8a', 'armeabi-v7a'
         }
         externalNativeBuild {
             cmake {
@@ -59,6 +58,7 @@ android {
 
     buildFeatures {
         viewBinding true
+        aidl true
     }
     buildFeatures {
         prefab true
@@ -69,6 +69,16 @@ android {
     sourceSets {
         main {
             assets.srcDirs += rootProject.file('resources')
+        }
+    }
+    // shortcut: all splits share one versionCode — fine for sideloaded GitHub
+    // releases; add per-ABI versionCodeOverride if this ever ships to Play
+    splits {
+        abi {
+            enable true
+            reset()
+            include 'arm64-v8a', 'armeabi-v7a'
+            universalApk true
         }
     }
     buildTypes {
@@ -108,7 +118,7 @@ android {
                 mappingFileUploadEnabled true
                 nativeSymbolUploadEnabled true
             }
-            resValue "string", "app_name", "LeviLauncher Beta"
+            resValue "string", "app_name", "LeviLauncher Modder Beta"
             buildConfigField "boolean", "IS_BETA", "true"
             matchingFallbacks = ["release"]
             ndk {
@@ -175,6 +185,8 @@ dependencies {
     implementation libs.androidx.browser
     implementation libs.xcrash
     implementation libs.play.services.games.v2
+    implementation 'dev.rikka.shizuku:api:13.1.5'
+    implementation 'dev.rikka.shizuku:provider:13.1.5'
     testImplementation libs.junit
     androidTestImplementation libs.ext.junit
     androidTestImplementation libs.espresso.core

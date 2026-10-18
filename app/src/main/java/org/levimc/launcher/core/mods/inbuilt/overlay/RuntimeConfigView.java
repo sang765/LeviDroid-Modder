@@ -42,6 +42,7 @@ import org.levimc.launcher.R;
 import org.levimc.launcher.core.mods.inbuilt.ExternalModBridge;
 import org.levimc.launcher.core.mods.inbuilt.RuntimeConfigSchema;
 import org.levimc.launcher.core.mods.inbuilt.UnifiedMod;
+import org.levimc.launcher.ui.dialogs.DialogStyler;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -954,7 +955,7 @@ final class RuntimeConfigView {
         addColorChannel(box, "G", Color.green(initial), value -> color[0] = Color.argb(Color.alpha(color[0]), Color.red(color[0]), value, Color.blue(color[0])));
         addColorChannel(box, "B", Color.blue(initial), value -> color[0] = Color.argb(Color.alpha(color[0]), Color.red(color[0]), Color.green(color[0]), value));
         if (node.colorAlpha) addColorChannel(box, "A", Color.alpha(initial), value -> color[0] = Color.argb(value, Color.red(color[0]), Color.green(color[0]), Color.blue(color[0])));
-        new AlertDialog.Builder(context)
+        AlertDialog d = new AlertDialog.Builder(context)
                 .setTitle(node.title)
                 .setView(box)
                 .setNegativeButton(android.R.string.cancel, null)
@@ -964,6 +965,7 @@ final class RuntimeConfigView {
                     setValue(node.key, next);
                 })
                 .show();
+        DialogStyler.applyAccent(d);
     }
 
     private interface IntConsumer { void accept(int value); }
@@ -1012,6 +1014,7 @@ final class RuntimeConfigView {
                 return true;
             });
             dialog.show();
+            DialogStyler.applyAccent(dialog);
         });
         parent.addView(button, alignEnd());
     }
