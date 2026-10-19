@@ -99,7 +99,20 @@ public class ModsFullscreenActivity extends BaseActivity {
         Button addModButton = findViewById(R.id.add_mod_fullscreen_button);
         addModButton.setVisibility(View.VISIBLE);
         addModButton.setOnClickListener(v -> {
-            startFilePicker();
+            new CustomAlertDialog(this)
+                    .setTitleText(getString(R.string.add_mod))
+                    .setItems(new String[]{
+                            getString(R.string.add_mod_from_device),
+                            getString(R.string.github_import_dialog_title)
+                    }, (d, which) -> {
+                        if (which == 0) {
+                            startFilePicker();
+                        } else {
+                            showGitHubImportDialog();
+                        }
+                    })
+                    .setNegativeButton(getString(R.string.dialog_negative_cancel), null)
+                    .show();
         });
         DynamicAnim.applyPressScale(addModButton);
 
@@ -119,10 +132,6 @@ public class ModsFullscreenActivity extends BaseActivity {
                 new Intent(this, ExternalModsActivity.class),
                 ActivityOptionsCompat.makeCustomAnimation(this, R.anim.fade_in, R.anim.fade_out).toBundle()));
         DynamicAnim.applyPressScale(externalModsButton);
-
-        Button githubImportButton = findViewById(R.id.github_import_button);
-        githubImportButton.setOnClickListener(v -> showGitHubImportDialog());
-        DynamicAnim.applyPressScale(githubImportButton);
 
         totalModsCount = findViewById(R.id.total_mods_count);
         enabledModsCount = findViewById(R.id.enabled_mods_count);

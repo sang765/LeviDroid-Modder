@@ -430,6 +430,7 @@
     <string name="total_mods">Total Mods:</string>
     <string name="enabled_mods">Enabled:</string>
     <string name="add_mod">Add Mod</string>
+    <string name="add_mod_from_device">Import from device</string>
     <string name="external_mods">External Mods</string>
     <string name="external_mods_subtitle">Community mods for Minecraft %1$s</string>
     <string name="external_mods_no_version">Select a Minecraft version before installing mods</string>
@@ -467,7 +468,6 @@
     <string name="external_mods_installed_button">Installed</string>
     <string name="external_mods_incompatible">Incompatible</string>
 
-    <string name="github_import_button">GitHub</string>
     <string name="github_import_dialog_title">Import from GitHub</string>
     <string name="github_import_hint">github.com/user/repo, user/repo or user repo</string>
     <string name="github_import_action">Import</string>
