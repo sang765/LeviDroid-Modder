@@ -98,22 +98,7 @@ public class ModsFullscreenActivity extends BaseActivity {
     private void setupViews() {
         Button addModButton = findViewById(R.id.add_mod_fullscreen_button);
         addModButton.setVisibility(View.VISIBLE);
-        addModButton.setOnClickListener(v -> {
-            new CustomAlertDialog(this)
-                    .setTitleText(getString(R.string.add_mod))
-                    .setItems(new String[]{
-                            getString(R.string.add_mod_from_device),
-                            getString(R.string.github_import_dialog_title)
-                    }, (d, which) -> {
-                        if (which == 0) {
-                            startFilePicker();
-                        } else {
-                            showGitHubImportDialog();
-                        }
-                    })
-                    .setNegativeButton(getString(R.string.dialog_negative_cancel), null)
-                    .show();
-        });
+        addModButton.setOnClickListener(v -> showAddModDialog());
         DynamicAnim.applyPressScale(addModButton);
 
         Button modMenuButton = findViewById(R.id.mod_menu_button);
@@ -341,6 +326,23 @@ public class ModsFullscreenActivity extends BaseActivity {
             }
             totalSizeCount.setText(android.text.format.Formatter.formatShortFileSize(this, totalBytes));
         }
+    }
+
+    private void showAddModDialog() {
+        View content = getLayoutInflater().inflate(R.layout.dialog_add_mod, null);
+        CustomAlertDialog dialog = new CustomAlertDialog(this)
+                .setTitleText(getString(R.string.add_mod))
+                .setCustomView(content)
+                .setNegativeButton(getString(R.string.dialog_negative_cancel), null);
+        content.findViewById(R.id.import_option_device).setOnClickListener(v -> {
+            dialog.dismiss();
+            startFilePicker();
+        });
+        content.findViewById(R.id.import_option_github).setOnClickListener(v -> {
+            dialog.dismiss();
+            showGitHubImportDialog();
+        });
+        dialog.show();
     }
 
     private void showGitHubImportDialog() {

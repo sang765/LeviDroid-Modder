@@ -431,6 +431,7 @@
     <string name="enabled_mods">Đã bật:</string>
     <string name="add_mod">Thêm Mod</string>
     <string name="add_mod_from_device">Nhập từ máy</string>
+    <string name="add_mod_from_device_desc">Chọn tệp .so hoặc .levipack có sẵn trên máy</string>
     <string name="external_mods">Mod bên ngoài</string>
     <string name="external_mods_subtitle">Mod cộng đồng cho Minecraft %1$s</string>
     <string name="external_mods_no_version">Chọn phiên bản Minecraft trước khi cài mod</string>
@@ -469,6 +470,7 @@
     <string name="external_mods_incompatible">Không tương thích</string>
 
     <string name="github_import_dialog_title">Nhập từ GitHub</string>
+    <string name="github_import_desc">Tải bản phát hành mới nhất từ một repository GitHub</string>
     <string name="github_import_hint">github.com/user/repo, user/repo hoặc user repo</string>
     <string name="github_import_action">Nhập</string>
     <string name="github_import_choose_asset">Chọn tệp</string>
