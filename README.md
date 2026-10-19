@@ -70,6 +70,11 @@ Keeps the original feature set and adds changes made for this community. Compare
 - **Wallpaper accent color** – The theme color settings include a "Use wallpaper color" option that picks the accent color from your wallpaper. On Android 11 and below, this asks for Storage access when the wallpaper cannot be read.
 - **Rebranded UI and credits** – The app is named "LeviLauncher Modder", with a credit card for [sang765](https://github.com/sang765) on the About screen.
 - **Other update menthod** - Unlike the original version, the Modder version can also be installed via Shizuku or Root.
+- **External mods catalog** – The Mods screen links to a browsable catalog of community mods, with search, compatibility filtering against the selected Minecraft version, and one-tap installs.
+- **GitHub mod import & updates** – A "GitHub" button on the Mods screen imports `.so`/`.levipack` files from a repository's latest release (accepts a repository URL, `user/repo`, or `user repo`), warns when the mod targets a different Minecraft version, and remembers the source so the mod list can flag newer versions ("Version 1.0 ⬆ 1.1") and install them in one tap.
+- **What's new dialog** – After an update, the launcher shows a "What's new" dialog with the release notes generated for that version.
+- **Dark & AMOLED themes** – The theme mode setting offers Follow System, Light, Dark (Material You), and a pure-black AMOLED mode for OLED screens.
+- **Material You app icon** – The launcher icon follows the system themed-icon color on Android 12+.
 
 ---
 
