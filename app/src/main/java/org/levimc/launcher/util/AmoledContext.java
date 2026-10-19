@@ -43,8 +43,19 @@ public final class AmoledContext extends ContextWrapper {
                 resources = base;
             } else {
                 resources = amoled;
+                Log.i(TAG, "AMOLED palette active (background=#"
+                        + Integer.toHexString(background) + ")");
             }
         }
         return resources;
+    }
+
+    @Override
+    public Context createConfigurationContext(Configuration override) {
+        // AppCompat applies night mode through applyOverrideConfiguration(); the framework
+        // ContextThemeWrapper then rebuilds its Resources via createConfigurationContext(),
+        // which would drop this wrapper (and the appliance qualifier) and fall back to the
+        // plain M3 dark palette.
+        return new AmoledContext(super.createConfigurationContext(override));
     }
 }

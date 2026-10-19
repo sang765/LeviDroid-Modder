@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!-- AMOLED Dark theme palette. Selected via the uiMode "appliance" type bit set
-     in BaseActivity.attachBaseContext; nothing else in the system reads that bit. -->
+<!-- AMOLED Dark theme palette. Selected via the uiMode "appliance" type bit forced
+     by AmoledContext; nothing else in the system reads that bit. -->
 <resources>
     <color name="primary">#4AE0A0</color>
     <color name="on_primary">#000000</color>
