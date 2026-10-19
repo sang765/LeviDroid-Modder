@@ -210,7 +210,6 @@ LeviLauncher Modder would not be possible without the contributions and support 
 
 ### Special Thanks To
 
-- **[sang765](https://github.com/sang765)** – Maintainer of this LeviLauncher Modder fork
 - **[LeviMC Organization](https://github.com/LiteLDev)** – For creating and maintaining the original [LeviLauncher](https://github.com/LiteLDev/LeviLaunchroid) project this fork is based on
 - **Android Community** – For excellent documentation, libraries, and tools that made this launcher possible
 - **Open Source Community** – For all the libraries, frameworks, and tools that power this project
