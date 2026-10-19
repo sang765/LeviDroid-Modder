@@ -467,6 +467,25 @@
     <string name="external_mods_installed_button">Đã cài</string>
     <string name="external_mods_incompatible">Không tương thích</string>
 
+    <string name="github_import_button">GitHub</string>
+    <string name="github_import_dialog_title">Nhập từ GitHub</string>
+    <string name="github_import_hint">github.com/user/repo, user/repo hoặc user repo</string>
+    <string name="github_import_action">Nhập</string>
+    <string name="github_import_choose_asset">Chọn tệp</string>
+    <string name="github_import_invalid_repo">Không nhận diện được repository</string>
+    <string name="github_import_no_releases">Repository chưa có bản phát hành nào</string>
+    <string name="github_import_no_assets">Bản phát hành mới nhất không có tệp .so hoặc .levipack</string>
+    <string name="github_import_rate_limited">Đạt giới hạn yêu cầu GitHub. Thử lại sau.</string>
+    <string name="github_import_failed">Yêu cầu GitHub thất bại. Kiểm tra kết nối và thử lại.</string>
+    <string name="github_import_download_failed">Tải xuống thất bại</string>
+    <string name="github_import_success">Đã nhập từ GitHub</string>
+    <string name="github_import_compat_warning">Mod này được thiết kế cho Minecraft %1$s nhưng bạn đang chọn %2$s. Vẫn cài đặt?</string>
+    <string name="github_updates_title">Có cập nhật mod</string>
+    <string name="github_updates_message">Có phiên bản mới trên GitHub:\n%1$s</string>
+    <string name="github_updates_install_all">Cập nhật tất cả</string>
+    <string name="github_updates_later">Để sau</string>
+    <string name="mod_version_update_chip">Phiên bản %1$s ⬆ %2$s</string>
+
     <!-- Mod Detail -->
     <string name="mod_detail_title">Chi tiết bản Mod</string>
     <string name="delete_mod">Xóa Mod</string>

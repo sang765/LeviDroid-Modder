@@ -19,6 +19,8 @@ public class Mod {
     private final String configDirPath;
     private final boolean hasEditableConfig;
     private final int configFileCount;
+    private final String githubRepo;
+    private final String githubAsset;
     private boolean enabled;
     private int order;
 
@@ -41,6 +43,15 @@ public class Mod {
                String author, String version, String iconPath, String manifestPath, String description,
                String modRootPath, String configDirPath, boolean hasEditableConfig, int configFileCount,
                boolean enabled, int order) {
+        this(id, fileName, entryPath, displayName, minecraftVersions, author, version, iconPath,
+                manifestPath, description, modRootPath, configDirPath, hasEditableConfig, configFileCount,
+                null, null, enabled, order);
+    }
+
+    public Mod(String id, String fileName, String entryPath, String displayName, List<String> minecraftVersions,
+               String author, String version, String iconPath, String manifestPath, String description,
+               String modRootPath, String configDirPath, boolean hasEditableConfig, int configFileCount,
+               String githubRepo, String githubAsset, boolean enabled, int order) {
         this.id = id;
         this.fileName = fileName;
         this.entryPath = entryPath;
@@ -57,6 +68,8 @@ public class Mod {
         this.configDirPath = configDirPath;
         this.hasEditableConfig = hasEditableConfig;
         this.configFileCount = configFileCount;
+        this.githubRepo = githubRepo;
+        this.githubAsset = githubAsset;
         this.enabled = enabled;
         this.order = order;
     }
@@ -131,5 +144,13 @@ public class Mod {
 
     public int getConfigFileCount() {
         return configFileCount;
+    }
+
+    public String getGithubRepo() {
+        return githubRepo;
+    }
+
+    public String getGithubAsset() {
+        return githubAsset;
     }
 }

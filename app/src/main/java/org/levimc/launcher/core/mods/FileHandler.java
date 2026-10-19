@@ -174,6 +174,13 @@ public class FileHandler {
 
     public void processCatalogModDirectly(Intent intent, String name, String author, String version,
                                           List<String> minecraftVersions, FileOperationCallback callback) {
+        processCatalogModDirectly(intent, name, author, version, minecraftVersions, null, null, false, callback);
+    }
+
+    public void processCatalogModDirectly(Intent intent, String name, String author, String version,
+                                          List<String> minecraftVersions,
+                                          String githubRepo, String githubAsset, boolean forceOverwrite,
+                                          FileOperationCallback callback) {
         List<Uri> fileUris = extractFileUris(intent);
         List<Uri> supportedUris = new ArrayList<>();
         for (Uri uri : fileUris) {
@@ -197,7 +204,7 @@ public class FileHandler {
                 }
             }
             handleFilesWithOverwriteCheck(supportedUris, name, PRELOAD_NATIVE_TYPE, version, author,
-                    minecraftVersions, callback);
+                    minecraftVersions, githubRepo, githubAsset, forceOverwrite, callback);
         }).start();
     }
 
@@ -443,6 +450,17 @@ public class FileHandler {
             String overrideAuthor,
             List<String> overrideMinecraftVersions,
             FileOperationCallback callback) {
+        handleFilesWithOverwriteCheck(fileUris, overrideName, overrideType, overrideVersion,
+                overrideAuthor, overrideMinecraftVersions, null, null, false, callback);
+    }
+
+    private void handleFilesWithOverwriteCheck(
+            List<Uri> fileUris,
+            String overrideName, String overrideType, String overrideVersion,
+            String overrideAuthor,
+            List<String> overrideMinecraftVersions,
+            String githubRepo, String githubAsset, boolean forceOverwrite,
+            FileOperationCallback callback) {
         new Thread(() -> {
             if (targetPath == null) {
                 postError(callback, "No selected version mods directory");
@@ -471,7 +489,7 @@ public class FileHandler {
                             uri, fileName, overrideName, overrideType, overrideVersion,
                             overrideAuthor, overrideMinecraftVersions);
                     File destinationDir = new File(targetDir, preparedImport.targetId);
-                    if (destinationDir.exists() && !confirmOverwrite(preparedImport.targetId)) {
+                    if (destinationDir.exists() && !forceOverwrite && !confirmOverwrite(preparedImport.targetId)) {
                         lastError = context.getString(R.string.user_cancelled);
                         continue;
                     }
@@ -485,6 +503,9 @@ public class FileHandler {
                                 preparedImport.overwriteFolders);
                     } else {
                         copyDirectory(preparedImport.packageDir, destinationDir);
+                    }
+                    if (githubRepo != null) {
+                        annotateManifestWithGitHubSource(destinationDir, githubRepo, githubAsset);
                     }
                     ++processed;
                 } catch (Exception e) {
@@ -714,6 +735,23 @@ public class FileHandler {
         File manifestFile = new File(modRoot, MANIFEST_FILE_NAME);
         try (OutputStreamWriter writer = new OutputStreamWriter(new FileOutputStream(manifestFile), StandardCharsets.UTF_8)) {
             GSON.toJson(manifest, writer);
+        }
+    }
+
+    // Remembers which GitHub release an installed mod came from so the mod list can check for updates.
+    private void annotateManifestWithGitHubSource(File modRoot, String githubRepo, String githubAsset) {
+        File manifestFile = new File(modRoot, MANIFEST_FILE_NAME);
+        try (InputStreamReader reader = new InputStreamReader(
+                new FileInputStream(manifestFile), StandardCharsets.UTF_8)) {
+            JsonObject manifest = GSON.fromJson(reader, JsonObject.class);
+            if (manifest == null) return;
+            manifest.addProperty("github_repo", githubRepo);
+            if (githubAsset != null && !githubAsset.isEmpty()) {
+                manifest.addProperty("github_asset", githubAsset);
+            }
+            writeManifest(modRoot, manifest);
+        } catch (Exception e) {
+            Log.w(TAG, "Failed to annotate manifest with GitHub source", e);
         }
     }
 

@@ -25,6 +25,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Date;
 import java.util.List;
+import java.util.Map;
 
 public class ModsAdapter extends RecyclerView.Adapter<ModsAdapter.ModViewHolder> {
 
@@ -34,6 +35,7 @@ public class ModsAdapter extends RecyclerView.Adapter<ModsAdapter.ModViewHolder>
     private OnModClickListener onModClickListener;
     private ItemTouchHelper itemTouchHelper;
     private String currentVersionCode;
+    private Map<String, String> updateVersions = Collections.emptyMap();
 
 
     public interface OnModEnableChangeListener {
@@ -65,6 +67,12 @@ public class ModsAdapter extends RecyclerView.Adapter<ModsAdapter.ModViewHolder>
         this.onModClickListener = listener;
     }
 
+    /** Maps mod id -> newer release tag, shown as "Version X ⬆ Y" on the row. */
+    public void setUpdateVersions(Map<String, String> updates) {
+        this.updateVersions = updates == null ? Collections.emptyMap() : updates;
+        notifyDataSetChanged();
+    }
+
     public void setItemTouchHelper(ItemTouchHelper itemTouchHelper) {
         this.itemTouchHelper = itemTouchHelper;
     }
@@ -83,9 +91,11 @@ public class ModsAdapter extends RecyclerView.Adapter<ModsAdapter.ModViewHolder>
         holder.authorText.setText(holder.itemView.getContext().getString(
                 R.string.mod_author_byline,
                 fallbackText(mod.getAuthor(), holder.itemView.getContext().getString(R.string.mod_unknown_author))));
-        holder.versionText.setText(holder.itemView.getContext().getString(
-                R.string.mod_version_chip,
-                fallbackText(mod.getVersion(), holder.itemView.getContext().getString(R.string.mod_unknown_version))));
+        String installedVersion = fallbackText(mod.getVersion(), holder.itemView.getContext().getString(R.string.mod_unknown_version));
+        String updateTag = updateVersions.get(mod.getId());
+        holder.versionText.setText(updateTag == null
+                ? holder.itemView.getContext().getString(R.string.mod_version_chip, installedVersion)
+                : holder.itemView.getContext().getString(R.string.mod_version_update_chip, installedVersion, updateTag));
 
         bindIcon(holder, mod);
         bindMeta(holder, mod);

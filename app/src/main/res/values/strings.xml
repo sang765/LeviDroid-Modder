@@ -467,6 +467,25 @@
     <string name="external_mods_installed_button">Installed</string>
     <string name="external_mods_incompatible">Incompatible</string>
 
+    <string name="github_import_button">GitHub</string>
+    <string name="github_import_dialog_title">Import from GitHub</string>
+    <string name="github_import_hint">github.com/user/repo, user/repo or user repo</string>
+    <string name="github_import_action">Import</string>
+    <string name="github_import_choose_asset">Choose file</string>
+    <string name="github_import_invalid_repo">Repository not recognized</string>
+    <string name="github_import_no_releases">This repository has no published releases</string>
+    <string name="github_import_no_assets">The latest release has no .so or .levipack files</string>
+    <string name="github_import_rate_limited">GitHub request limit reached. Try again later.</string>
+    <string name="github_import_failed">GitHub request failed. Check the connection and try again.</string>
+    <string name="github_import_download_failed">Download failed</string>
+    <string name="github_import_success">Imported from GitHub</string>
+    <string name="github_import_compat_warning">This mod is designed for Minecraft %1$s but you selected %2$s. Install anyway?</string>
+    <string name="github_updates_title">Mod updates available</string>
+    <string name="github_updates_message">New versions on GitHub:\n%1$s</string>
+    <string name="github_updates_install_all">Update all</string>
+    <string name="github_updates_later">Later</string>
+    <string name="mod_version_update_chip">Version %1$s ⬆ %2$s</string>
+
     <!-- Mod Detail -->
     <string name="mod_detail_title">Mod Details</string>
     <string name="delete_mod">Delete Mod</string>

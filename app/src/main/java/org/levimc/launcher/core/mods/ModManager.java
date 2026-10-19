@@ -75,10 +75,19 @@ public class ModManager {
         final File modRoot;
         final File configDir;
         final int configFileCount;
+        final String githubRepo;
+        final String githubAsset;
 
         ModDescriptor(String id, String fileName, String entryPath, String displayName, List<String> minecraftVersions,
                       String author, String version, String iconPath, String manifestPath, String description,
                       File modRoot, File configDir, int configFileCount) {
+            this(id, fileName, entryPath, displayName, minecraftVersions, author, version, iconPath,
+                    manifestPath, description, modRoot, configDir, configFileCount, null, null);
+        }
+
+        ModDescriptor(String id, String fileName, String entryPath, String displayName, List<String> minecraftVersions,
+                      String author, String version, String iconPath, String manifestPath, String description,
+                      File modRoot, File configDir, int configFileCount, String githubRepo, String githubAsset) {
             this.id = id;
             this.fileName = fileName;
             this.entryPath = entryPath;
@@ -92,6 +101,8 @@ public class ModManager {
             this.modRoot = modRoot;
             this.configDir = configDir;
             this.configFileCount = configFileCount;
+            this.githubRepo = githubRepo;
+            this.githubAsset = githubAsset;
         }
     }
 
@@ -233,6 +244,8 @@ public class ModManager {
                     descriptor.configDir.getAbsolutePath(),
                     descriptor.configFileCount > 0,
                     descriptor.configFileCount,
+                    descriptor.githubRepo,
+                    descriptor.githubAsset,
                     enabledMap.getOrDefault(modId, true),
                     i
             ));
@@ -579,7 +592,9 @@ public class ModManager {
                     description,
                     modDirectory,
                     configDir,
-                    configFileCount
+                    configFileCount,
+                    parseOptionalString(manifest, "github_repo", null),
+                    parseOptionalString(manifest, "github_asset", null)
             );
         } catch (Exception e) {
             Log.w(TAG, "Failed to parse mod manifest: " + manifestFile.getAbsolutePath(), e);
