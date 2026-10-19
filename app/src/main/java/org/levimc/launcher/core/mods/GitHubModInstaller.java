@@ -75,7 +75,7 @@ public final class GitHubModInstaller {
                 }
                 downloadedFile = new File(downloadDir,
                         safeName(ownerRepo) + "-" + safeName(versionTag) + "-" + safeName(asset.name));
-                Request request = new Request.Builder().url(asset.browser_download_url).build();
+                Request request = new Request.Builder().url(asset.downloadUrl).build();
                 try (Response response = HTTP.newCall(request).execute()) {
                     if (!response.isSuccessful() || response.body() == null) {
                         throw new IllegalStateException(context.getString(R.string.github_import_download_failed)

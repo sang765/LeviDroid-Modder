@@ -16,6 +16,7 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
 import com.google.gson.Gson;
+import com.google.gson.annotations.SerializedName;
 
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
@@ -32,7 +33,8 @@ public final class GitHubModRepository {
     }
 
     public static final class GitHubRelease {
-        public String tag_name;
+        @SerializedName("tag_name")
+        public String tagName;
         public String name;
         public boolean draft;
         public boolean prerelease;
@@ -53,7 +55,8 @@ public final class GitHubModRepository {
 
     public static final class GitHubAsset {
         public String name;
-        public String browser_download_url;
+        @SerializedName("browser_download_url")
+        public String downloadUrl;
 
         public boolean isSupported() {
             String lower = name == null ? "" : name.toLowerCase(Locale.ROOT);
@@ -140,7 +143,7 @@ public final class GitHubModRepository {
                     return;
                 }
                 GitHubRelease release = GSON.fromJson(response.body().string(), GitHubRelease.class);
-                if (release == null || release.tag_name == null) {
+                if (release == null || release.tagName == null) {
                     deliverError(callback, context.getString(R.string.github_import_failed));
                     return;
                 }
