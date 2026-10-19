@@ -9,7 +9,7 @@ This page walks through the launcher path: install LeviLauncher Modder, prepare 
 - A legitimate Minecraft Bedrock Edition installation from Google Play.
 - Enough free storage for the launcher, Minecraft data, worlds, packs, and backups.
 
-LeviLauncher Modder is not a replacement for owning Minecraft. It works with the official game and is not affiliated with Mojang or Microsoft.
+LeviLauncher Modder is not a replacement for owning Minecraft. It works with the official game.
 
 ## Install LeviLauncher Modder
 
