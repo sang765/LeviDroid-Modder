@@ -28,6 +28,7 @@ import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.lifecycle.ViewModelProvider;
 
 import org.levimc.launcher.R;
+import com.bumptech.glide.Glide;
 import org.levimc.launcher.core.curseforge.CurseForgeClient;
 import org.levimc.launcher.core.minecraft.MinecraftImportIntents;
 import org.levimc.launcher.core.minecraft.LaunchTrace;

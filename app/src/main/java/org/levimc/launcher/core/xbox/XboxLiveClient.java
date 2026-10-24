@@ -48,7 +48,6 @@ public class XboxLiveClient {
     private static final Handler MAIN = new Handler(Looper.getMainLooper());
     private static final ExecutorService EXECUTOR = Executors.newSingleThreadExecutor();
     private static final RequestBody EMPTY_BODY = RequestBody.create("", JSON);
-    private static final RequestBody EMPTY_BODY = RequestBody.create("", JSON);
 
     private final Context appContext;
     private final Object tokenLock = new Object();
