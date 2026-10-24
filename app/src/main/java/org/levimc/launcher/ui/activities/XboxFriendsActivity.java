@@ -21,7 +21,6 @@ import org.levimc.launcher.ui.dialogs.CustomAlertDialog;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 
 public class XboxFriendsActivity extends BaseActivity {
 
@@ -66,12 +65,6 @@ public class XboxFriendsActivity extends BaseActivity {
                 performAction(callback -> client.removeFriend(friend.xuid, callback),
                         getString(R.string.xbox_friends_request_declined));
             }
-
-            @Override
-            public void onCancel(XboxLiveClient.XboxFriend friend) {
-                performAction(callback -> client.removeFriend(friend.xuid, callback),
-                        getString(R.string.xbox_friends_request_cancelled));
-            }
         });
         friendsList.setAdapter(friendsAdapter);
         requestsList.setAdapter(requestsAdapter);
@@ -111,11 +104,10 @@ public class XboxFriendsActivity extends BaseActivity {
 
         client.fetchFriends(new XboxLiveClient.FriendsCallback() {
             @Override
-            public void onFriends(List<XboxLiveClient.XboxFriend> friends,
-                                   Map<String, XboxLiveClient.XboxPresence> presence) {
+            public void onFriends(List<XboxLiveClient.XboxFriend> friends) {
                 knownFriends.clear();
                 knownFriends.addAll(friends);
-                friendsAdapter.submit(friends, presence);
+                friendsAdapter.submit(friends);
                 friendsLoaded = true;
                 finishLoading();
             }
@@ -131,21 +123,9 @@ public class XboxFriendsActivity extends BaseActivity {
         client.fetchIncoming(new XboxLiveClient.ListCallback() {
             @Override
             public void onList(List<XboxLiveClient.XboxFriend> incoming) {
-                client.fetchOutgoing(new XboxLiveClient.ListCallback() {
-                    @Override
-                    public void onList(List<XboxLiveClient.XboxFriend> outgoing) {
-                        requestsAdapter.submit(incoming, outgoing);
-                        requestsLoaded = true;
-                        finishLoading();
-                    }
-
-                    @Override
-                    public void onError(String message) {
-                        requestsLoaded = true;
-                        finishLoading();
-                        Toast.makeText(XboxFriendsActivity.this, message, Toast.LENGTH_SHORT).show();
-                    }
-                });
+                requestsAdapter.submit(incoming);
+                requestsLoaded = true;
+                finishLoading();
             }
 
             @Override

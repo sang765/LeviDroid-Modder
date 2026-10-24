@@ -478,10 +478,8 @@
     <string name="xbox_friends_online_title">Trực tuyến • %1$s</string>
     <string name="xbox_friends_offline">Ngoại tuyến</string>
     <string name="xbox_friends_incoming">Đến</string>
-    <string name="xbox_friends_outgoing">Đã gửi</string>
     <string name="xbox_friends_accept">Chấp nhận</string>
     <string name="xbox_friends_decline">Từ chối</string>
-    <string name="xbox_friends_cancel_request">Huỷ</string>
     <string name="xbox_friends_empty_friends">Chưa có bạn bè</string>
     <string name="xbox_friends_empty_requests">Không có lời mời nào</string>
     <string name="xbox_friends_search">Tìm kiếm</string>
@@ -495,7 +493,6 @@
     <string name="xbox_friends_removed">Đã xoá %1$s khỏi danh sách bạn bè</string>
     <string name="xbox_friends_request_accepted">Bạn đã kết bạn với %1$s</string>
     <string name="xbox_friends_request_declined">Đã từ chối lời mời</string>
-    <string name="xbox_friends_request_cancelled">Đã huỷ lời mời đã gửi</string>
     <string name="xbox_friends_sign_in_first">Hãy đăng nhập tài khoản Microsoft trước</string>
     <string name="xbox_friends_auth_error">Phiên Xbox Live đã hết hạn. Thử lại hoặc đăng nhập lại từ mục Tài khoản.</string>
     <string name="xbox_friends_rate_limited">Xbox Live đang bận. Thử lại sau ít phút.</string>

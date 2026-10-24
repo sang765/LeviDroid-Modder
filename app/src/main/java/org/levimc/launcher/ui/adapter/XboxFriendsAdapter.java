@@ -12,10 +12,7 @@ import org.levimc.launcher.R;
 import org.levimc.launcher.core.xbox.XboxLiveClient;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Locale;
-import java.util.Map;
 
 public class XboxFriendsAdapter extends RecyclerView.Adapter<XboxFriendsAdapter.ViewHolder> {
 
@@ -24,19 +21,15 @@ public class XboxFriendsAdapter extends RecyclerView.Adapter<XboxFriendsAdapter.
     }
 
     private final List<XboxLiveClient.XboxFriend> items = new ArrayList<>();
-    private final Map<String, XboxLiveClient.XboxPresence> presence = new HashMap<>();
     private final Listener listener;
 
     public XboxFriendsAdapter(Listener listener) {
         this.listener = listener;
     }
 
-    public void submit(List<XboxLiveClient.XboxFriend> friends,
-                       Map<String, XboxLiveClient.XboxPresence> presenceMap) {
+    public void submit(List<XboxLiveClient.XboxFriend> friends) {
         items.clear();
         items.addAll(friends);
-        presence.clear();
-        presence.putAll(presenceMap);
         notifyDataSetChanged();
     }
 
@@ -52,22 +45,8 @@ public class XboxFriendsAdapter extends RecyclerView.Adapter<XboxFriendsAdapter.
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
         XboxLiveClient.XboxFriend friend = items.get(position);
         holder.gamertag.setText(friend.gamertag);
-
-        XboxLiveClient.XboxPresence status = presence.get(friend.xuid);
-        if (status != null && "Online".equals(status.state)) {
-            if (status.title != null) {
-                holder.presence.setText(String.format(Locale.ROOT,
-                        holder.itemView.getContext().getString(R.string.xbox_friends_online_title),
-                        status.title));
-            } else {
-                holder.presence.setText(R.string.xbox_friends_online);
-            }
-            holder.presence.setTextColor(holder.itemView.getContext().getColor(R.color.xbox_online));
-        } else {
-            holder.presence.setText(R.string.xbox_friends_offline);
-            holder.presence.setTextColor(holder.itemView.getContext().getColor(R.color.text_secondary));
-        }
-
+        holder.presence.setText(XboxLiveClient.presenceLabel(holder.itemView.getContext(), friend));
+        holder.presence.setTextColor(XboxLiveClient.presenceColor(holder.itemView.getContext(), friend));
         holder.itemView.setOnClickListener(v -> listener.onFriendClick(friend));
     }
 

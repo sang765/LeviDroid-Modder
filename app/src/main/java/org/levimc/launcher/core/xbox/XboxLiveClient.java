@@ -4,10 +4,9 @@ import android.content.Context;
 import android.os.Handler;
 import android.os.Looper;
 import android.text.TextUtils;
+import android.util.Log;
 
 import com.google.gson.Gson;
-import com.google.gson.JsonArray;
-import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 
@@ -20,29 +19,26 @@ import org.levimc.launcher.core.auth.MsftAuthManager;
 
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
 import okhttp3.HttpUrl;
-import okhttp3.MediaType;
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
-import okhttp3.RequestBody;
 import okhttp3.Response;
 
 /**
  * Minimal Xbox Live REST client for the friends feature. Reuses the XSTS token
  * already maintained by the MinecraftAuth chain (relying party http://xboxlive.com)
- * instead of duplicating the MSA -> user token -> XSTS handshake.
+ * and talks to the peoplehub/social endpoints the official Xbox apps use; the
+ * legacy people.xboxlive.com v3 surface no longer accepts new clients.
  */
 public class XboxLiveClient {
 
-    private static final String PEOPLE_API = "https://people.xboxlive.com";
-    private static final String PRESENCE_API = "https://userpresence.xboxlive.com";
-    private static final MediaType JSON = MediaType.parse("application/json");
+    private static final String TAG = "XboxLiveClient";
+    private static final String PEOPLEHUB_API = "https://peoplehub.xboxlive.com";
+    private static final String SOCIAL_API = "https://social.xboxlive.com";
     private static final long TOKEN_MARGIN_MS = 60_000;
 
     private static final OkHttpClient HTTP = new OkHttpClient();
@@ -60,15 +56,12 @@ public class XboxLiveClient {
         public String xuid;
         public String gamertag;
         public String displayPicRaw;
-    }
-
-    public static class XboxPresence {
-        public String state;
-        public String title;
+        public String presenceState;
+        public String presenceText;
     }
 
     public interface FriendsCallback {
-        void onFriends(List<XboxFriend> friends, Map<String, XboxPresence> presence);
+        void onFriends(List<XboxFriend> friends);
 
         void onError(String message);
     }
@@ -89,16 +82,33 @@ public class XboxLiveClient {
         this.appContext = context.getApplicationContext();
     }
 
+    /** Presence label for a friend, shared by the friends screen and the dashboard card. */
+    public static String presenceLabel(Context context, XboxFriend friend) {
+        if (!"Online".equals(friend.presenceState)) {
+            return context.getString(R.string.xbox_friends_offline);
+        }
+        String text = friend.presenceText;
+        if (TextUtils.isEmpty(text) || "Online".equals(text)) {
+            return context.getString(R.string.xbox_friends_online);
+        }
+        return context.getString(R.string.xbox_friends_online_title, text);
+    }
+
+    public static int presenceColor(Context context, XboxFriend friend) {
+        return context.getColor("Online".equals(friend.presenceState)
+                ? R.color.xbox_online : R.color.text_secondary);
+    }
+
     public void fetchFriends(FriendsCallback callback) {
         EXECUTOR.execute(() -> {
             try {
                 ensureToken();
-                PeopleResponse parsed = GSON.fromJson(
-                        get(PEOPLE_API + "/users/me/people"), PeopleResponse.class);
+                PeopleResponse parsed = GSON.fromJson(get(PEOPLEHUB_API
+                        + "/users/me/people/social/decoration/detail,preferredColor,follower", 5),
+                        PeopleResponse.class);
                 List<XboxFriend> friends = parsed != null && parsed.people != null
                         ? parsed.people : new ArrayList<>();
-                Map<String, XboxPresence> presence = fetchPresence();
-                MAIN.post(() -> callback.onFriends(friends, presence));
+                MAIN.post(() -> callback.onFriends(friends));
             } catch (IOException | RuntimeException error) {
                 MAIN.post(() -> callback.onError(errorMessage(error)));
             }
@@ -109,10 +119,12 @@ public class XboxLiveClient {
         EXECUTOR.execute(() -> {
             try {
                 ensureToken();
-                HttpUrl url = HttpUrl.parse(PEOPLE_API + "/users/me/people/search").newBuilder()
-                        .addQueryParameter("query", query)
+                HttpUrl url = HttpUrl.parse(PEOPLEHUB_API
+                        + "/users/me/people/search/decoration/detail,preferredColor").newBuilder()
+                        .addQueryParameter("q", query)
+                        .addQueryParameter("maxItems", "25")
                         .build();
-                PeopleResponse parsed = GSON.fromJson(get(url.toString()), PeopleResponse.class);
+                PeopleResponse parsed = GSON.fromJson(get(url.toString(), 5), PeopleResponse.class);
                 List<XboxFriend> results = parsed != null && parsed.people != null
                         ? parsed.people : new ArrayList<>();
                 MAIN.post(() -> callback.onList(results));
@@ -123,47 +135,45 @@ public class XboxLiveClient {
     }
 
     public void fetchIncoming(ListCallback callback) {
-        fetchRequestList(PEOPLE_API + "/users/me/people/incoming", callback);
-    }
-
-    public void fetchOutgoing(ListCallback callback) {
-        fetchRequestList(PEOPLE_API + "/users/me/people/outgoing", callback);
+        EXECUTOR.execute(() -> {
+            try {
+                ensureToken();
+                PeopleResponse parsed = GSON.fromJson(get(PEOPLEHUB_API
+                        + "/users/me/people/friendrequests(received)/decoration/detail,preferredColor,follower", 7),
+                        PeopleResponse.class);
+                List<XboxFriend> list = parsed != null && parsed.people != null
+                        ? parsed.people : new ArrayList<>();
+                MAIN.post(() -> callback.onList(list));
+            } catch (IOException | RuntimeException error) {
+                MAIN.post(() -> callback.onError(errorMessage(error)));
+            }
+        });
     }
 
     /** Accepting an incoming request and adding a friend use the same call. */
     public void acceptRequest(String xuid, ActionCallback callback) {
-        EXECUTOR.execute(() -> {
-            try {
-                ensureToken();
-                mutate("PUT", PEOPLE_API + "/users/me/people/" + xuid, "{\"relationship\":\"Friend\"}");
-                MAIN.post(callback::onDone);
-            } catch (IOException error) {
-                MAIN.post(() -> callback.onError(error.getMessage()));
-            }
-        });
+        mutate("PUT", SOCIAL_API + "/users/me/people/xuid(" + xuid + ")", callback);
     }
 
-    /** Removing a friend, declining a request and cancelling a sent request share this call. */
+    /** Removing a friend and declining a request share this call. */
     public void removeFriend(String xuid, ActionCallback callback) {
-        EXECUTOR.execute(() -> {
-            try {
-                ensureToken();
-                mutate("DELETE", PEOPLE_API + "/users/me/people/" + xuid, null);
-                MAIN.post(callback::onDone);
-            } catch (IOException error) {
-                MAIN.post(() -> callback.onError(error.getMessage()));
-            }
-        });
+        mutate("DELETE", SOCIAL_API + "/users/me/people/xuid(" + xuid + ")", callback);
     }
 
-    private void fetchRequestList(String url, ListCallback callback) {
+    private void mutate(String method, String url, ActionCallback callback) {
         EXECUTOR.execute(() -> {
             try {
                 ensureToken();
-                PeopleResponse parsed = GSON.fromJson(get(url), PeopleResponse.class);
-                List<XboxFriend> list = parsed != null && parsed.people != null
-                        ? parsed.people : new ArrayList<>();
-                MAIN.post(() -> callback.onList(list));
+                Request request = new Request.Builder()
+                        .url(url)
+                        .method(method, null)
+                        .header("Authorization", "XBL3.0 x=" + userHash + ";" + xblToken)
+                        .header("x-xbl-contract-version", "2")
+                        .build();
+                try (Response response = HTTP.newCall(request).execute()) {
+                    readBody(response);
+                }
+                MAIN.post(callback::onDone);
             } catch (IOException | RuntimeException error) {
                 MAIN.post(() -> callback.onError(errorMessage(error)));
             }
@@ -176,72 +186,33 @@ public class XboxLiveClient {
                 : appContext.getString(R.string.xbox_friends_failed);
     }
 
-    /**
-     * Batch presence for the whole friend list; presence errors only degrade the
-     * status labels, so an empty map is returned instead of failing the screen.
-     */
-    private Map<String, XboxPresence> fetchPresence() {
-        Map<String, XboxPresence> result = new HashMap<>();
-        try {
-            JsonArray array = JsonParser.parseString(
-                    get(PRESENCE_API + "/users/me/friends?level=real")).getAsJsonArray();
-            for (JsonElement element : array) {
-                JsonObject entry = element.getAsJsonObject();
-                XboxPresence presence = new XboxPresence();
-                presence.state = optString(entry, "state");
-                if (entry.has("devices")) {
-                    for (JsonElement device : entry.getAsJsonArray("devices")) {
-                        if (!device.getAsJsonObject().has("titles")) continue;
-                        for (JsonElement title : device.getAsJsonObject().getAsJsonArray("titles")) {
-                            JsonObject t = title.getAsJsonObject();
-                            if ("Active".equals(optString(t, "state"))) {
-                                presence.title = optString(t, "name");
-                                break;
-                            }
-                        }
-                        if (presence.title != null) break;
-                    }
-                }
-                result.put(optString(entry, "xuid"), presence);
-            }
-        } catch (IOException | RuntimeException ignored) {
-        }
-        return result;
-    }
-
-    private String get(String url) throws IOException {
+    private String get(String url, int contract) throws IOException {
         Request request = new Request.Builder()
                 .url(url)
                 .header("Authorization", "XBL3.0 x=" + userHash + ";" + xblToken)
-                .header("x-xbl-contract-version", "3")
+                .header("x-xbl-contract-version", String.valueOf(contract))
                 .build();
         try (Response response = HTTP.newCall(request).execute()) {
             return readBody(response);
         }
     }
 
-    private void mutate(String method, String url, String body) throws IOException {
-        Request.Builder builder = new Request.Builder()
-                .url(url)
-                .method(method, body != null ? RequestBody.create(body, JSON) : null)
-                .header("Authorization", "XBL3.0 x=" + userHash + ";" + xblToken)
-                .header("x-xbl-contract-version", "3");
-        try (Response response = HTTP.newCall(builder.build()).execute()) {
-            readBody(response);
-        }
-    }
-
     private String readBody(Response response) throws IOException {
+        String body = response.body() != null ? response.body().string() : "";
+        if (response.isSuccessful()) {
+            return body;
+        }
+        // Surface the status and Xbox's XErr so a broken screen is diagnosable
+        // from the user-visible message and logcat instead of a generic toast.
+        Log.w(TAG, "HTTP " + response.code() + " " + response.request().url() + " " + body);
         if (response.code() == 401 || response.code() == 403) {
             throw new IOException(appContext.getString(R.string.xbox_friends_auth_error));
         }
         if (response.code() == 429) {
             throw new IOException(appContext.getString(R.string.xbox_friends_rate_limited));
         }
-        if (!response.isSuccessful() || response.body() == null) {
-            throw new IOException(appContext.getString(R.string.xbox_friends_failed));
-        }
-        return response.body().string();
+        throw new IOException(appContext.getString(R.string.xbox_friends_failed)
+                + " (HTTP " + response.code() + ")");
     }
 
     private void ensureToken() throws IOException {
@@ -270,11 +241,6 @@ public class XboxLiveClient {
                 throw new IOException(appContext.getString(R.string.xbox_friends_auth_error), error);
             }
         }
-    }
-
-    private static String optString(JsonObject object, String key) {
-        JsonElement value = object.get(key);
-        return value != null && value.isJsonPrimitive() ? value.getAsString() : null;
     }
 
     private static class PeopleResponse {
