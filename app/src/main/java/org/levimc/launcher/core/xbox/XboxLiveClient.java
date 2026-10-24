@@ -24,8 +24,10 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
 import okhttp3.HttpUrl;
+import okhttp3.MediaType;
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
+import okhttp3.RequestBody;
 import okhttp3.Response;
 
 /**
@@ -45,6 +47,8 @@ public class XboxLiveClient {
     private static final Gson GSON = new Gson();
     private static final Handler MAIN = new Handler(Looper.getMainLooper());
     private static final ExecutorService EXECUTOR = Executors.newSingleThreadExecutor();
+    private static final RequestBody EMPTY_BODY = RequestBody.create("", JSON);
+    private static final RequestBody EMPTY_BODY = RequestBody.create("", JSON);
 
     private final Context appContext;
     private final Object tokenLock = new Object();
@@ -164,13 +168,17 @@ public class XboxLiveClient {
         EXECUTOR.execute(() -> {
             try {
                 ensureToken();
-                Request request = new Request.Builder()
+                Request.Builder builder = new Request.Builder()
                         .url(url)
-                        .method(method, null)
                         .header("Authorization", "XBL3.0 x=" + userHash + ";" + xblToken)
-                        .header("x-xbl-contract-version", "2")
-                        .build();
-                try (Response response = HTTP.newCall(request).execute()) {
+                        .header("x-xbl-contract-version", "2");
+                if ("PUT".equals(method)) {
+                    // Xbox rejects PUT without a request body.
+                    builder.put(EMPTY_BODY);
+                } else {
+                    builder.method(method, null);
+                }
+                try (Response response = HTTP.newCall(builder.build()).execute()) {
                     readBody(response);
                 }
                 MAIN.post(callback::onDone);
