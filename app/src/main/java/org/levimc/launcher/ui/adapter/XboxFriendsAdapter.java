@@ -57,6 +57,7 @@ public class XboxFriendsAdapter extends RecyclerView.Adapter<XboxFriendsAdapter.
         holder.gamertag.setText(friend.gamertag);
         holder.presence.setText(XboxLiveClient.presenceLabel(holder.itemView.getContext(), friend));
         holder.presence.setTextColor(XboxLiveClient.presenceColor(holder.itemView.getContext(), friend));
+        applyOnlineBorder(holder.avatar, friend);
 
         Glide.with(holder.avatar)
                 .load(friend.displayPicRaw)
@@ -104,6 +105,14 @@ public class XboxFriendsAdapter extends RecyclerView.Adapter<XboxFriendsAdapter.
             gamertag = itemView.findViewById(R.id.friend_gamertag);
             presence = itemView.findViewById(R.id.friend_presence);
             more = itemView.findViewById(R.id.friend_more);
+        }
+    }
+
+    private static void applyOnlineBorder(ImageView avatar, XboxLiveClient.XboxFriend friend) {
+        if ("Online".equals(friend.presenceState)) {
+            avatar.setBackgroundResource(R.drawable.xbox_avatar_online_border);
+        } else {
+            avatar.setBackground(null);
         }
     }
 }

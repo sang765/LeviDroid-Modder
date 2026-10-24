@@ -874,8 +874,20 @@ import okhttp3.OkHttpClient;
     private void addXboxFriendEntry(XboxLiveClient.XboxFriend friend) {
         int pad = (int) (3 * getResources().getDisplayMetrics().density);
         LinearLayout entry = new LinearLayout(this);
-        entry.setOrientation(LinearLayout.VERTICAL);
+        entry.setOrientation(LinearLayout.HORIZONTAL);
+        entry.setGravity(Gravity.CENTER_VERTICAL);
         entry.setPadding(0, pad, 0, pad);
+
+        int size = (int) (40 * getResources().getDisplayMetrics().density);
+        ImageView avatar = new ImageView(this);
+        avatar.setLayoutParams(new LinearLayout.LayoutParams(size, size));
+        avatar.setScaleType(ImageView.ScaleType.CENTER_CROP);
+        avatar.setPadding(4, 4, 4, 4);
+        applyOnlineBorder(avatar, friend);
+        Glide.with(this).load(friend.displayPicRaw).circleCrop().into(avatar);
+
+        LinearLayout column = new LinearLayout(this);
+        column.setOrientation(LinearLayout.VERTICAL);
 
         TextView gamertag = new TextView(this);
         gamertag.setText(friend.gamertag);
@@ -891,12 +903,23 @@ import okhttp3.OkHttpClient;
         presence.setTextSize(android.util.TypedValue.COMPLEX_UNIT_SP, 10);
         presence.setTypeface(getResources().getFont(R.font.misans));
 
-        entry.addView(gamertag);
-        entry.addView(presence);
+        column.addView(gamertag);
+        column.addView(presence);
+
+        entry.addView(avatar);
+        entry.addView(column);
         entry.setOnClickListener(v -> startActivity(
                 new Intent(MainActivity.this, XboxFriendsActivity.class),
                 ActivityOptionsCompat.makeCustomAnimation(MainActivity.this, R.anim.fade_in, R.anim.fade_out).toBundle()));
         binding.xboxFriendsListContainer.addView(entry);
+    }
+
+    private static void applyOnlineBorder(ImageView avatar, XboxLiveClient.XboxFriend friend) {
+        if ("Online".equals(friend.presenceState)) {
+            avatar.setBackgroundResource(R.drawable.xbox_avatar_online_border);
+        } else {
+            avatar.setBackground(null);
+        }
     }
 
     private void openModsFullscreen() {

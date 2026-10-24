@@ -50,6 +50,8 @@ public class XboxSearchAdapter extends RecyclerView.Adapter<XboxSearchAdapter.Vi
         holder.gamertag.setText(friend.gamertag);
         holder.presence.setText(XboxLiveClient.presenceLabel(holder.itemView.getContext(), friend));
         holder.presence.setTextColor(XboxLiveClient.presenceColor(holder.itemView.getContext(), friend));
+        applyOnlineBorder(holder.avatar, friend);
+
         Glide.with(holder.avatar)
                 .load(friend.displayPicRaw)
                 .circleCrop()
@@ -72,6 +74,14 @@ public class XboxSearchAdapter extends RecyclerView.Adapter<XboxSearchAdapter.Vi
             avatar = itemView.findViewById(R.id.search_avatar);
             gamertag = itemView.findViewById(R.id.search_gamertag);
             presence = itemView.findViewById(R.id.search_presence);
+        }
+    }
+
+    private static void applyOnlineBorder(ImageView avatar, XboxLiveClient.XboxFriend friend) {
+        if ("Online".equals(friend.presenceState)) {
+            avatar.setBackgroundResource(R.drawable.xbox_avatar_online_border);
+        } else {
+            avatar.setBackground(null);
         }
     }
 }

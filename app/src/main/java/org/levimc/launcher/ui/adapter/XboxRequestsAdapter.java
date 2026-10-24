@@ -57,6 +57,7 @@ public class XboxRequestsAdapter extends RecyclerView.Adapter<XboxRequestsAdapte
                 .into(holder.avatar);
         holder.accept.setOnClickListener(v -> listener.onAccept(friend));
         holder.decline.setOnClickListener(v -> listener.onDecline(friend));
+        applyOnlineBorder(holder.avatar, friend);
     }
 
     @Override
@@ -78,6 +79,14 @@ public class XboxRequestsAdapter extends RecyclerView.Adapter<XboxRequestsAdapte
             direction = itemView.findViewById(R.id.request_direction);
             accept = itemView.findViewById(R.id.request_accept);
             decline = itemView.findViewById(R.id.request_decline);
+        }
+    }
+
+    private static void applyOnlineBorder(ImageView avatar, XboxLiveClient.XboxFriend friend) {
+        if ("Online".equals(friend.presenceState)) {
+            avatar.setBackgroundResource(R.drawable.xbox_avatar_online_border);
+        } else {
+            avatar.setBackground(null);
         }
     }
 }
