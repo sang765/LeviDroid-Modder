@@ -12,6 +12,8 @@ import json
 import os
 import subprocess
 import sys
+import time
+import urllib.error
 import urllib.request
 from pathlib import Path
 
@@ -84,8 +86,17 @@ Commits since {previous}:
         data=json.dumps(payload).encode("utf-8"),
         headers={"Content-Type": "application/json", "x-goog-api-key": key},
     )
-    with urllib.request.urlopen(request, timeout=120) as response:
-        body = json.load(response)
+    # Gemini has transient 5xx outages; retry before falling back to the
+    # committed changelog, which may lag several releases behind.
+    for attempt in range(3):
+        try:
+            with urllib.request.urlopen(request, timeout=120) as response:
+                body = json.load(response)
+            break
+        except urllib.error.HTTPError as error:
+            if error.code < 500 or attempt == 2:
+                raise
+            time.sleep(2 * (attempt + 1))
     text = body["candidates"][0]["content"]["parts"][0].get("text", "").strip()
     if text.startswith("```"):
         text = text.split("\n", 1)[1].rsplit("```", 1)[0].strip()
