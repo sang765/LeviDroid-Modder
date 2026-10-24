@@ -146,6 +146,12 @@ If you want to build LeviLauncher Modder from source or contribute to developmen
 
 ---
 
+## Translations
+
+Help translate LeviLauncher Modder into your language on [Hosted Weblate](https://hosted.weblate.org/projects/levilauncher-modder/). English is the source language; translations are maintained per locale (`values-<lang>` resources) and ship with the next release.
+
+---
+
 ## Contribution Guidelines
 
 We welcome contributions from the community to improve LeviLauncher Modder. To ensure a high-quality codebase and smooth collaboration, please adhere to the following guidelines:
