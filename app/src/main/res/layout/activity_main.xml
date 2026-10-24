@@ -248,13 +248,17 @@
                 </ScrollView>
             </LinearLayout>
 
+            <LinearLayout
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="1.3"
+                android:orientation="vertical">
+
             <!-- Content Management Section -->
             <LinearLayout
                 android:id="@+id/content_mgmt_card"
-                android:layout_width="0dp"
-                android:layout_height="match_parent"
-                android:layout_marginHorizontal="6dp"
-                android:layout_weight="1.3"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
                 android:background="@drawable/card_background"
                 android:orientation="vertical"
                 android:padding="15dp">
@@ -292,8 +296,7 @@
 
                 <ScrollView
                     android:layout_width="match_parent"
-                    android:layout_height="0dp"
-                    android:layout_weight="1"
+                    android:layout_height="wrap_content"
                     android:layout_marginTop="8dp"
                     android:fadingEdge="vertical"
                     android:fadingEdgeLength="16dp"
@@ -453,6 +456,88 @@
                         </LinearLayout>
                     </LinearLayout>
                 </ScrollView>
+            </LinearLayout>
+
+                <!-- Xbox Friends Section -->
+                <LinearLayout
+                    android:id="@+id/xbox_friends_card"
+                    android:layout_width="match_parent"
+                    android:layout_height="0dp"
+                    android:layout_weight="1"
+                    android:layout_marginTop="12dp"
+                    android:background="@drawable/card_background"
+                    android:orientation="vertical"
+                    android:padding="15dp">
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:gravity="center_vertical"
+                        android:orientation="horizontal">
+
+                        <TextView
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:text="@string/xbox_friends"
+                            android:fontFamily="@font/misans"
+                            android:textColor="@color/on_surface"
+                            android:textSize="14sp"
+                            android:textStyle="bold" />
+
+                        <TextView
+                            android:id="@+id/xbox_friends_view_all"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="@string/view_all"
+                            android:fontFamily="@font/misans"
+                            android:textColor="@color/text_secondary"
+                            android:textSize="11sp"
+                            android:clickable="true"
+                            android:focusable="true"
+                            android:foreground="?attr/selectableItemBackground" />
+                    </LinearLayout>
+
+                    <FrameLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="0dp"
+                        android:layout_weight="1"
+                        android:layout_marginTop="8dp">
+
+                        <ScrollView
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
+                            android:fadingEdge="vertical"
+                            android:fadingEdgeLength="16dp"
+                            android:requiresFadingEdge="vertical"
+                            android:scrollbars="none">
+
+                            <LinearLayout
+                                android:id="@+id/xbox_friends_list_container"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:orientation="vertical" />
+                        </ScrollView>
+
+                        <ProgressBar
+                            android:id="@+id/xbox_friends_progress"
+                            android:layout_width="28dp"
+                            android:layout_height="28dp"
+                            android:layout_gravity="center"
+                            android:visibility="gone" />
+
+                        <TextView
+                            android:id="@+id/xbox_friends_empty_text"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_gravity="center"
+                            android:fontFamily="@font/misans"
+                            android:gravity="center"
+                            android:textColor="@color/text_secondary"
+                            android:textSize="12sp"
+                            android:visibility="gone" />
+                    </FrameLayout>
+                </LinearLayout>
             </LinearLayout>
 
             <!-- Miscellaneous Section -->

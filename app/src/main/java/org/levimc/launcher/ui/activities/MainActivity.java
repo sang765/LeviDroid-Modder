@@ -17,6 +17,7 @@ import android.widget.TextView;
 
 import androidx.activity.OnBackPressedCallback;
 import androidx.annotation.NonNull;
+import androidx.core.app.ActivityOptionsCompat;
 import androidx.core.content.ContextCompat;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -37,6 +38,7 @@ import org.levimc.launcher.core.mods.inbuilt.manager.InbuiltModManager;
 import org.levimc.launcher.core.news.ChangelogManager;
 import org.levimc.launcher.core.versions.GameVersion;
 import org.levimc.launcher.core.versions.VersionManager;
+import org.levimc.launcher.core.xbox.XboxLiveClient;
 import org.levimc.launcher.databinding.ActivityMainBinding;
 import org.levimc.launcher.settings.FeatureSettings;
 
@@ -121,6 +123,7 @@ import okhttp3.OkHttpClient;
     private OnBackPressedCallback onBackPressedCallback;
     private boolean launcherInitialized;
     private boolean postEulaFlowRunning;
+    private XboxLiveClient xboxClient;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -517,6 +520,7 @@ import okhttp3.OkHttpClient;
         initModsSection();
         initContentManagementSection();
         initMiscellaneousSection();
+        initXboxFriendsCard();
         initializeVersionManager();
     }
 
@@ -709,6 +713,9 @@ import okhttp3.OkHttpClient;
         if (binding != null && versionManager != null) {
             binding.launchButton.setEnabled(true);
         }
+        if (binding != null && xboxClient != null) {
+            refreshXboxFriendsCard();
+        }
     }
 
     @SuppressLint({"ClickableViewAccessibility", "UnsafeIntentLaunch"})
@@ -824,6 +831,72 @@ import okhttp3.OkHttpClient;
         }
         binding.miscAccountsRow.setOnClickListener(v -> startActivity(new Intent(this, AccountsActivity.class)));
         binding.miscQuickLaunchRow.setOnClickListener(v -> startActivity(new Intent(this, QuickLaunchActivity.class)));
+    }
+
+    private void initXboxFriendsCard() {
+        xboxClient = new XboxLiveClient(this);
+        View.OnClickListener openFriends = v -> startActivity(
+                new Intent(this, XboxFriendsActivity.class),
+                ActivityOptionsCompat.makeCustomAnimation(this, R.anim.fade_in, R.anim.fade_out).toBundle());
+        binding.xboxFriendsViewAll.setOnClickListener(openFriends);
+        DynamicAnim.applyPressScale(binding.xboxFriendsViewAll);
+    }
+
+    private void refreshXboxFriendsCard() {
+        binding.xboxFriendsProgress.setVisibility(View.VISIBLE);
+        binding.xboxFriendsEmptyText.setVisibility(View.GONE);
+        binding.xboxFriendsListContainer.removeAllViews();
+        xboxClient.fetchFriends(new XboxLiveClient.FriendsCallback() {
+            @Override
+            public void onFriends(List<XboxLiveClient.XboxFriend> friends) {
+                if (binding == null) return;
+                binding.xboxFriendsProgress.setVisibility(View.GONE);
+                if (friends.isEmpty()) {
+                    binding.xboxFriendsEmptyText.setText(R.string.xbox_friends_empty_friends);
+                    binding.xboxFriendsEmptyText.setVisibility(View.VISIBLE);
+                    return;
+                }
+                for (XboxLiveClient.XboxFriend friend : friends) {
+                    addXboxFriendEntry(friend);
+                }
+            }
+
+            @Override
+            public void onError(String message) {
+                if (binding == null) return;
+                binding.xboxFriendsProgress.setVisibility(View.GONE);
+                binding.xboxFriendsEmptyText.setText(message);
+                binding.xboxFriendsEmptyText.setVisibility(View.VISIBLE);
+            }
+        });
+    }
+
+    private void addXboxFriendEntry(XboxLiveClient.XboxFriend friend) {
+        int pad = (int) (3 * getResources().getDisplayMetrics().density);
+        LinearLayout entry = new LinearLayout(this);
+        entry.setOrientation(LinearLayout.VERTICAL);
+        entry.setPadding(0, pad, 0, pad);
+
+        TextView gamertag = new TextView(this);
+        gamertag.setText(friend.gamertag);
+        gamertag.setTextSize(android.util.TypedValue.COMPLEX_UNIT_SP, 12);
+        gamertag.setTextColor(ContextCompat.getColor(this, R.color.on_surface));
+        gamertag.setTypeface(getResources().getFont(R.font.misans));
+        gamertag.setMaxLines(1);
+        gamertag.setEllipsize(TextUtils.TruncateAt.END);
+
+        TextView presence = new TextView(this);
+        presence.setText(XboxLiveClient.presenceLabel(this, friend));
+        presence.setTextColor(XboxLiveClient.presenceColor(this, friend));
+        presence.setTextSize(android.util.TypedValue.COMPLEX_UNIT_SP, 10);
+        presence.setTypeface(getResources().getFont(R.font.misans));
+
+        entry.addView(gamertag);
+        entry.addView(presence);
+        entry.setOnClickListener(v -> startActivity(
+                new Intent(MainActivity.this, XboxFriendsActivity.class),
+                ActivityOptionsCompat.makeCustomAnimation(MainActivity.this, R.anim.fade_in, R.anim.fade_out).toBundle()));
+        binding.xboxFriendsListContainer.addView(entry);
     }
 
     private void openModsFullscreen() {
