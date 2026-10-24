@@ -1,14 +1,14 @@
 {
   "schemaVersion": 1,
   "headline": "LeviLauncher Modder v1.5.27-modder.50",
-  "summary": "Fixes a crash when opening the Xbox friends list on some devices.",
+  "summary": "Adding a friend now sends a real two-way Xbox invitation the other player can accept, instead of silently following them.",
   "sections": [
     {
       "title": "Fixes",
       "items": [
         {
-          "text": "Fix a crash when opening the friends list on MIUI and similar devices.",
-          "url": "https://github.com/sang765/LeviDroid-Modder/commit/86155391e49906691e4502fd0e146303de6fbfb6"
+          "text": "Send friend requests through the bulk add API so the other player actually receives an invitation.",
+          "url": "https://github.com/sang765/LeviDroid-Modder/commit/3a01e8b5a079280e46b4484ff4e612cae2e5b693"
         }
       ]
     }
