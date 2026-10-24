@@ -1,18 +1,14 @@
 {
   "schemaVersion": 1,
-  "headline": "LeviLauncher Modder v1.5.27-modder.51",
-  "summary": "Xbox Friends refreshes automatically on app start, logout and account switch, and never reuses another account's session.",
+  "headline": "LeviLauncher Modder v1.5.27-modder.52",
+  "summary": "Xbox Friend colors now follow the active theme, including AMOLED dark mode.",
   "sections": [
     {
       "title": "Fixes",
       "items": [
         {
-          "text": "Refresh the Xbox friends list on app start, logout and account switch.",
-          "url": "https://github.com/sang765/LeviDroid-Modder/commit/7c26deb"
-        },
-        {
-          "text": "Invalidate the cached Xbox session when the active account changes.",
-          "url": "https://github.com/sang765/LeviDroid-Modder/commit/7c26deb"
+          "text": "Make friend tab text, pressed rows and online glow follow the AMOLED/light theme.",
+          "url": "https://github.com/sang765/LeviDroid-Modder/commit/c1e7e65"
         }
       ]
     }
