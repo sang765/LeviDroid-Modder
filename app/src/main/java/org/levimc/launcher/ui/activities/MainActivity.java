@@ -522,6 +522,7 @@ import okhttp3.OkHttpClient;
         initContentManagementSection();
         initMiscellaneousSection();
         initXboxFriendsCard();
+        refreshXboxFriendsCard();
         initializeVersionManager();
     }
 
