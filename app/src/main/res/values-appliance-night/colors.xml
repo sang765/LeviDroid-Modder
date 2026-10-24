@@ -30,7 +30,6 @@
     <color name="white">#FFFFFF</color>
     <color name="scrim">#99000000</color>
 
-    <color name="glow_green">#4AE0A0</color>
     <color name="glow_cyan">#00FFFF</color>
 
     <color name="abi_label_text">#FFFFFF</color>
@@ -39,4 +38,6 @@
     <color name="text_primary">#FFFFFF</color>
     <color name="text_secondary">#AAAAAA</color>
     <color name="qa_icon_color">#FFFFFF</color>
+    <color name="xbox_online">#4AE0A0</color>
+    <color name="xbox_online_glow">#704AE0A0</color>
 </resources>
