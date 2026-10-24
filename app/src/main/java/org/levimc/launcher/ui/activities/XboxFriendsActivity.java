@@ -5,6 +5,7 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.text.TextUtils;
 import android.view.View;
+import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ProgressBar;
 import android.widget.TextView;
@@ -18,6 +19,7 @@ import org.levimc.launcher.core.auth.MsftAccountStore;
 import org.levimc.launcher.core.xbox.XboxLiveClient;
 import org.levimc.launcher.ui.adapter.XboxFriendsAdapter;
 import org.levimc.launcher.ui.adapter.XboxRequestsAdapter;
+import org.levimc.launcher.ui.adapter.XboxSearchAdapter;
 import org.levimc.launcher.ui.animation.DynamicAnim;
 import org.levimc.launcher.ui.dialogs.CustomAlertDialog;
 
@@ -189,37 +191,34 @@ public class XboxFriendsActivity extends BaseActivity {
     private void showSearchDialog() {
         View content = getLayoutInflater().inflate(R.layout.dialog_xbox_search, null);
         EditText input = content.findViewById(R.id.xbox_search_edit);
+        RecyclerView results = content.findViewById(R.id.search_results);
+        results.setLayoutManager(new LinearLayoutManager(this));
+        XboxSearchAdapter searchAdapter = new XboxSearchAdapter(friend -> confirmAdd(friend));
+        results.setAdapter(searchAdapter);
         new CustomAlertDialog(this)
                 .setTitleText(getString(R.string.xbox_friends_add))
                 .setCustomView(content)
-                .setPositiveButton(getString(R.string.xbox_friends_search),
-                        v -> doSearch(input.getText().toString()))
+                .setPositiveButton(null, null)
                 .setNegativeButton(getString(R.string.dialog_negative_cancel), null)
                 .show();
+        Button searchButton = content.findViewById(R.id.xbox_search_button);
+        searchButton.setOnClickListener(v -> doSearch(input.getText().toString(), searchAdapter));
+        DynamicAnim.applyPressScale(searchButton);
     }
 
-    private void doSearch(String query) {
-        if (TextUtils.isEmpty(query)) return;
+    private void doSearch(String query, XboxSearchAdapter searchAdapter) {
+        if (TextUtils.isEmpty(query.trim())) return;
         progress.setVisibility(View.VISIBLE);
         client.searchFriends(query.trim(), new XboxLiveClient.ListCallback() {
             @Override
             public void onList(List<XboxLiveClient.XboxFriend> results) {
                 progress.setVisibility(View.GONE);
                 List<XboxLiveClient.XboxFriend> filtered = filterSearchResults(results);
+                searchAdapter.submit(filtered);
                 if (filtered.isEmpty()) {
                     Toast.makeText(XboxFriendsActivity.this,
                             R.string.xbox_friends_search_empty, Toast.LENGTH_SHORT).show();
-                    return;
                 }
-                String[] names = new String[filtered.size()];
-                for (int i = 0; i < filtered.size(); i++) {
-                    names[i] = filtered.get(i).gamertag;
-                }
-                new CustomAlertDialog(XboxFriendsActivity.this)
-                        .setTitleText(getString(R.string.xbox_friends_add))
-                        .setItems(names, (dialog, which) -> confirmAdd(filtered.get(which)))
-                        .setNegativeButton(getString(R.string.dialog_negative_cancel), null)
-                        .show();
             }
 
             @Override

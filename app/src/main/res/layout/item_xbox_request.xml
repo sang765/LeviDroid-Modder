@@ -7,6 +7,14 @@
     android:paddingHorizontal="12dp"
     android:paddingVertical="8dp">
 
+    <ImageView
+        android:id="@+id/request_avatar"
+        android:layout_width="40dp"
+        android:layout_height="40dp"
+        android:layout_marginEnd="10dp"
+        android:contentDescription="@string/xbox_friends"
+        android:scaleType="centerCrop" />
+
     <LinearLayout
         android:layout_width="0dp"
         android:layout_height="wrap_content"

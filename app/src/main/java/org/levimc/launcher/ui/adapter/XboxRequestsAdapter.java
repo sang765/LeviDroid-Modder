@@ -3,10 +3,13 @@ package org.levimc.launcher.ui.adapter;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
+
+import com.bumptech.glide.Glide;
 
 import org.levimc.launcher.R;
 import org.levimc.launcher.core.xbox.XboxLiveClient;
@@ -48,6 +51,10 @@ public class XboxRequestsAdapter extends RecyclerView.Adapter<XboxRequestsAdapte
         XboxLiveClient.XboxFriend friend = incoming.get(position);
         holder.gamertag.setText(friend.gamertag);
         holder.direction.setText(R.string.xbox_friends_incoming);
+        Glide.with(holder.avatar)
+                .load(friend.displayPicRaw)
+                .circleCrop()
+                .into(holder.avatar);
         holder.accept.setOnClickListener(v -> listener.onAccept(friend));
         holder.decline.setOnClickListener(v -> listener.onDecline(friend));
     }
@@ -58,6 +65,7 @@ public class XboxRequestsAdapter extends RecyclerView.Adapter<XboxRequestsAdapte
     }
 
     static class ViewHolder extends RecyclerView.ViewHolder {
+        final ImageView avatar;
         final TextView gamertag;
         final TextView direction;
         final TextView accept;
@@ -65,6 +73,7 @@ public class XboxRequestsAdapter extends RecyclerView.Adapter<XboxRequestsAdapte
 
         ViewHolder(@NonNull View itemView) {
             super(itemView);
+            avatar = itemView.findViewById(R.id.request_avatar);
             gamertag = itemView.findViewById(R.id.request_gamertag);
             direction = itemView.findViewById(R.id.request_direction);
             accept = itemView.findViewById(R.id.request_accept);
