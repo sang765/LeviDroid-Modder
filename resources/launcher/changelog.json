@@ -1,27 +1,18 @@
 {
   "schemaVersion": 1,
-  "headline": "LeviLauncher Modder v1.5.27-modder.48",
-  "summary": "Friend requests can be sent again, and friend rows show avatars plus an option to view a player's Xbox profile or remove them.",
+  "headline": "LeviLauncher Modder v1.5.27-modder.49",
+  "summary": "Online Xbox friends now show a soft green glow around their avatar everywhere they appear.",
   "sections": [
-    {
-      "title": "Fixes",
-      "items": [
-        {
-          "text": "Send friend requests again — Xbox rejects PUT requests without a body.",
-          "url": "https://github.com/sang765/LeviDroid-Modder/commit/30e47d37f0e0f928de79b6f53804269807b36cb3"
-        }
-      ]
-    },
     {
       "title": "New",
       "items": [
         {
-          "text": "Show each friend's gamer picture in the friends list, requests and search results.",
-          "url": "https://github.com/sang765/LeviDroid-Modder/commit/be0b623f839f687748573438750368536c01db5a"
+          "text": "Add a glow border to the avatar of friends who are online.",
+          "url": "https://github.com/sang765/LeviDroid-Modder/commit/39e346ba18868aec21b8d36c72c5cfe11226bbd1"
         },
         {
-          "text": "Open a menu on any friend to view their Xbox profile or remove them.",
-          "url": "https://github.com/sang765/LeviDroid-Modder/commit/be0b623f839f687748573438750368536c01db5a"
+          "text": "Show the same glow on the launch dashboard, friend requests and search results.",
+          "url": "https://github.com/sang765/LeviDroid-Modder/commit/39e346ba18868aec21b8d36c72c5cfe11226bbd1"
         }
       ]
     }
