@@ -1,31 +1,22 @@
 {
   "schemaVersion": 1,
-  "headline": "LeviLauncher Modder v1.5.27-modder.45",
-  "summary": "Xbox Friends connects again using the current Xbox Live services, and your friend list now lives right on the launch screen.",
+  "headline": "LeviLauncher Modder v1.5.27-modder.46",
+  "summary": "Xbox Friends now speaks the current peoplehub protocol, and connection errors show Xbox's own error code.",
   "sections": [
     {
       "title": "Fixes",
       "items": [
         {
-          "text": "Connect the friends screen using the current Xbox Live peoplehub and social services.",
-          "url": "https://github.com/sang765/LeviDroid-Modder/commit/948bd6de9e818520be28fa0fb36a0598fb983527"
+          "text": "Request the friends list with the current peoplehub contract and path.",
+          "url": "https://github.com/sang765/LeviDroid-Modder/commit/c149065fc56c4bfb791dde8e9f41f2fbde3cc358"
         },
         {
-          "text": "Show the HTTP status when an Xbox Live request fails so problems are diagnosable.",
-          "url": "https://github.com/sang765/LeviDroid-Modder/commit/948bd6de9e818520be28fa0fb36a0598fb983527"
-        }
-      ]
-    },
-    {
-      "title": "New",
-      "items": [
-        {
-          "text": "See your Xbox friends and their online status directly on the launch screen.",
-          "url": "https://github.com/sang765/LeviDroid-Modder/commit/c24bd67d0b3e07518c77a82a037078251aaefb90"
+          "text": "Send the language header peoplehub requires so requests are not rejected.",
+          "url": "https://github.com/sang765/LeviDroid-Modder/commit/c149065fc56c4bfb791dde8e9f41f2fbde3cc358"
         },
         {
-          "text": "Tap a friend on the dashboard to open the full friends screen.",
-          "url": "https://github.com/sang765/LeviDroid-Modder/commit/c24bd67d0b3e07518c77a82a037078251aaefb90"
+          "text": "Show Xbox's own XErr code in connection errors for faster diagnosis.",
+          "url": "https://github.com/sang765/LeviDroid-Modder/commit/c149065fc56c4bfb791dde8e9f41f2fbde3cc358"
         }
       ]
     }
