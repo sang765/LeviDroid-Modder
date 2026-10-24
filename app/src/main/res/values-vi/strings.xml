@@ -8,8 +8,6 @@
 
 <resources>
     <!-- Common -->
-    <string name="app_name">LeviLauncher Modder</string>
-    <string name="minecraft">Minecraft</string>
     <string name="launch">Khởi Chạy</string>
     <string name="beta_badge">Thử Nghiệm</string>
     <string name="debug_badge">Gỡ lỗi</string>
@@ -32,7 +30,6 @@
     <string name="about_title">☕ Về</string>
     <string name="copyright">©2024–2026 LeviMC. Mọi quyền được bảo lưu.</string>
     <string name="font_license">Ứng dụng đang sử dụng phông chữ Misans.</string>
-    <string name="about_footer_github">GitHub: https://github.com/sang765/LeviDroid-Modder</string>
     <string name="quick_actions_title">Thao tác nhanh</string>
     <string name="content_mgmt_section_title">Quản lý nội dung</string>
     <string name="misc_section_title">Khác</string>
@@ -471,7 +468,6 @@
 
     <string name="github_import_dialog_title">Nhập từ GitHub</string>
     <string name="github_import_desc">Tải bản phát hành mới nhất từ một repository GitHub</string>
-    <string name="github_import_hint">github.com/user/repo, user/repo hoặc user repo</string>
 
     <string name="xbox_friends">Bạn bè Xbox</string>
     <string name="xbox_friends_tab_friends">Bạn bè</string>

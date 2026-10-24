@@ -8,8 +8,6 @@
 
 <resources>
     <!-- Common -->
-    <string name="app_name">LeviLauncher Modder</string>
-    <string name="minecraft">Minecraft</string>
     <string name="launch">Lancer</string>
     <string name="beta_badge">Bêta</string>
     <string name="debug_badge">Débogage</string>
@@ -32,7 +30,6 @@
     <string name="about_title">☕ À propos</string>
     <string name="copyright">©2024–2026 LeviMC. Tous droits réservés.</string>
     <string name="font_license">Cette application utilise la police Misans.</string>
-    <string name="about_footer_github">GitHub : https://github.com/sang765/LeviDroid-Modder</string>
     <string name="quick_actions_title">Actions rapides</string>
     <string name="content_mgmt_section_title">Gestion de contenu</string>
     <string name="misc_section_title">Divers</string>

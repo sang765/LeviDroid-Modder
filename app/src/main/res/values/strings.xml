@@ -8,8 +8,8 @@
 
 <resources>
     <!-- Common -->
-    <string name="app_name">LeviLauncher Modder</string>
-    <string name="minecraft">Minecraft</string>
+    <string name="app_name" translatable="false">LeviLauncher Modder</string>
+    <string name="minecraft" translatable="false">Minecraft</string>
     <string name="launch">Launch</string>
     <string name="beta_badge">Beta</string>
     <string name="debug_badge">Debug</string>
@@ -32,7 +32,7 @@
     <string name="about_title">☕ About</string>
     <string name="copyright">©2024–2026 LeviMC. All rights reserved.</string>
     <string name="font_license">This app uses the Misans font.</string>
-    <string name="about_footer_github">GitHub: https://github.com/sang765/LeviDroid-Modder</string>
+    <string name="about_footer_github" translatable="false">GitHub: https://github.com/sang765/LeviDroid-Modder</string>
     <string name="quick_actions_title">Quick Actions</string>
     <string name="content_mgmt_section_title">Content Management</string>
     <string name="misc_section_title">Miscellaneous</string>
@@ -471,7 +471,7 @@
 
     <string name="github_import_dialog_title">Import from GitHub</string>
     <string name="github_import_desc">Download the latest release from a GitHub repository</string>
-    <string name="github_import_hint">github.com/user/repo, user/repo or user repo</string>
+    <string name="github_import_hint" translatable="false">github.com/user/repo, user/repo or user repo</string>
 
     <string name="xbox_friends">Xbox Friends</string>
     <string name="xbox_friends_tab_friends">Friends</string>
