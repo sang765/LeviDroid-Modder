@@ -1,35 +1,31 @@
 {
   "schemaVersion": 1,
-  "headline": "LeviLauncher Modder v1.5.27-modder.44",
-  "summary": "Xbox Friends arrives in the launcher: see who is online, manage friend requests and add players by gamertag. Indonesian translations now load correctly.",
+  "headline": "LeviLauncher Modder v1.5.27-modder.45",
+  "summary": "Xbox Friends connects again using the current Xbox Live services, and your friend list now lives right on the launch screen.",
   "sections": [
-    {
-      "title": "New",
-      "items": [
-        {
-          "text": "Add Xbox friends and see who is online, including who is playing Minecraft.",
-          "url": "https://github.com/sang765/LeviDroid-Modder/commit/12f8741db8ce55372536143d3e3039e784fd0061"
-        },
-        {
-          "text": "Accept, decline and cancel friend requests from a dedicated requests tab.",
-          "url": "https://github.com/sang765/LeviDroid-Modder/commit/12f8741db8ce55372536143d3e3039e784fd0061"
-        },
-        {
-          "text": "Search for players by gamertag and add them without leaving the launcher.",
-          "url": "https://github.com/sang765/LeviDroid-Modder/commit/12f8741db8ce55372536143d3e3039e784fd0061"
-        }
-      ]
-    },
     {
       "title": "Fixes",
       "items": [
         {
-          "text": "Load Indonesian translations by restoring the proper locale folder.",
-          "url": "https://github.com/sang765/LeviDroid-Modder/commit/e7d921bff935d2fff172076a461d83c015e5a225"
+          "text": "Connect the friends screen using the current Xbox Live peoplehub and social services.",
+          "url": "https://github.com/sang765/LeviDroid-Modder/commit/948bd6de9e818520be28fa0fb36a0598fb983527"
         },
         {
-          "text": "Keep the launcher's original Minecraft install check after syncing with upstream.",
-          "url": "https://github.com/sang765/LeviDroid-Modder/commit/670aa8c25aca6eace8265c54f655406ba898cc1e"
+          "text": "Show the HTTP status when an Xbox Live request fails so problems are diagnosable.",
+          "url": "https://github.com/sang765/LeviDroid-Modder/commit/948bd6de9e818520be28fa0fb36a0598fb983527"
+        }
+      ]
+    },
+    {
+      "title": "New",
+      "items": [
+        {
+          "text": "See your Xbox friends and their online status directly on the launch screen.",
+          "url": "https://github.com/sang765/LeviDroid-Modder/commit/c24bd67d0b3e07518c77a82a037078251aaefb90"
+        },
+        {
+          "text": "Tap a friend on the dashboard to open the full friends screen.",
+          "url": "https://github.com/sang765/LeviDroid-Modder/commit/c24bd67d0b3e07518c77a82a037078251aaefb90"
         }
       ]
     }
