@@ -448,6 +448,7 @@
     <string name="xbox_friends_add_confirm">Gửi lời mời kết bạn tới %1$s?</string>
     <string name="xbox_friends_added">Đã gửi lời mời kết bạn tới %1$s</string>
     <string name="xbox_friends_remove_title">Xoá bạn</string>
+    <string name="xbox_friends_view_profile">Xem hồ sơ</string>
     <string name="xbox_friends_remove">Xoá</string>
     <string name="xbox_friends_remove_confirm">Xoá %1$s khỏi danh sách bạn bè?</string>
     <string name="xbox_friends_removed">Đã xoá %1$s khỏi danh sách bạn bè</string>

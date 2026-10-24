@@ -1,5 +1,7 @@
 package org.levimc.launcher.ui.activities;
 
+import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
 import android.text.TextUtils;
 import android.view.View;
@@ -52,7 +54,19 @@ public class XboxFriendsActivity extends BaseActivity {
         friendsList.setLayoutManager(new LinearLayoutManager(this));
         requestsList.setLayoutManager(new LinearLayoutManager(this));
 
-        friendsAdapter = new XboxFriendsAdapter(this::showRemoveDialog);
+        friendsAdapter = new XboxFriendsAdapter(new XboxFriendsAdapter.Listener() {
+            @Override
+            public void onViewProfile(XboxLiveClient.XboxFriend friend) {
+                Uri uri = Uri.parse("https://www.xbox.com/en-US/play/user?gamertag="
+                        + Uri.encode(friend.gamertag));
+                startActivity(new Intent(Intent.ACTION_VIEW, uri));
+            }
+
+            @Override
+            public void onRemoveFriend(XboxLiveClient.XboxFriend friend) {
+                showRemoveDialog(friend);
+            }
+        });
         requestsAdapter = new XboxRequestsAdapter(new XboxRequestsAdapter.Listener() {
             @Override
             public void onAccept(XboxLiveClient.XboxFriend friend) {

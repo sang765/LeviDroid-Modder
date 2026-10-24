@@ -492,6 +492,7 @@
     <string name="xbox_friends_add_confirm">Send a friend request to %1$s?</string>
     <string name="xbox_friends_added">Friend request sent to %1$s</string>
     <string name="xbox_friends_remove_title">Remove friend</string>
+    <string name="xbox_friends_view_profile">View profile</string>
     <string name="xbox_friends_remove">Remove</string>
     <string name="xbox_friends_remove_confirm">Remove %1$s from your friends list?</string>
     <string name="xbox_friends_removed">%1$s removed from your friends list</string>
