@@ -104,7 +104,7 @@ public class XboxLiveClient {
             try {
                 ensureToken();
                 PeopleResponse parsed = GSON.fromJson(get(PEOPLEHUB_API
-                        + "/users/me/people/social/decoration/detail,preferredColor,follower", 5),
+                        + "/users/me/people/friends/decoration/detail,preferredColor,presenceDetail,multiplayerSummary", 7),
                         PeopleResponse.class);
                 List<XboxFriend> friends = parsed != null && parsed.people != null
                         ? parsed.people : new ArrayList<>();
@@ -124,7 +124,7 @@ public class XboxLiveClient {
                         .addQueryParameter("q", query)
                         .addQueryParameter("maxItems", "25")
                         .build();
-                PeopleResponse parsed = GSON.fromJson(get(url.toString(), 5), PeopleResponse.class);
+                PeopleResponse parsed = GSON.fromJson(get(url.toString(), 7), PeopleResponse.class);
                 List<XboxFriend> results = parsed != null && parsed.people != null
                         ? parsed.people : new ArrayList<>();
                 MAIN.post(() -> callback.onList(results));
@@ -191,6 +191,9 @@ public class XboxLiveClient {
                 .url(url)
                 .header("Authorization", "XBL3.0 x=" + userHash + ";" + xblToken)
                 .header("x-xbl-contract-version", String.valueOf(contract))
+                // peoplehub treats Accept-Language as required and 400s without it.
+                .header("Accept", "application/json")
+                .header("Accept-Language", "en-US")
                 .build();
         try (Response response = HTTP.newCall(request).execute()) {
             return readBody(response);
@@ -212,7 +215,19 @@ public class XboxLiveClient {
             throw new IOException(appContext.getString(R.string.xbox_friends_rate_limited));
         }
         throw new IOException(appContext.getString(R.string.xbox_friends_failed)
-                + " (HTTP " + response.code() + ")");
+                + " (HTTP " + response.code() + xerrDetail(body) + ")");
+    }
+
+    /** Xbox reports the concrete failure as an XErr code in the error body. */
+    private static String xerrDetail(String body) {
+        try {
+            JsonObject error = JsonParser.parseString(body).getAsJsonObject();
+            if (error.has("XErr")) {
+                return ", XErr " + error.get("XErr").getAsString();
+            }
+        } catch (RuntimeException ignored) {
+        }
+        return "";
     }
 
     private void ensureToken() throws IOException {
