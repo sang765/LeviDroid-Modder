@@ -1,18 +1,27 @@
 {
   "schemaVersion": 1,
-  "headline": "LeviLauncher Modder v1.5.27-modder.47",
-  "summary": "Friend rows now show avatars, and a new menu opens a player's Xbox profile or removes them from your friends list.",
+  "headline": "LeviLauncher Modder v1.5.27-modder.48",
+  "summary": "Friend requests can be sent again, and friend rows show avatars plus an option to view a player's Xbox profile or remove them.",
   "sections": [
+    {
+      "title": "Fixes",
+      "items": [
+        {
+          "text": "Send friend requests again — Xbox rejects PUT requests without a body.",
+          "url": "https://github.com/sang765/LeviDroid-Modder/commit/30e47d37f0e0f928de79b6f53804269807b36cb3"
+        }
+      ]
+    },
     {
       "title": "New",
       "items": [
         {
-          "text": "Show each friend's gamer picture in the friends list.",
-          "url": "https://github.com/sang765/LeviDroid-Modder/commit/a64b52a1ee0ab75f4cf72dabcc98229ca3a2ae9b"
+          "text": "Show each friend's gamer picture in the friends list, requests and search results.",
+          "url": "https://github.com/sang765/LeviDroid-Modder/commit/be0b623f839f687748573438750368536c01db5a"
         },
         {
           "text": "Open a menu on any friend to view their Xbox profile or remove them.",
-          "url": "https://github.com/sang765/LeviDroid-Modder/commit/a64b52a1ee0ab75f4cf72dabcc98229ca3a2ae9b"
+          "url": "https://github.com/sang765/LeviDroid-Modder/commit/be0b623f839f687748573438750368536c01db5a"
         }
       ]
     }
