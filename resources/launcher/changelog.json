@@ -1,18 +1,14 @@
 {
   "schemaVersion": 1,
-  "headline": "LeviLauncher Modder v1.5.27-modder.49",
-  "summary": "Online Xbox friends now show a soft green glow around their avatar everywhere they appear.",
+  "headline": "LeviLauncher Modder v1.5.27-modder.50",
+  "summary": "Fixes a crash when opening the Xbox friends list on some devices.",
   "sections": [
     {
-      "title": "New",
+      "title": "Fixes",
       "items": [
         {
-          "text": "Add a glow border to the avatar of friends who are online.",
-          "url": "https://github.com/sang765/LeviDroid-Modder/commit/39e346ba18868aec21b8d36c72c5cfe11226bbd1"
-        },
-        {
-          "text": "Show the same glow on the launch dashboard, friend requests and search results.",
-          "url": "https://github.com/sang765/LeviDroid-Modder/commit/39e346ba18868aec21b8d36c72c5cfe11226bbd1"
+          "text": "Fix a crash when opening the friends list on MIUI and similar devices.",
+          "url": "https://github.com/sang765/LeviDroid-Modder/commit/86155391e49906691e4502fd0e146303de6fbfb6"
         }
       ]
     }
