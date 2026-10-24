@@ -73,6 +73,7 @@ public final class ChangelogManager {
                 .setPositiveButton(activity.getString(R.string.changelog_continue), null)
                 .setOnDismissAnimationEndListener(onComplete);
         dialog.setCancelable(false);
+        dialog.setCanceledOnTouchOutside(false);
         dialog.show();
         prepareContinueButton(activity, dialog);
         fitDialogToScreen(activity, dialog, content);
