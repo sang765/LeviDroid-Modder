@@ -55,6 +55,7 @@ public class XboxLiveClient {
     private String xblToken;
     private String userHash;
     private long tokenExpireMs;
+    private String cachedAccountId;
 
     public static class XboxFriend {
         public String xuid;
@@ -250,6 +251,16 @@ public class XboxLiveClient {
             if (account == null || TextUtils.isEmpty(account.serializedAuthManager)) {
                 throw new IOException(appContext.getString(R.string.xbox_friends_sign_in_first));
             }
+            // Ensure we never reuse another account's cached session after switching.
+            if (cachedAccountId != null && !cachedAccountId.equals(account.id)) {
+                synchronized (tokenLock) {
+                    xblToken = null;
+                    userHash = null;
+                    tokenExpireMs = 0;
+                    cachedAccountId = account.id;
+                }
+            }
+            cachedAccountId = account.id;
             try {
                 JsonObject json = JsonParser.parseString(account.serializedAuthManager).getAsJsonObject();
                 BedrockAuthManager auth = BedrockAuthManager.fromJson(
