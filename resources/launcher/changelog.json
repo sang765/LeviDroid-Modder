@@ -1,14 +1,18 @@
 {
   "schemaVersion": 1,
-  "headline": "LeviLauncher Modder v1.5.27-modder.50",
-  "summary": "Adding a friend now sends a real two-way Xbox invitation the other player can accept, instead of silently following them.",
+  "headline": "LeviLauncher Modder v1.5.27-modder.51",
+  "summary": "Xbox Friends refreshes automatically on app start, logout and account switch, and never reuses another account's session.",
   "sections": [
     {
       "title": "Fixes",
       "items": [
         {
-          "text": "Send friend requests through the bulk add API so the other player actually receives an invitation.",
-          "url": "https://github.com/sang765/LeviDroid-Modder/commit/3a01e8b5a079280e46b4484ff4e612cae2e5b693"
+          "text": "Refresh the Xbox friends list on app start, logout and account switch.",
+          "url": "https://github.com/sang765/LeviDroid-Modder/commit/7c26deb"
+        },
+        {
+          "text": "Invalidate the cached Xbox session when the active account changes.",
+          "url": "https://github.com/sang765/LeviDroid-Modder/commit/7c26deb"
         }
       ]
     }
