@@ -146,9 +146,8 @@ If you want to build LeviLauncher Modder from source or contribute to developmen
 
 ---
 
-## Translations
+## Translations [![Translation status](https://hosted.weblate.org/widget/levidroid-modder/svg-badge.svg)](https://hosted.weblate.org/engage/levidroid-modder/)
 
-[![Translation status](https://hosted.weblate.org/widget/levidroid-modder/svg-badge.svg)](https://hosted.weblate.org/engage/levidroid-modder/)
 [![Languages](https://hosted.weblate.org/widget/levidroid-modder/multi-grey.svg)](https://hosted.weblate.org/engage/levidroid-modder/)
 
 Help translate LeviLauncher Modder into your language on [Hosted Weblate](https://hosted.weblate.org/projects/levidroid-modder/). English is the source language; translations are maintained per locale (`values-<lang>` resources) and ship with the next release.
