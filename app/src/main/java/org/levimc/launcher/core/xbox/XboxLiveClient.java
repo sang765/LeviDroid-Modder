@@ -154,25 +154,28 @@ public class XboxLiveClient {
         });
     }
 
-    /** Accepting an incoming request and adding a friend use the same call. */
+    /** Adding a friend and accepting a request send a real two-way invitation. */
     public void acceptRequest(String xuid, ActionCallback callback) {
-        mutate("PUT", SOCIAL_API + "/users/me/people/xuid(" + xuid + ")", callback);
+        mutate("POST", SOCIAL_API + "/bulk/users/me/people/friends/v2?method=add",
+                "{\"xuids\":[\"" + xuid + "\"]}", 3, callback);
     }
 
     /** Removing a friend and declining a request share this call. */
     public void removeFriend(String xuid, ActionCallback callback) {
-        mutate("DELETE", SOCIAL_API + "/users/me/people/xuid(" + xuid + ")", callback);
+        mutate("DELETE", SOCIAL_API + "/users/me/people/xuid(" + xuid + ")", null, 2, callback);
     }
 
-    private void mutate(String method, String url, ActionCallback callback) {
+    private void mutate(String method, String url, String body, int contract, ActionCallback callback) {
         EXECUTOR.execute(() -> {
             try {
                 ensureToken();
                 Request.Builder builder = new Request.Builder()
                         .url(url)
                         .header("Authorization", "XBL3.0 x=" + userHash + ";" + xblToken)
-                        .header("x-xbl-contract-version", "2");
-                if ("PUT".equals(method)) {
+                        .header("x-xbl-contract-version", String.valueOf(contract));
+                if (body != null) {
+                    builder.post(RequestBody.create(body, JSON));
+                } else if ("PUT".equals(method)) {
                     // Xbox rejects PUT without a request body.
                     builder.put(EMPTY_BODY);
                 } else {
