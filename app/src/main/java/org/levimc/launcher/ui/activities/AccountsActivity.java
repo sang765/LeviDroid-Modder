@@ -15,6 +15,7 @@ import android.graphics.Bitmap;
 import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.core.app.ActivityOptionsCompat;
 
 import org.levimc.launcher.R;
 import org.levimc.launcher.core.auth.MsftAccountStore;
@@ -73,6 +74,12 @@ public class AccountsActivity extends BaseActivity {
         avatarProgress = findViewById(R.id.avatar_progress);
         rightCardContainer = findViewById(R.id.right_card_container);
         applyAccountAccent();
+
+        View xboxFriendsButton = findViewById(R.id.xbox_friends_button);
+        xboxFriendsButton.setOnClickListener(v -> startActivity(
+                new Intent(this, XboxFriendsActivity.class),
+                ActivityOptionsCompat.makeCustomAnimation(this, R.anim.fade_in, R.anim.fade_out).toBundle()));
+        DynamicAnim.applyPressScale(xboxFriendsButton);
 
         loginLauncher = registerForActivityResult(new ActivityResultContracts.StartActivityForResult(), result -> {
             if (result.getResultCode() == RESULT_OK && result.getData() != null

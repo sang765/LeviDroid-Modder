@@ -56,7 +56,7 @@ public final class MsftAuthManager {
     }
 
     private static final String TAG = "MsftAuthManager";
-    private static final String GAME_VERSION = "1.21.110";
+    public static final String GAME_VERSION = "1.21.110";
     private static final long MIN_DEVICE_POLL_INTERVAL_MS = 1000L;
     private static final long SLOW_DOWN_INCREMENT_MS = 5000L;
     private static final long MAX_TRANSIENT_RETRY_DELAY_MS = 10000L;
@@ -538,7 +538,7 @@ public final class MsftAuthManager {
         }
     }
 
-    private static HttpClient createHttpClient() {
+    public static HttpClient createHttpClient() {
         String version = TextUtils.isEmpty(BuildConfig.VERSION_NAME) ? "unknown" : BuildConfig.VERSION_NAME;
         return MinecraftAuth.createHttpClient("LeviLauncher Modder/" + version + " Android");
     }

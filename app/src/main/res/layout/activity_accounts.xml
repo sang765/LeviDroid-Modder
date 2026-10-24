@@ -203,7 +203,18 @@
                         android:fontFamily="@font/misans"/>
                 </LinearLayout>
 
-
+                <Button
+                    android:id="@+id/xbox_friends_button"
+                    android:layout_width="match_parent"
+                    android:layout_height="44dp"
+                    android:layout_marginTop="16dp"
+                    android:backgroundTint="@color/surface_variant"
+                    android:text="@string/xbox_friends"
+                    android:textColor="@color/on_surface"
+                    android:textStyle="bold"
+                    android:textSize="14sp"
+                    android:textAllCaps="false"
+                    android:fontFamily="@font/misans" />
 
             </LinearLayout>
         </ScrollView>
