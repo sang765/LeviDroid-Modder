@@ -41,6 +41,7 @@ public class XboxLiveClient {
     private static final String TAG = "XboxLiveClient";
     private static final String PEOPLEHUB_API = "https://peoplehub.xboxlive.com";
     private static final String SOCIAL_API = "https://social.xboxlive.com";
+    private static final MediaType JSON = MediaType.parse("application/json");
     private static final long TOKEN_MARGIN_MS = 60_000;
 
     private static final OkHttpClient HTTP = new OkHttpClient();
