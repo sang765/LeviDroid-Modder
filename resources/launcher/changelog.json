@@ -1,39 +1,35 @@
 {
   "schemaVersion": 1,
-  "headline": "LeviLauncher Modder v1.5.27-modder.35",
-  "summary": "This release resolves an issue when installing app updates and refreshes the documentation site while staying synchronized with upstream updates.",
+  "headline": "LeviLauncher Modder v1.5.27-modder.44",
+  "summary": "Xbox Friends arrives in the launcher: see who is online, manage friend requests and add players by gamertag. Indonesian translations now load correctly.",
   "sections": [
     {
-      "title": "Improvements",
+      "title": "New",
       "items": [
         {
-          "text": "Stream APK updates directly to the package manager instead of passing a private file path.",
-          "url": "https://github.com/sang765/LeviDroid-Modder/commit/47215abac185a44cf91c84f323262cc6d5b94d03"
+          "text": "Add Xbox friends and see who is online, including who is playing Minecraft.",
+          "url": "https://github.com/sang765/LeviDroid-Modder/commit/12f8741db8ce55372536143d3e3039e784fd0061"
         },
         {
-          "text": "Migrate the documentation site to levimc-kit using Impression and Craft.",
-          "url": "https://github.com/sang765/LeviDroid-Modder/commit/0579d2ad11872977222acb57b784c75ddde91184"
+          "text": "Accept, decline and cancel friend requests from a dedicated requests tab.",
+          "url": "https://github.com/sang765/LeviDroid-Modder/commit/12f8741db8ce55372536143d3e3039e784fd0061"
         },
         {
-          "text": "Enable GitHub Pages and configure automated documentation deployment.",
-          "url": "https://github.com/sang765/LeviDroid-Modder/commit/81c2735c4ae8809fe46c9646bd8acbd5edb5134f"
+          "text": "Search for players by gamertag and add them without leaving the launcher.",
+          "url": "https://github.com/sang765/LeviDroid-Modder/commit/12f8741db8ce55372536143d3e3039e784fd0061"
         }
       ]
     },
     {
-      "title": "Under the hood",
+      "title": "Fixes",
       "items": [
         {
-          "text": "Synchronize the main branch with upstream updates while preserving fork workflows.",
-          "url": "https://github.com/sang765/LeviDroid-Modder/commit/48df0c66ede89b275919526fbc3608df2a8a08c9"
+          "text": "Load Indonesian translations by restoring the proper locale folder.",
+          "url": "https://github.com/sang765/LeviDroid-Modder/commit/e7d921bff935d2fff172076a461d83c015e5a225"
         },
         {
-          "text": "Restore R8 mapping file uploads during the release build process.",
-          "url": "https://github.com/sang765/LeviDroid-Modder/commit/a50854d0285fe78f5220de830e67039d88d551c6"
-        },
-        {
-          "text": "Improve repository synchronization workflows to automatically track upstream changes and conflicts.",
-          "url": "https://github.com/sang765/LeviDroid-Modder/commit/a4c0be58bf6811022b4d0d67b910c3a06461b7cc"
+          "text": "Keep the launcher's original Minecraft install check after syncing with upstream.",
+          "url": "https://github.com/sang765/LeviDroid-Modder/commit/670aa8c25aca6eace8265c54f655406ba898cc1e"
         }
       ]
     }
