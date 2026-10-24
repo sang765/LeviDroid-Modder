@@ -1,14 +1,14 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!-- Shape-based (not a color selector): color selectors in res/drawable crash
-     on some OEM resource implementations (MIUI). -->
 <selector xmlns:android="http://schemas.android.com/apk/res/android">
     <item android:state_pressed="true">
         <shape android:shape="rectangle">
+            <corners android:radius="8dp" />
             <solid android:color="#66BB6A" />
         </shape>
     </item>
     <item>
         <shape android:shape="rectangle">
+            <corners android:radius="8dp" />
             <solid android:color="@android:color/transparent" />
         </shape>
     </item>
