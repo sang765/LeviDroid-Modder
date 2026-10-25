@@ -202,6 +202,11 @@ class GamePackageManager private constructor(
                     Log.w(TAG, "Failed ensureReadOnly: ${e.message}")
                 }
             }
+            // Client APKs ship extra libs (mod menus) outside the manifest; keep
+            // sweeping on cache hits so a fresh install isn't needed.
+            if (version != null && !version.isInstalled) {
+                apkFiles.forEach { extractExtraLibs(it, outputDir, getDeviceAbi()) }
+            }
             return
         }
         report("Minecraft library cache miss: extracting libraries")
@@ -342,8 +347,19 @@ class GamePackageManager private constructor(
                         throw IOException("Failed to prepare native library: ${output.name}")
                     }
                 }
-                // Client/patch APKs ship extra libs (mod menus etc.) outside the
-                // known set and often strip DT_NEEDED, so sweep every entry.
+                extractExtraLibs(apkPath, outputDir, abi)
+            }
+        } catch (e: Exception) {
+            Log.w(TAG, "Failed to extract libraries from $apkPath: ${e.message}")
+        }
+    }
+
+    /** Client/patch APKs ship extra libs (mod menus etc.) outside the known set
+     * and often strip DT_NEEDED, so sweep every entry. Cheap on cache hits. */
+    private fun extractExtraLibs(apkPath: String, outputDir: File, abi: String) {
+        try {
+            ZipFile(apkPath).use { zip ->
+                val abiPath = "lib/$abi"
                 for (entry in zip.entries()) {
                     val name = entry.name
                     if (!name.startsWith("$abiPath/") || !name.endsWith(".so")) continue
@@ -354,11 +370,11 @@ class GamePackageManager private constructor(
                     zip.getInputStream(entry).use { input ->
                         copyStreamToReadOnlyFile(input, output)
                     }
-                    report("Extracted extra lib $lib from ${apkFile.name} for $abi")
+                    report("Extracted extra lib $lib from ${File(apkPath).name} for $abi")
                 }
             }
         } catch (e: Exception) {
-            Log.w(TAG, "Failed to extract libraries from $apkPath: ${e.message}")
+            Log.w(TAG, "Failed to sweep extra libs from $apkPath: ${e.message}")
         }
     }
 

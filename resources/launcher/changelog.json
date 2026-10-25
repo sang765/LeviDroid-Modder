@@ -1,13 +1,13 @@
 {
   "schemaVersion": 1,
-  "headline": "LeviLauncher Modder v1.5.27-modder.71",
-  "summary": "The transfer tool between instances can now copy or move Minecraft settings (options.txt) alongside worlds, packs and mods.",
+  "headline": "LeviLauncher Modder v1.5.27-modder.72",
+  "summary": "Client APK mod-menu libraries are now extracted even when the library cache was built by an older launcher version, so Apollon-style menus attach on the next game start without re-importing.",
   "sections": [
     {
-      "title": "Features",
+      "title": "Fixes",
       "items": [
         {
-          "text": "Copy or move MCBE settings (options.txt) between instances from Transfer content.",
+          "text": "Mod-menu libraries of imported client APKs are picked up on cached installs, not only fresh imports.",
           "url": "https://github.com/sang765/LeviDroid-Modder"
         }
       ]
