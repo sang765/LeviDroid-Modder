@@ -291,14 +291,20 @@ public class XboxLiveClient {
         try {
             ProfileResponse parsed = GSON.fromJson(
                     post(PROFILE_API + "/users/batch/profile/settings", body, 3), ProfileResponse.class);
-            if (parsed == null || parsed.profileUsers == null) return;
+            if (parsed == null || parsed.profileUsers == null) {
+                Log.i(TAG, "profile overlay: empty response for " + people.size() + " people");
+                return;
+            }
             Map<String, ProfileUser> byXuid = new HashMap<>();
             for (ProfileUser user : parsed.profileUsers) {
                 byXuid.put(user.id, user);
             }
+            int updated = 0;
+            StringBuilder changes = new StringBuilder();
             for (XboxFriend friend : people) {
                 ProfileUser user = byXuid.get(friend.xuid);
                 if (user == null || user.settings == null) continue;
+                String before = displayName(friend);
                 for (ProfileSetting setting : user.settings) {
                     if (setting.value == null) continue;
                     switch (setting.id) {
@@ -319,7 +325,14 @@ public class XboxLiveClient {
                             break;
                     }
                 }
+                String after = displayName(friend);
+                if (!before.equals(after)) {
+                    updated++;
+                    changes.append(' ').append(before).append("->").append(after);
+                }
             }
+            Log.i(TAG, "profile overlay: " + updated + "/" + people.size()
+                    + " changed from " + parsed.profileUsers.size() + " profiles" + changes);
         } catch (IOException | RuntimeException error) {
             Log.w(TAG, "profile refresh failed, keeping PeopleHub data", error);
         }
