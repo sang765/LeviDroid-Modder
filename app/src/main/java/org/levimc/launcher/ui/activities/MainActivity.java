@@ -851,13 +851,14 @@ import okhttp3.OkHttpClient;
     }
 
     private void refreshXboxFriendsCard() {
+        if (binding == null || isFinishing() || isDestroyed()) return;
         binding.xboxFriendsProgress.setVisibility(View.VISIBLE);
         binding.xboxFriendsEmptyText.setVisibility(View.GONE);
         binding.xboxFriendsListContainer.removeAllViews();
         xboxClient.fetchFriends(new XboxLiveClient.FriendsCallback() {
             @Override
             public void onFriends(List<XboxLiveClient.XboxFriend> friends) {
-                if (binding == null) return;
+                if (binding == null || isFinishing() || isDestroyed()) return;
                 binding.xboxFriendsProgress.setVisibility(View.GONE);
                 if (friends.isEmpty()) {
                     binding.xboxFriendsEmptyText.setText(R.string.xbox_friends_empty_friends);
@@ -871,7 +872,7 @@ import okhttp3.OkHttpClient;
 
             @Override
             public void onError(String message) {
-                if (binding == null) return;
+                if (binding == null || isFinishing() || isDestroyed()) return;
                 binding.xboxFriendsProgress.setVisibility(View.GONE);
                 binding.xboxFriendsEmptyText.setText(message);
                 binding.xboxFriendsEmptyText.setVisibility(View.VISIBLE);
@@ -892,6 +893,7 @@ import okhttp3.OkHttpClient;
     }
 
     private void addXboxFriendEntry(XboxLiveClient.XboxFriend friend) {
+        if (isFinishing() || isDestroyed()) return;
         int pad = (int) (3 * getResources().getDisplayMetrics().density);
         LinearLayout entry = new LinearLayout(this);
         entry.setOrientation(LinearLayout.HORIZONTAL);
@@ -904,7 +906,9 @@ import okhttp3.OkHttpClient;
         avatar.setScaleType(ImageView.ScaleType.CENTER_CROP);
         avatar.setPadding(4, 4, 4, 4);
         applyOnlineBorder(avatar, friend);
-        Glide.with(this).load(friend.displayPicRaw).circleCrop().into(avatar);
+        if (!isFinishing() && !isDestroyed()) {
+            Glide.with(this).load(friend.displayPicRaw).circleCrop().into(avatar);
+        }
 
         LinearLayout column = new LinearLayout(this);
         column.setOrientation(LinearLayout.VERTICAL);
