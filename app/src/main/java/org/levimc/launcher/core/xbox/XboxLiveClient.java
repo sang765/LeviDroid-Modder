@@ -141,7 +141,9 @@ public class XboxLiveClient {
                         PeopleResponse.class);
                 List<XboxFriend> friends = parsed != null && parsed.people != null
                         ? parsed.people : new ArrayList<>();
-                refreshProfileFields(friends);
+                if (refreshProfileFields(friends) <= 0) {
+                    refreshSocialNames(friends);
+                }
                 MAIN.post(() -> callback.onFriends(friends));
             } catch (IOException | RuntimeException error) {
                 MAIN.post(() -> callback.onError(errorMessage(error)));
@@ -177,7 +179,9 @@ public class XboxLiveClient {
                         PeopleResponse.class);
                 List<XboxFriend> list = parsed != null && parsed.people != null
                         ? parsed.people : new ArrayList<>();
-                refreshProfileFields(list);
+                if (refreshProfileFields(list) <= 0) {
+                    refreshSocialNames(list);
+                }
                 MAIN.post(() -> callback.onList(list));
             } catch (IOException | RuntimeException error) {
                 MAIN.post(() -> callback.onError(errorMessage(error)));
@@ -194,7 +198,9 @@ public class XboxLiveClient {
                         PeopleResponse.class);
                 List<XboxFriend> list = parsed != null && parsed.people != null
                         ? parsed.people : new ArrayList<>();
-                refreshProfileFields(list);
+                if (refreshProfileFields(list) <= 0) {
+                    refreshSocialNames(list);
+                }
                 MAIN.post(() -> callback.onList(list));
             } catch (IOException | RuntimeException error) {
                 MAIN.post(() -> callback.onError(errorMessage(error)));
@@ -275,17 +281,18 @@ public class XboxLiveClient {
     /**
      * PeopleHub keeps decorating people with stale gamertags after a rename, so
      * overlay the fields from the profile service the games themselves use.
-     * Best effort: on failure the PeopleHub data is kept as is.
+     * Best effort. Returns how many display names actually changed, or -1 when
+     * the call failed.
      */
-    private void refreshProfileFields(List<XboxFriend> people) {
-        if (people.isEmpty()) return;
+    private int refreshProfileFields(List<XboxFriend> people) {
+        if (people.isEmpty()) return 0;
         StringBuilder userIds = new StringBuilder();
         for (XboxFriend friend : people) {
             if (TextUtils.isEmpty(friend.xuid)) continue;
             if (userIds.length() > 0) userIds.append(',');
             userIds.append('"').append(friend.xuid).append('"');
         }
-        if (userIds.length() == 0) return;
+        if (userIds.length() == 0) return 0;
         String body = "{\"settings\":[\"Gamertag\",\"ModernGamertag\",\"ModernGamertagSuffix\","
                 + "\"UniqueModernGamertag\",\"GameDisplayPicRaw\"],\"userIds\":[" + userIds + "]}";
         try {
@@ -293,7 +300,7 @@ public class XboxLiveClient {
                     post(PROFILE_API + "/users/batch/profile/settings", body, 3), ProfileResponse.class);
             if (parsed == null || parsed.profileUsers == null) {
                 Log.i(TAG, "profile overlay: empty response for " + people.size() + " people");
-                return;
+                return 0;
             }
             Map<String, ProfileUser> byXuid = new HashMap<>();
             for (ProfileUser user : parsed.profileUsers) {
@@ -333,8 +340,52 @@ public class XboxLiveClient {
             }
             Log.i(TAG, "profile overlay: " + updated + "/" + people.size()
                     + " changed from " + parsed.profileUsers.size() + " profiles" + changes);
+            return updated;
         } catch (IOException | RuntimeException error) {
             Log.w(TAG, "profile refresh failed, keeping PeopleHub data", error);
+            return -1;
+        }
+    }
+
+    /**
+     * Last-resort name source: the legacy social service titles use, which
+     * reflects renames faster than PeopleHub. Only consulted when the profile
+     * service left the PeopleHub names untouched, so fresh profile data is
+     * never overwritten by stale social data.
+     */
+    private void refreshSocialNames(List<XboxFriend> people) {
+        if (people.isEmpty()) return;
+        try {
+            SocialResponse parsed = GSON.fromJson(
+                    get(SOCIAL_API + "/users/me/people?maxItemCount=250", 2), SocialResponse.class);
+            if (parsed == null || parsed.people == null) {
+                Log.i(TAG, "social overlay: empty response for " + people.size() + " people");
+                return;
+            }
+            Map<String, SocialPerson> byXuid = new HashMap<>();
+            for (SocialPerson person : parsed.people) {
+                byXuid.put(person.xuid, person);
+            }
+            int updated = 0;
+            StringBuilder changes = new StringBuilder();
+            for (XboxFriend friend : people) {
+                SocialPerson person = byXuid.get(friend.xuid);
+                if (person == null || TextUtils.isEmpty(person.gamertag)) continue;
+                String before = displayName(friend);
+                friend.gamertag = person.gamertag;
+                friend.modernGamertag = person.gamertag;
+                friend.modernGamertagSuffix = "";
+                friend.uniqueModernGamertag = person.gamertag;
+                String after = displayName(friend);
+                if (!before.equals(after)) {
+                    updated++;
+                    changes.append(' ').append(before).append("->").append(after);
+                }
+            }
+            Log.i(TAG, "social overlay: " + updated + "/" + people.size()
+                    + " changed from " + parsed.people.size() + " people" + changes);
+        } catch (IOException | RuntimeException error) {
+            Log.w(TAG, "social overlay failed", error);
         }
     }
 
@@ -408,6 +459,15 @@ public class XboxLiveClient {
 
     private static class PeopleResponse {
         List<XboxFriend> people;
+    }
+
+    private static class SocialResponse {
+        List<SocialPerson> people;
+    }
+
+    private static class SocialPerson {
+        String xuid;
+        String gamertag;
     }
 
     private static class ProfileResponse {
