@@ -151,7 +151,7 @@ public class XboxLiveClient {
             try {
                 ensureToken();
                 okhttp3.HttpUrl url = okhttp3.HttpUrl.parse(PEOPLEHUB_API
-                        + "/users/me/people/search/decoration/presenceDetail,preferredColor").newBuilder()
+                        + "/users/me/people/search/decoration/detail,preferredColor").newBuilder()
                         .addQueryParameter("q", query)
                         .addQueryParameter("maxItems", "25")
                         .build();

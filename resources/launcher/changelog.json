@@ -1,13 +1,13 @@
 {
   "schemaVersion": 1,
-  "headline": "LeviLauncher Modder v1.5.27-modder.66",
-  "summary": "The Xbox friends list now uses the exact friends endpoint the game itself uses, so friends who rename themselves show up under their new gamertag as soon as the game does.",
+  "headline": "LeviLauncher Modder v1.5.27-modder.67",
+  "summary": "Fixes the Add-friend search failing with HTTP 400 by restoring the decoration the PeopleHub search endpoint accepts.",
   "sections": [
     {
       "title": "Fixes",
       "items": [
         {
-          "text": "Fetch the friends list through the game's own xuid-addressed PeopleHub endpoint instead of the users/me variant that kept serving stale gamertags.",
+          "text": "Searching gamertags in the Add-friend dialog works again (HTTP 400 from PeopleHub search).",
           "url": "https://github.com/sang765/LeviDroid-Modder"
         }
       ]
