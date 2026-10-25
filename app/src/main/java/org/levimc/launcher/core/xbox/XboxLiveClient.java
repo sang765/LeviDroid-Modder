@@ -39,6 +39,7 @@ public class XboxLiveClient {
     private static final String TAG = "XboxLiveClient";
     private static final String PEOPLEHUB_API = "https://peoplehub.xboxlive.com";
     private static final String SOCIAL_API = "https://social.xboxlive.com";
+    private static final String PROFILE_API = "https://profile.xboxlive.com";
     private static final MediaType JSON = MediaType.parse("application/json");
     private static final long TOKEN_MARGIN_MS = 60_000;
 
@@ -65,6 +66,16 @@ public class XboxLiveClient {
         public String displayPicRaw;
         public String presenceState;
         public String presenceText;
+        public List<PresenceDetail> presenceDetails;
+    }
+
+    /** peoplehub rich presence rows use capitalized field names. */
+    public static class PresenceDetail {
+        public String Device;
+        public String PresenceText;
+        public String State;
+        public String TitleId;
+        public Boolean IsPrimary;
     }
 
     /** Xbox.com profile URLs use the modern gamertag with its suffix, without the '#'. */
@@ -79,14 +90,29 @@ public class XboxLiveClient {
         return slug == null ? "" : slug.replace("#", "");
     }
 
-    /** The legacy gamertag field lags behind renames; the modern one is what the game shows. */
+    /** Modern gamertag + suffix (no '#') is what the game and xbox.com display. */
+    public static String displayGamertag(String modern, String suffix, String legacy) {
+        if (!TextUtils.isEmpty(modern)) {
+            return modern + (suffix == null ? "" : suffix.replace("#", ""));
+        }
+        return legacy == null ? "" : legacy;
+    }
+
     public static String displayName(XboxFriend friend) {
         if (friend == null) return "";
-        if (!TextUtils.isEmpty(friend.modernGamertag)) {
-            String suffix = friend.modernGamertagSuffix == null ? "" : friend.modernGamertagSuffix;
-            return friend.modernGamertag + suffix.replace("#", "");
+        return displayGamertag(friend.modernGamertag, friend.modernGamertagSuffix, friend.gamertag);
+    }
+
+    /** First non-empty rich presence text, e.g. "Minecraft - Playing in Survival Mode". */
+    public static String richPresence(XboxFriend friend) {
+        if (friend == null) return null;
+        if (!TextUtils.isEmpty(friend.presenceText)) return friend.presenceText;
+        if (friend.presenceDetails != null) {
+            for (PresenceDetail detail : friend.presenceDetails) {
+                if (detail != null && !TextUtils.isEmpty(detail.PresenceText)) return detail.PresenceText;
+            }
         }
-        return friend.gamertag == null ? "" : friend.gamertag;
+        return null;
     }
 
     public interface FriendsCallback {
@@ -116,7 +142,7 @@ public class XboxLiveClient {
         if (friend == null || !"Online".equals(friend.presenceState)) {
             return context.getString(R.string.xbox_friends_offline);
         }
-        String text = friend.presenceText;
+        String text = richPresence(friend);
         if (TextUtils.isEmpty(text) || "Online".equals(text)) {
             return context.getString(R.string.xbox_friends_online);
         }
@@ -124,7 +150,11 @@ public class XboxLiveClient {
     }
 
     public static int presenceColor(Context context, XboxFriend friend) {
-        return context.getColor("Online".equals(friend != null ? friend.presenceState : null)
+        return presenceColor(context, friend != null ? friend.presenceState : null);
+    }
+
+    public static int presenceColor(Context context, String presenceState) {
+        return context.getColor("Online".equals(presenceState)
                 ? R.color.xbox_online : R.color.text_secondary);
     }
 
@@ -206,6 +236,177 @@ public class XboxLiveClient {
         mutate("DELETE", SOCIAL_API + "/users/me/people/xuid(" + xuid + ")", null, 2, callback);
     }
 
+    public interface ProfileCallback {
+        void onProfile(XboxProfile profile);
+
+        void onError(String message);
+    }
+
+    public static class XboxProfile {
+        public String xuid;
+        public String gamertag;
+        public String gamerscore;
+        public String realName;
+        public String bio;
+        public String location;
+        public String displayPicRaw;
+        public String presenceState;
+        public String presenceText;
+        public int friendsCount = -1;
+        public int followingCount;
+        public int followerCount;
+        public boolean callerFollowsTarget;
+        public boolean targetFollowsCaller;
+    }
+
+    /**
+     * Assembles everything the profile screen shows, mirroring what xbox.com
+     * renders: profile service settings, social summary counts and rich
+     * presence from the peoplehub batch endpoint the social manager uses.
+     */
+    public void fetchProfile(String xuid, ProfileCallback callback) {
+        EXECUTOR.execute(() -> {
+            try {
+                ensureToken();
+                XboxProfile profile = new XboxProfile();
+                profile.xuid = xuid;
+                loadProfileSettings(xuid, profile);
+                loadSocialSummary(xuid, profile);
+                loadPresence(xuid, profile);
+                loadFriendsCount(xuid, profile);
+                MAIN.post(() -> callback.onProfile(profile));
+            } catch (IOException | RuntimeException error) {
+                MAIN.post(() -> callback.onError(errorMessage(error)));
+            }
+        });
+    }
+
+    /** Profile service batch call; the only step that must succeed. */
+    private void loadProfileSettings(String xuid, XboxProfile profile) throws IOException {
+        String body = "{\"settings\":[\"Gamertag\",\"ModernGamertag\",\"ModernGamertagSuffix\","
+                + "\"UniqueModernGamertag\",\"Gamerscore\",\"GameDisplayPicRaw\",\"Bio\",\"Location\",\"RealName\"],"
+                + "\"userIds\":[\"" + xuid + "\"]}";
+        ProfileResponse parsed = GSON.fromJson(
+                post(PROFILE_API + "/users/batch/profile/settings", body, 3), ProfileResponse.class);
+        if (parsed == null || parsed.profileUsers == null || parsed.profileUsers.isEmpty()
+                || parsed.profileUsers.get(0).settings == null) {
+            return;
+        }
+        String modern = null;
+        String suffix = null;
+        String legacy = null;
+        String unique = null;
+        for (ProfileSetting setting : parsed.profileUsers.get(0).settings) {
+            if (setting.value == null) continue;
+            switch (setting.id) {
+                case "Gamertag":
+                    legacy = setting.value;
+                    break;
+                case "ModernGamertag":
+                    modern = setting.value;
+                    break;
+                case "ModernGamertagSuffix":
+                    suffix = setting.value;
+                    break;
+                case "UniqueModernGamertag":
+                    unique = setting.value;
+                    break;
+                case "Gamerscore":
+                    profile.gamerscore = setting.value;
+                    break;
+                case "Bio":
+                    profile.bio = setting.value;
+                    break;
+                case "Location":
+                    profile.location = setting.value;
+                    break;
+                case "RealName":
+                    profile.realName = setting.value;
+                    break;
+                case "GameDisplayPicRaw":
+                    profile.displayPicRaw = setting.value;
+                    break;
+            }
+        }
+        String display = displayGamertag(modern, suffix, legacy);
+        if (TextUtils.isEmpty(display)) display = unique;
+        if (!TextUtils.isEmpty(display)) profile.gamertag = display;
+    }
+
+    /** Social service summary: follower/following counts and the caller relationship. */
+    private void loadSocialSummary(String xuid, XboxProfile profile) {
+        try {
+            SocialSummary parsed = GSON.fromJson(
+                    get(SOCIAL_API + "/users/xuid(" + xuid + ")/summary", 2), SocialSummary.class);
+            if (parsed == null) return;
+            profile.followingCount = parsed.targetFollowingCount != null ? parsed.targetFollowingCount : 0;
+            profile.followerCount = parsed.targetFollowerCount != null ? parsed.targetFollowerCount : 0;
+            profile.callerFollowsTarget = Boolean.TRUE.equals(parsed.isCallerFollowingTarget);
+            profile.targetFollowsCaller = Boolean.TRUE.equals(parsed.isTargetFollowingCaller);
+        } catch (IOException | RuntimeException error) {
+            Log.w(TAG, "social summary failed for " + xuid, error);
+        }
+    }
+
+    /** peoplehub batch call: rich presence (and a name/pic fallback) for any xuid. */
+    private void loadPresence(String xuid, XboxProfile profile) {
+        try {
+            PeopleResponse parsed = GSON.fromJson(post(PEOPLEHUB_API
+                    + "/users/me/people/batch/decoration/presenceDetail,preferredColor",
+                    "{\"xuids\":[\"" + xuid + "\"]}", 7), PeopleResponse.class);
+            if (parsed == null || parsed.people == null || parsed.people.isEmpty()) return;
+            XboxFriend person = parsed.people.get(0);
+            profile.presenceState = person.presenceState;
+            profile.presenceText = richPresence(person);
+            if (TextUtils.isEmpty(profile.gamertag)) profile.gamertag = displayName(person);
+            if (TextUtils.isEmpty(profile.displayPicRaw)) profile.displayPicRaw = person.displayPicRaw;
+        } catch (IOException | RuntimeException error) {
+            Log.w(TAG, "profile presence failed for " + xuid, error);
+        }
+    }
+
+    /** The two-way friends count is the size of the target's peoplehub friends list. */
+    private void loadFriendsCount(String xuid, XboxProfile profile) {
+        try {
+            PeopleResponse parsed = GSON.fromJson(get(PEOPLEHUB_API
+                    + "/users/xuid(" + xuid + ")/people/friends/decoration/presenceDetail", 7),
+                    PeopleResponse.class);
+            if (parsed != null && parsed.people != null) {
+                profile.friendsCount = parsed.people.size();
+            }
+        } catch (IOException | RuntimeException error) {
+            Log.w(TAG, "friends count failed for " + xuid, error);
+        }
+    }
+
+    /** The friends list of any user; the same peoplehub call the game makes for itself. */
+    public void fetchUserFriends(String xuid, ListCallback callback) {
+        fetchPeopleList("/users/xuid(" + xuid + ")/people/friends/decoration/presenceDetail,preferredColor", callback);
+    }
+
+    /**
+     * Best-effort one-way relationship lists; peoplehub documents no
+     * caller-facing route for another user's followers/following, so the
+     * people screen falls back to the summary counts when this returns nothing.
+     */
+    public void fetchUserPeople(String xuid, String kind, ListCallback callback) {
+        fetchPeopleList("/users/xuid(" + xuid + ")/people/" + kind + "/decoration/presenceDetail,preferredColor", callback);
+    }
+
+    private void fetchPeopleList(String subpath, ListCallback callback) {
+        EXECUTOR.execute(() -> {
+            try {
+                ensureToken();
+                PeopleResponse parsed = GSON.fromJson(get(PEOPLEHUB_API + subpath, 7), PeopleResponse.class);
+                List<XboxFriend> list = parsed != null && parsed.people != null
+                        ? parsed.people : new ArrayList<>();
+                MAIN.post(() -> callback.onList(list));
+            } catch (IOException | RuntimeException error) {
+                MAIN.post(() -> callback.onError(errorMessage(error)));
+            }
+        });
+    }
+
     private void mutate(String method, String url, String body, int contract, ActionCallback callback) {
         EXECUTOR.execute(() -> {
             try {
@@ -244,6 +445,20 @@ public class XboxLiveClient {
                 .header("x-xbl-contract-version", String.valueOf(contract))
                 .header("Accept", "application/json")
                 .header("Accept-Language", "en-US")
+                .build();
+        try (Response response = HTTP.newCall(request).execute()) {
+            return readBody(response);
+        }
+    }
+
+    private String post(String url, String body, int contract) throws IOException {
+        Request request = new Request.Builder()
+                .url(url)
+                .header("Authorization", "XBL3.0 x=" + userHash + ";" + xblToken)
+                .header("x-xbl-contract-version", String.valueOf(contract))
+                .header("Accept", "application/json")
+                .header("Accept-Language", "en-US")
+                .post(RequestBody.create(body, JSON))
                 .build();
         try (Response response = HTTP.newCall(request).execute()) {
             return readBody(response);
@@ -314,5 +529,27 @@ public class XboxLiveClient {
 
     private static class PeopleResponse {
         List<XboxFriend> people;
+    }
+
+    private static class ProfileResponse {
+        List<ProfileUser> profileUsers;
+    }
+
+    private static class ProfileUser {
+        String id;
+        List<ProfileSetting> settings;
+    }
+
+    private static class ProfileSetting {
+        String id;
+        String value;
+    }
+
+    /** Shape of the social service PersonSummary response. */
+    private static class SocialSummary {
+        Integer targetFollowingCount;
+        Integer targetFollowerCount;
+        Boolean isCallerFollowingTarget;
+        Boolean isTargetFollowingCaller;
     }
 }

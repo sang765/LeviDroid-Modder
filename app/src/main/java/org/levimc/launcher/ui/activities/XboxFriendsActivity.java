@@ -1,7 +1,6 @@
 package org.levimc.launcher.ui.activities;
 
 import android.content.Intent;
-import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
@@ -68,9 +67,9 @@ public class XboxFriendsActivity extends BaseActivity {
         friendsAdapter = new XboxFriendsAdapter(new XboxFriendsAdapter.Listener() {
             @Override
             public void onViewProfile(XboxLiveClient.XboxFriend friend) {
-                Uri uri = Uri.parse("https://www.xbox.com/en-US/play/user/"
-                        + Uri.encode(XboxLiveClient.profileSlug(friend)));
-                startActivity(new Intent(Intent.ACTION_VIEW, uri));
+                Intent intent = new Intent(XboxFriendsActivity.this, XboxProfileActivity.class);
+                intent.putExtra(XboxProfileActivity.EXTRA_XUID, friend.xuid);
+                startActivity(intent);
             }
 
             @Override

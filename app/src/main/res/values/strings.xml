@@ -506,6 +506,17 @@
     <string name="xbox_friends_auth_error">Xbox Live session expired. Try again or sign in again from Accounts.</string>
     <string name="xbox_friends_rate_limited">Xbox Live is busy. Try again in a moment.</string>
     <string name="xbox_friends_failed">Could not reach Xbox Live. Try again later.</string>
+
+    <string name="xbox_profile_bio">Bio</string>
+    <string name="xbox_profile_no_bio">No bio yet</string>
+    <string name="xbox_profile_location">Location: %1$s</string>
+    <string name="xbox_profile_following">Following</string>
+    <string name="xbox_profile_followers">Followers</string>
+    <string name="xbox_profile_follows_you">Follows you</string>
+    <string name="xbox_profile_unfollow">Unfollow</string>
+    <string name="xbox_profile_error">Could not load this profile.</string>
+    <string name="xbox_profile_empty_list">Nothing to show here</string>
+    <string name="xbox_profile_filter_hint">Filter people</string>
     <string name="github_import_action">Import</string>
     <string name="github_import_choose_asset">Choose file</string>
     <string name="github_import_invalid_repo">Repository not recognized</string>

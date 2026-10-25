@@ -1,13 +1,13 @@
 {
   "schemaVersion": 1,
-  "headline": "LeviLauncher Modder v1.5.27-modder.67",
-  "summary": "Fixes the Add-friend search failing with HTTP 400 by restoring the decoration the PeopleHub search endpoint accepts.",
+  "headline": "LeviLauncher Modder v1.5.27-modder.68",
+  "summary": "New in-launcher Xbox profiles: open any player's profile to see their gamerscore, bio, location, rich presence and browse their friends, following and followers lists without leaving the launcher.",
   "sections": [
     {
-      "title": "Fixes",
+      "title": "Features",
       "items": [
         {
-          "text": "Searching gamertags in the Add-friend dialog works again (HTTP 400 from PeopleHub search).",
+          "text": "In-launcher Xbox profile screens with friends/following/followers lists, gamerscore, bio, location and rich presence.",
           "url": "https://github.com/sang765/LeviDroid-Modder"
         }
       ]
