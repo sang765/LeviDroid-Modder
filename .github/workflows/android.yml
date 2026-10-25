@@ -82,20 +82,15 @@ jobs:
         with:
           java-version: "21"
           distribution: temurin
+          cache: gradle
 
       - name: Setup Android SDK
         uses: android-actions/setup-android@v4
         with:
           packages: platform-tools
 
-      - name: Accept Licenses
-        run: yes | sdkmanager --licenses
-
       - name: Install Build Tools 35.0.0
         run: sdkmanager "build-tools;35.0.0"
-
-      - name: Verify installed SDK Packages
-        run: sdkmanager --list
 
       - name: Setup Xmake
         uses: xmake-io/github-action-setup-xmake@v1
