@@ -438,6 +438,14 @@
     <string name="xbox_friends_online_title">Trực tuyến • %1$s</string>
     <string name="xbox_friends_offline">Ngoại tuyến</string>
     <string name="xbox_friends_incoming">Đến</string>
+    <string name="xbox_friends_outgoing">Đang gửi</string>
+    <string name="xbox_friends_outgoing_section">Lời mời đang được gửi đi</string>
+    <string name="xbox_friends_cancel_request">Hủy yêu cầu kết bạn</string>
+    <string name="xbox_friends_request_cancelled">Đã hủy yêu cầu kết bạn với %1$s</string>
+    <string name="xbox_friends_outgoing">Đang gửi</string>
+    <string name="xbox_friends_outgoing_section">Lời mời đang được gửi đi</string>
+    <string name="xbox_friends_cancel_request">Hủy yêu cầu kết bạn</string>
+    <string name="xbox_friends_request_cancelled">Đã hủy yêu cầu kết bạn với %1$s</string>
     <string name="xbox_friends_accept">Chấp nhận</string>
     <string name="xbox_friends_decline">Từ chối</string>
     <string name="xbox_friends_empty_friends">Chưa có bạn bè</string>

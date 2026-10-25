@@ -38,6 +38,10 @@ public class XboxFriendsActivity extends BaseActivity {
     private boolean friendsVisible = true;
     private boolean friendsLoaded;
     private boolean requestsLoaded;
+    private boolean incomingLoaded;
+    private boolean outgoingLoaded;
+    private final List<XboxLiveClient.XboxFriend> incomingRequests = new ArrayList<>();
+    private final List<XboxLiveClient.XboxFriend> outgoingRequests = new ArrayList<>();
     private final List<XboxLiveClient.XboxFriend> knownFriends = new ArrayList<>();
 
     @Override
@@ -81,6 +85,11 @@ public class XboxFriendsActivity extends BaseActivity {
                 performAction(callback -> client.removeFriend(friend.xuid, callback),
                         getString(R.string.xbox_friends_request_declined));
             }
+            @Override
+            public void onCancelOutgoing(XboxLiveClient.XboxFriend friend) {
+                performAction(callback -> client.removeFriend(friend.xuid, callback),
+                        getString(R.string.xbox_friends_request_cancelled, friend.gamertag));
+            }
         });
         friendsList.setAdapter(friendsAdapter);
         requestsList.setAdapter(requestsAdapter);
@@ -115,6 +124,10 @@ public class XboxFriendsActivity extends BaseActivity {
     private void refreshAll() {
         friendsLoaded = false;
         requestsLoaded = false;
+        incomingLoaded = false;
+        outgoingLoaded = false;
+        incomingRequests.clear();
+        outgoingRequests.clear();
         progress.setVisibility(View.VISIBLE);
         updateEmpty();
 
@@ -139,18 +152,43 @@ public class XboxFriendsActivity extends BaseActivity {
         client.fetchIncoming(new XboxLiveClient.ListCallback() {
             @Override
             public void onList(List<XboxLiveClient.XboxFriend> incoming) {
-                requestsAdapter.submit(incoming);
-                requestsLoaded = true;
-                finishLoading();
+                incomingRequests.clear();
+                incomingRequests.addAll(incoming);
+                incomingLoaded = true;
+                tryFinishRequests();
             }
 
             @Override
             public void onError(String message) {
-                requestsLoaded = true;
-                finishLoading();
+                incomingLoaded = true;
+                tryFinishRequests();
                 Toast.makeText(XboxFriendsActivity.this, message, Toast.LENGTH_SHORT).show();
             }
         });
+
+        client.fetchOutgoing(new XboxLiveClient.ListCallback() {
+            @Override
+            public void onList(List<XboxLiveClient.XboxFriend> outgoing) {
+                outgoingRequests.clear();
+                outgoingRequests.addAll(outgoing);
+                outgoingLoaded = true;
+                tryFinishRequests();
+            }
+
+            @Override
+            public void onError(String message) {
+                outgoingLoaded = true;
+                tryFinishRequests();
+                Toast.makeText(XboxFriendsActivity.this, message, Toast.LENGTH_SHORT).show();
+            }
+        });
+    }
+
+    private void tryFinishRequests() {
+        if (!incomingLoaded || !outgoingLoaded) return;
+        requestsAdapter.submit(incomingRequests, outgoingRequests);
+        requestsLoaded = true;
+        finishLoading();
     }
 
     private void finishLoading() {

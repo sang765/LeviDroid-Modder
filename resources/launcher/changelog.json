@@ -1,26 +1,22 @@
 {
   "schemaVersion": 1,
-  "headline": "LeviLauncher Modder v1.5.27-modder.51",
-  "summary": "Xbox Friends now sends real invitations, refreshes with the active account and adapts to the theme, and the What's New dialog no longer disappears on its own.",
+  "headline": "LeviLauncher Modder v1.5.27-modder.53",
+  "summary": "Lời mời gửi đi đến người chơi khác giờ hiển thị riêng và có thể hủy, cùng các sửa Xbox Friends trước đó.",
   "sections": [
     {
       "title": "Fixes",
       "items": [
         {
+          "text": "Send friend requests through the bulk add API and show outgoing requests with a cancel action.",
+          "url": "https://github.com/sang765/LeviDroid-Modder"
+        },
+        {
+          "text": "Invalidate the cached Xbox session when the active account changes and refresh the dashboard card on startup.",
+          "url": "https://github.com/sang765/LeviDroid-Modder"
+        },
+        {
           "text": "Keep the What's New dialog open until you continue.",
-          "url": "https://github.com/sang765/LeviDroid-Modder/commit/7c26deb"
-        },
-        {
-          "text": "Send friend requests through the bulk add API so the invitation reaches the other player.",
-          "url": "https://github.com/sang765/LeviDroid-Modder/commit/3a01e8b5a079280e46b4484ff4e612cae2e5b693"
-        },
-        {
-          "text": "Invalidate the cached Xbox session when the active account changes.",
-          "url": "https://github.com/sang765/LeviDroid-Modder/commit/7c26deb"
-        },
-        {
-          "text": "Make Xbox friend colors and the online glow follow the light/AMOLED theme.",
-          "url": "https://github.com/sang765/LeviDroid-Modder/commit/c1e7e65"
+          "url": "https://github.com/sang765/LeviDroid-Modder"
         }
       ]
     }

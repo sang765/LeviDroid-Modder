@@ -482,6 +482,14 @@
     <string name="xbox_friends_online_title">Online • %1$s</string>
     <string name="xbox_friends_offline">Offline</string>
     <string name="xbox_friends_incoming">Incoming</string>
+    <string name="xbox_friends_outgoing">Sent</string>
+    <string name="xbox_friends_outgoing_section">Outgoing requests</string>
+    <string name="xbox_friends_cancel_request">Cancel request</string>
+    <string name="xbox_friends_request_cancelled">Cancelled request to %1$s</string>
+    <string name="xbox_friends_outgoing">Sent</string>
+    <string name="xbox_friends_outgoing_section">Outgoing requests</string>
+    <string name="xbox_friends_cancel_request">Cancel request</string>
+    <string name="xbox_friends_request_cancelled">Cancelled request to %1$s</string>
     <string name="xbox_friends_accept">Accept</string>
     <string name="xbox_friends_decline">Decline</string>
     <string name="xbox_friends_empty_friends">No friends yet</string>

@@ -155,6 +155,22 @@ public class XboxLiveClient {
         });
     }
 
+    public void fetchOutgoing(ListCallback callback) {
+        EXECUTOR.execute(() -> {
+            try {
+                ensureToken();
+                PeopleResponse parsed = GSON.fromJson(get(PEOPLEHUB_API
+                        + "/users/me/people/friendrequests(sent)/decoration/detail,preferredColor,follower", 7),
+                        PeopleResponse.class);
+                List<XboxFriend> list = parsed != null && parsed.people != null
+                        ? parsed.people : new ArrayList<>();
+                MAIN.post(() -> callback.onList(list));
+            } catch (IOException | RuntimeException error) {
+                MAIN.post(() -> callback.onError(errorMessage(error)));
+            }
+        });
+    }
+
     /** Adding a friend and accepting a request send a real two-way invitation. */
     public void acceptRequest(String xuid, ActionCallback callback) {
         mutate("POST", SOCIAL_API + "/bulk/users/me/people/friends/v2?method=add",
