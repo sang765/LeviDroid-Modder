@@ -72,8 +72,10 @@ Keeps the original feature set and adds changes made for this community. Compare
 - **Other update menthod** - Unlike the original version, the Modder version can also be installed via Shizuku or Root.
 - **External mods catalog** – The Mods screen links to a browsable catalog of community mods, with search, compatibility filtering against the selected Minecraft version, and one-tap installs.
 - **GitHub mod import & updates** – The Add Mod dialog imports `.so`/`.levipack` files from a repository's latest release (accepts a repository URL, `user/repo`, or `user repo`), warns when the mod targets a different Minecraft version, and remembers the source so the mod list can flag newer versions ("Version 1.0 ⬆ 1.1") and install them in one tap.
+- **Xbox Friends integration** – The Launch tab shows a friends card with avatars, online glow, and presence. The full friends screen supports search, add/remove, incoming and outgoing requests with cancel, profile links, and automatic refresh on startup, account switch, and action completion.
 - **What's new dialog** – After an update, the launcher shows a "What's new" dialog with the release notes generated for that version.
-- **Dark & AMOLED themes** – The theme mode setting offers Follow System, Light, Dark (Material You), and a pure-black AMOLED mode for OLED screens.
+- **Dark AMOLED theme** – The theme mode setting offers Follow System, Light, and a pure-black AMOLED mode for OLED screens.
+- **Minecraft-style content metadata** – Pack and mod names/descriptions render Minecraft section-sign color codes (`§`) as real colors instead of raw text.
 - **Material You app icon** – The launcher icon follows the system themed-icon color on Android 12+.
 
 ---
