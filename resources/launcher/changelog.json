@@ -1,6 +1,6 @@
 {
   "schemaVersion": 1,
-  "headline": "LeviLauncher Modder v1.5.27-modder.73",
+  "headline": "LeviLauncher Modder v1.5.27-modder.74",
   "summary": "Client APK mod-menu libraries are now extracted even on cached installs, and the transfer dialog is now scrollable to prevent buttons from being pushed off-screen on smaller devices.",
   "sections": [
     {

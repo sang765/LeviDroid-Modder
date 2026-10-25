@@ -205,7 +205,7 @@ class GamePackageManager private constructor(
             // Client APKs ship extra libs (mod menus) outside the manifest; keep
             // sweeping on cache hits so a fresh install isn't needed.
             if (version != null && !version.isInstalled) {
-                apkFiles.forEach { extractExtraLibs(it, outputDir, getDeviceAbi()) }
+                apkFiles.forEach { extractExtraLibs(it.absolutePath, outputDir, getDeviceAbi()) }
             }
             return
         }
