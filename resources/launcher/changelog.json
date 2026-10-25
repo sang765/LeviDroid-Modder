@@ -1,17 +1,13 @@
 {
   "schemaVersion": 1,
-  "headline": "LeviLauncher Modder v1.5.27-modder.60",
-  "summary": "The launcher can now start Minecraft offline using the cached Microsoft account when no validated network connection is available.",
+  "headline": "LeviLauncher Modder v1.5.27-modder.61",
+  "summary": "Returning to the launcher after Android killed a suspended Minecraft session no longer crashes; the launcher restarts cleanly instead.",
   "sections": [
     {
       "title": "Fixes",
       "items": [
         {
-          "text": "Allow offline launch when the launcher-managed Microsoft account already has cached credentials.",
-          "url": "https://github.com/sang765/LeviDroid-Modder"
-        },
-        {
-          "text": "Open Xbox friend profiles using the modern gamertag URL slug.",
+          "text": "Fix a crash when returning to the launcher after a suspended Minecraft session was killed in the background.",
           "url": "https://github.com/sang765/LeviDroid-Modder"
         }
       ]
