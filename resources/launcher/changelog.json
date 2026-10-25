@@ -1,21 +1,25 @@
 {
   "schemaVersion": 1,
-  "headline": "LeviLauncher Modder v1.5.27-modder.53",
-  "summary": "Lời mời gửi đi đến người chơi khác giờ hiển thị riêng và có thể hủy, cùng các sửa Xbox Friends trước đó.",
+  "headline": "LeviLauncher Modder v1.5.27-modder.55",
+  "summary": "Outgoing Xbox friend requests can now be listed and canceled, the dashboard friends card refreshes with the active account, and all dialog actions refresh their lists automatically.",
   "sections": [
     {
       "title": "Fixes",
       "items": [
         {
-          "text": "Send friend requests through the bulk add API and show outgoing requests with a cancel action.",
+          "text": "Show sent friend requests in the Requests tab and allow canceling them.",
           "url": "https://github.com/sang765/LeviDroid-Modder"
         },
         {
-          "text": "Invalidate the cached Xbox session when the active account changes and refresh the dashboard card on startup.",
+          "text": "Refresh the dashboard Xbox friends card when the active account changes or the app starts.",
           "url": "https://github.com/sang765/LeviDroid-Modder"
         },
         {
-          "text": "Keep the What's New dialog open until you continue.",
+          "text": "Refresh friends and request lists automatically after accept, decline, cancel, and remove actions.",
+          "url": "https://github.com/sang765/LeviDroid-Modder"
+        },
+        {
+          "text": "Apply the selected theme color to Xbox friends tabs, buttons, and dialogs.",
           "url": "https://github.com/sang765/LeviDroid-Modder"
         }
       ]
