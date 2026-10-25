@@ -451,7 +451,7 @@ public class InstancesActivity extends BaseActivity {
                         copied++;
                         if (move) src.delete();
                     } catch (Exception e) {
-                        Log.w(TAG, "Settings transfer failed: " + e.getMessage());
+                        android.util.Log.w("InstancesActivity", "Settings transfer failed: " + e.getMessage());
                     }
                 }
             }
