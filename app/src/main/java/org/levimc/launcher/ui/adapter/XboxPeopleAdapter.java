@@ -30,10 +30,12 @@ public class XboxPeopleAdapter extends RecyclerView.Adapter<XboxPeopleAdapter.Vi
     private final List<XboxLiveClient.XboxFriend> items = new ArrayList<>();
     private final List<XboxLiveClient.XboxFriend> visible = new ArrayList<>();
     private final Set<String> myFriends;
+    private final String selfXuid;
     private final Listener listener;
 
-    public XboxPeopleAdapter(Set<String> myFriends, Listener listener) {
+    public XboxPeopleAdapter(Set<String> myFriends, String selfXuid, Listener listener) {
         this.myFriends = myFriends;
+        this.selfXuid = selfXuid;
         this.listener = listener;
     }
 
@@ -81,8 +83,11 @@ public class XboxPeopleAdapter extends RecyclerView.Adapter<XboxPeopleAdapter.Vi
                 .circleCrop()
                 .into(holder.avatar);
 
-        boolean mine = friend.xuid != null && myFriends.contains(friend.xuid);
-        holder.add.setVisibility(mine ? View.GONE : View.VISIBLE);
+        // Never offer to add the viewer themselves or an existing friend.
+        boolean addable = friend.xuid != null
+                && !friend.xuid.equals(selfXuid)
+                && !myFriends.contains(friend.xuid);
+        holder.add.setVisibility(addable ? View.VISIBLE : View.GONE);
         holder.add.setOnClickListener(v -> listener.onAdd(friend));
         holder.itemView.setOnClickListener(v -> listener.onOpen(friend));
     }

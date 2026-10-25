@@ -15,6 +15,7 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import org.levimc.launcher.R;
+import org.levimc.launcher.core.auth.MsftAccountStore;
 import org.levimc.launcher.core.xbox.XboxLiveClient;
 import org.levimc.launcher.ui.adapter.XboxPeopleAdapter;
 import org.levimc.launcher.ui.animation.DynamicAnim;
@@ -73,7 +74,9 @@ public class XboxPeopleListActivity extends BaseActivity {
 
         RecyclerView list = findViewById(R.id.people_list);
         list.setLayoutManager(new LinearLayoutManager(this));
-        adapter = new XboxPeopleAdapter(myFriends, new XboxPeopleAdapter.Listener() {
+        MsftAccountStore.MsftAccount account = MsftAccountStore.getActive(this);
+        String selfXuid = account != null ? account.xuid : null;
+        adapter = new XboxPeopleAdapter(myFriends, selfXuid, new XboxPeopleAdapter.Listener() {
             @Override
             public void onOpen(XboxLiveClient.XboxFriend friend) {
                 Intent intent = new Intent(XboxPeopleListActivity.this, XboxProfileActivity.class);

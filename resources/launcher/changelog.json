@@ -1,13 +1,17 @@
 {
   "schemaVersion": 1,
-  "headline": "LeviLauncher Modder v1.5.27-modder.68",
-  "summary": "New in-launcher Xbox profiles: open any player's profile to see their gamerscore, bio, location, rich presence and browse their friends, following and followers lists without leaving the launcher.",
+  "headline": "LeviLauncher Modder v1.5.27-modder.69",
+  "summary": "Polish for the in-launcher Xbox profiles: the add-friend button no longer appears for yourself when browsing someone's lists, and all new profile strings are available in Vietnamese.",
   "sections": [
     {
-      "title": "Features",
+      "title": "Fixes",
       "items": [
         {
-          "text": "In-launcher Xbox profile screens with friends/following/followers lists, gamerscore, bio, location and rich presence.",
+          "text": "The add button in friends/following/followers lists is now hidden for your own row and for existing friends.",
+          "url": "https://github.com/sang765/LeviDroid-Modder"
+        },
+        {
+          "text": "Vietnamese translations for the new profile screens.",
           "url": "https://github.com/sang765/LeviDroid-Modder"
         }
       ]

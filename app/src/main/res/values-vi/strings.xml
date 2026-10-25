@@ -462,6 +462,17 @@
     <string name="xbox_friends_auth_error">Phiên Xbox Live đã hết hạn. Thử lại hoặc đăng nhập lại từ mục Tài khoản.</string>
     <string name="xbox_friends_rate_limited">Xbox Live đang bận. Thử lại sau ít phút.</string>
     <string name="xbox_friends_failed">Không kết nối được Xbox Live. Thử lại sau.</string>
+
+    <string name="xbox_profile_bio">Tiểu sử</string>
+    <string name="xbox_profile_no_bio">Chưa có tiểu sử</string>
+    <string name="xbox_profile_location">Vị trí: %1$s</string>
+    <string name="xbox_profile_following">Đang theo dõi</string>
+    <string name="xbox_profile_followers">Người theo dõi</string>
+    <string name="xbox_profile_follows_you">Đang theo dõi bạn</string>
+    <string name="xbox_profile_unfollow">Bỏ theo dõi</string>
+    <string name="xbox_profile_error">Không tải được profile này.</string>
+    <string name="xbox_profile_empty_list">Không có gì để hiển thị</string>
+    <string name="xbox_profile_filter_hint">Lọc danh sách</string>
     <string name="github_import_action">Nhập</string>
     <string name="github_import_choose_asset">Chọn tệp</string>
     <string name="github_import_invalid_repo">Không nhận diện được repository</string>
