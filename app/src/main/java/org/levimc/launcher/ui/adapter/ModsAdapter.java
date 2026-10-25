@@ -17,6 +17,7 @@ import com.bumptech.glide.load.resource.bitmap.RoundedCorners;
 import com.bumptech.glide.request.RequestOptions;
 
 import org.levimc.launcher.R;
+import org.levimc.launcher.util.MinecraftTextFormatter;
 import org.levimc.launcher.core.mods.Mod;
 
 import java.io.File;
@@ -87,7 +88,7 @@ public class ModsAdapter extends RecyclerView.Adapter<ModsAdapter.ModViewHolder>
     @Override
     public void onBindViewHolder(@NonNull ModViewHolder holder, int position) {
         Mod mod = mods.get(position);
-        holder.name.setText(mod.getDisplayName());
+        holder.name.setText(MinecraftTextFormatter.format(mod.getDisplayName()));
         holder.authorText.setText(holder.itemView.getContext().getString(
                 R.string.mod_author_byline,
                 fallbackText(mod.getAuthor(), holder.itemView.getContext().getString(R.string.mod_unknown_author))));

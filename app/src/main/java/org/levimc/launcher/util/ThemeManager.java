@@ -10,7 +10,6 @@ public class ThemeManager {
     public static final int MODE_FOLLOW_SYSTEM = 0;
     public static final int MODE_LIGHT = 1;
     public static final int MODE_AMOLED = 2;
-    public static final int MODE_DARK = 3;
 
     private static final String THEME_PREFS = "theme_prefs";
     private static final String THEME_MODE_KEY = "theme_mode";
@@ -45,7 +44,6 @@ public class ThemeManager {
             case MODE_LIGHT:
                 AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO);
                 break;
-            case MODE_DARK:
             case MODE_AMOLED:
                 AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES);
                 break;
@@ -61,7 +59,12 @@ public class ThemeManager {
 
     public int getCurrentMode() {
         int mode = prefs.getInt(THEME_MODE_KEY, MODE_FOLLOW_SYSTEM);
-        if (mode < MODE_FOLLOW_SYSTEM || mode > MODE_DARK) {
+        // Users upgrading from an older build may still have MODE_DARK stored.
+        if (mode == 3) {
+            mode = MODE_AMOLED;
+            prefs.edit().putInt(THEME_MODE_KEY, mode).apply();
+        }
+        if (mode < MODE_FOLLOW_SYSTEM || mode > MODE_AMOLED) {
             mode = MODE_FOLLOW_SYSTEM;
             prefs.edit().putInt(THEME_MODE_KEY, mode).apply();
         }

@@ -15,6 +15,7 @@ import com.bumptech.glide.load.resource.bitmap.RoundedCorners;
 
 import org.levimc.launcher.R;
 import org.levimc.launcher.core.content.ResourcePackItem;
+import org.levimc.launcher.util.MinecraftTextFormatter;
 import org.levimc.launcher.util.PersonalizationManager;
 import org.levimc.launcher.ui.views.ContentActionPopup;
 
@@ -132,9 +133,9 @@ public class ResourcePacksAdapter extends RecyclerView.Adapter<ResourcePacksAdap
         boolean selected = selectedPaths.contains(pathOf(pack));
         String version = pack.getVersion() == null || pack.getVersion().isEmpty() ? "?" : pack.getVersion();
 
-        holder.packName.setText(pack.getPackName());
+        holder.packName.setText(MinecraftTextFormatter.format(pack.getPackName()));
         holder.packMeta.setText(holder.itemView.getContext().getString(R.string.pack_meta, version, pack.getFormattedSize()));
-        holder.packDescription.setText(pack.getDescription());
+        holder.packDescription.setText(MinecraftTextFormatter.format(pack.getDescription()));
         holder.itemView.setActivated(selected);
         holder.exportButton.setVisibility(selectionMode ? View.GONE : View.VISIBLE);
         holder.overflowButton.setVisibility(selectionMode ? View.GONE : View.VISIBLE);
@@ -168,7 +169,7 @@ public class ResourcePacksAdapter extends RecyclerView.Adapter<ResourcePacksAdap
     }
 
     private void showOverflow(View anchor, ResourcePackItem pack) {
-        ContentActionPopup.show(anchor, pack.getPackName(), Arrays.asList(
+        ContentActionPopup.show(anchor, MinecraftTextFormatter.format(pack.getPackName()), Arrays.asList(
                 new ContentActionPopup.Action(R.drawable.ic_export, R.string.export, false, () -> {
                     if (onResourcePackActionListener != null) onResourcePackActionListener.onResourcePackExport(pack);
                 }),

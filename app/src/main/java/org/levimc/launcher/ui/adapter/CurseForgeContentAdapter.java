@@ -15,6 +15,7 @@ import com.bumptech.glide.Glide;
 
 import org.levimc.launcher.R;
 import org.levimc.launcher.core.curseforge.models.Content;
+import org.levimc.launcher.util.MinecraftTextFormatter;
 import org.levimc.launcher.util.PersonalizationManager;
 
 import java.util.ArrayList;
@@ -112,8 +113,8 @@ public class CurseForgeContentAdapter extends RecyclerView.Adapter<RecyclerView.
 
         void bind(Content content, OnContentClickListener listener) {
             Context context = itemView.getContext();
-            title.setText(content.name != null ? content.name : "");
-            description.setText(content.summary != null ? content.summary : "");
+            title.setText(MinecraftTextFormatter.format(content.name != null ? content.name : ""));
+            description.setText(MinecraftTextFormatter.format(content.summary != null ? content.summary : ""));
             description.setVisibility(content.summary == null || content.summary.isEmpty() ? View.GONE : View.VISIBLE);
 
             if (content.authors != null && !content.authors.isEmpty() && content.authors.get(0) != null) {

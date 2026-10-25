@@ -16,6 +16,7 @@ import com.bumptech.glide.Glide;
 import com.google.android.material.card.MaterialCardView;
 
 import org.levimc.launcher.R;
+import org.levimc.launcher.util.MinecraftTextFormatter;
 import org.levimc.launcher.core.modcatalog.ModCatalog;
 import org.levimc.launcher.core.mods.Mod;
 import org.levimc.launcher.ui.animation.DynamicAnim;
@@ -79,9 +80,9 @@ public final class ExternalModsAdapter extends RecyclerView.Adapter<ExternalMods
         boolean isBusy = mod.id != null && mod.id.equals(busyModId);
         String installedVersion = installedVersion(mod);
 
-        holder.name.setText(mod.name);
+        holder.name.setText(MinecraftTextFormatter.format(mod.name));
         holder.author.setText(holder.itemView.getContext().getString(R.string.external_mods_by_author, mod.author));
-        holder.description.setText(mod.description);
+        holder.description.setText(MinecraftTextFormatter.format(mod.description));
         holder.version.setText(release == null ? "" : holder.itemView.getContext().getString(
                 R.string.external_mods_version, release.version));
         holder.versions.setText(release == null ? "" : holder.itemView.getContext().getString(
