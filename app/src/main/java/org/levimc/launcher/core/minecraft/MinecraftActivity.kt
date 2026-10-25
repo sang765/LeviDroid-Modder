@@ -105,7 +105,16 @@ class MinecraftActivity : MainActivity(), PojavControlsHost {
         if (savedInstanceState != null) {
             trace.mark("MinecraftActivity finishing restored instance")
             gameRuntimeStarted = true
-            super.onCreate(null)
+            // Process-death recreation skips runtime preparation, so
+            // GameActivity.onCreate fails to resolve initializeNativeCode.
+            try {
+                super.onCreate(null)
+            } catch (throwable: Throwable) {
+                trace.error("MinecraftActivity restored instance unavailable", formatLaunchFailure(throwable))
+                persistLaunchFailure("restored instance unavailable", throwable)
+                returnToLauncherAfterLaunchFailure()
+                return
+            }
             finish()
             return
         }
