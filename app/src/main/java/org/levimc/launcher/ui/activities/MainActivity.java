@@ -125,6 +125,7 @@ import okhttp3.OkHttpClient;
     private boolean launcherInitialized;
     private boolean postEulaFlowRunning;
     private XboxLiveClient xboxClient;
+    private String xboxFriendsAccountId;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -715,8 +716,11 @@ import okhttp3.OkHttpClient;
         if (binding != null && versionManager != null) {
             binding.launchButton.setEnabled(true);
         }
-        if (binding != null && xboxClient != null) {
-            refreshXboxFriendsCard();
+        if (binding != null) {
+            syncXboxFriendsCardAccount();
+            if (xboxClient != null) {
+                refreshXboxFriendsCard();
+            }
         }
     }
 
@@ -837,6 +841,8 @@ import okhttp3.OkHttpClient;
 
     private void initXboxFriendsCard() {
         xboxClient = new XboxLiveClient(this);
+        MsftAccountStore.MsftAccount active = getActiveAccount();
+        xboxFriendsAccountId = active != null ? active.id : null;
         View.OnClickListener openFriends = v -> startActivity(
                 new Intent(this, XboxFriendsActivity.class),
                 ActivityOptionsCompat.makeCustomAnimation(this, R.anim.fade_in, R.anim.fade_out).toBundle());
@@ -871,6 +877,18 @@ import okhttp3.OkHttpClient;
                 binding.xboxFriendsEmptyText.setVisibility(View.VISIBLE);
             }
         });
+    }
+
+    private void syncXboxFriendsCardAccount() {
+        if (binding == null) return;
+        MsftAccountStore.MsftAccount active = getActiveAccount();
+        String activeId = active != null ? active.id : null;
+        boolean accountChanged = !java.util.Objects.equals(xboxFriendsAccountId, activeId);
+        boolean clientMissing = xboxClient == null;
+        if (accountChanged || clientMissing) {
+            xboxFriendsAccountId = activeId;
+            xboxClient = new XboxLiveClient(this);
+        }
     }
 
     private void addXboxFriendEntry(XboxLiveClient.XboxFriend friend) {

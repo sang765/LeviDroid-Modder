@@ -3,6 +3,8 @@ package org.levimc.launcher.ui.activities;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Looper;
 import android.text.TextUtils;
 import android.view.View;
 import android.widget.Button;
@@ -13,6 +15,7 @@ import android.widget.Toast;
 
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
+import androidx.core.content.ContextCompat;
 
 import org.levimc.launcher.R;
 import org.levimc.launcher.core.auth.MsftAccountStore;
@@ -21,6 +24,7 @@ import org.levimc.launcher.ui.adapter.XboxFriendsAdapter;
 import org.levimc.launcher.ui.adapter.XboxRequestsAdapter;
 import org.levimc.launcher.ui.adapter.XboxSearchAdapter;
 import org.levimc.launcher.ui.animation.DynamicAnim;
+import org.levimc.launcher.util.PersonalizationManager;
 import org.levimc.launcher.ui.dialogs.CustomAlertDialog;
 
 import java.util.ArrayList;
@@ -48,6 +52,7 @@ public class XboxFriendsActivity extends BaseActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_xbox_friends);
+        new PersonalizationManager(this).applyAccentToView(findViewById(android.R.id.content), this);
 
         client = new XboxLiveClient(this);
         tabFriends = findViewById(R.id.tab_friends);
@@ -100,6 +105,7 @@ public class XboxFriendsActivity extends BaseActivity {
         View addButton = findViewById(R.id.add_friend_button);
         addButton.setOnClickListener(v -> showSearchDialog());
         DynamicAnim.applyPressScale(addButton);
+        addButton.setBackgroundTintList(android.content.res.ColorStateList.valueOf(new PersonalizationManager(this).getAccentColor()));
         View refreshButton = findViewById(R.id.refresh_button);
         refreshButton.setOnClickListener(v -> refreshAll());
         DynamicAnim.applyPressScale(refreshButton);
@@ -118,6 +124,19 @@ public class XboxFriendsActivity extends BaseActivity {
         tabRequests.setTextColor(getColor(friends ? R.color.text_secondary : R.color.on_primary));
         findViewById(R.id.friends_list).setVisibility(friends ? View.VISIBLE : View.GONE);
         findViewById(R.id.requests_list).setVisibility(friends ? View.GONE : View.VISIBLE);
+        int accent = new PersonalizationManager(this).getAccentColor();
+        android.graphics.drawable.Drawable friendsTabBg = tabFriends.getBackground();
+        if (friendsTabBg instanceof android.graphics.drawable.GradientDrawable) {
+            ((android.graphics.drawable.GradientDrawable) friendsTabBg).setColor(friends ? accent
+                    : ContextCompat.getColor(this, R.color.surface_variant));
+        }
+        android.graphics.drawable.Drawable requestsTabBg = tabRequests.getBackground();
+        if (requestsTabBg instanceof android.graphics.drawable.GradientDrawable) {
+            ((android.graphics.drawable.GradientDrawable) requestsTabBg).setColor(friends
+                    ? ContextCompat.getColor(this, R.color.surface_variant) : accent);
+        }
+        tabFriends.setTextColor(getColor(friends ? android.R.color.white : R.color.text_secondary));
+        tabRequests.setTextColor(getColor(friends ? R.color.text_secondary : android.R.color.white));
         updateEmpty();
     }
 
@@ -217,6 +236,8 @@ public class XboxFriendsActivity extends BaseActivity {
             public void onDone() {
                 Toast.makeText(XboxFriendsActivity.this, doneMessage, Toast.LENGTH_SHORT).show();
                 refreshAll();
+                // Xbox backend results can lag slightly after friend mutations.
+                new Handler(Looper.getMainLooper()).postDelayed(XboxFriendsActivity.this::refreshAll, 900L);
             }
 
             @Override
@@ -233,15 +254,18 @@ public class XboxFriendsActivity extends BaseActivity {
         results.setLayoutManager(new LinearLayoutManager(this));
         XboxSearchAdapter searchAdapter = new XboxSearchAdapter(friend -> confirmAdd(friend));
         results.setAdapter(searchAdapter);
-        new CustomAlertDialog(this)
+        CustomAlertDialog searchDialog = new CustomAlertDialog(this)
                 .setTitleText(getString(R.string.xbox_friends_add))
                 .setCustomView(content)
                 .setPositiveButton(null, null)
-                .setNegativeButton(getString(R.string.dialog_negative_cancel), null)
-                .show();
+                .setNegativeButton(getString(R.string.dialog_negative_cancel), null);
+        searchDialog.show();
         Button searchButton = content.findViewById(R.id.xbox_search_button);
+        int accent = new PersonalizationManager(this).getAccentColor();
+        searchButton.setBackgroundTintList(android.content.res.ColorStateList.valueOf(accent));
         searchButton.setOnClickListener(v -> doSearch(input.getText().toString(), searchAdapter));
         DynamicAnim.applyPressScale(searchButton);
+        new PersonalizationManager(this).applyAccentToView(content, this);
     }
 
     private void doSearch(String query, XboxSearchAdapter searchAdapter) {
