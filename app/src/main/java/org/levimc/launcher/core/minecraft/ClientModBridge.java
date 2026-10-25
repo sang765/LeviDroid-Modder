@@ -1,6 +1,7 @@
 package org.levimc.launcher.core.minecraft;
 
 import android.content.Context;
+import android.os.Build;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.FrameLayout;
@@ -31,16 +32,23 @@ public final class ClientModBridge {
     /** Attaches the imported APK's menu overlay view, if it ships one. */
     public static void attach(MinecraftActivity activity) {
         try {
-            File nativeLibDir = MinecraftLauncher.getRuntimeLibAbiDir(activity);
-            List<File> apks = collectApks(activity);
-            if (apks.isEmpty() || nativeLibDir == null || !nativeLibDir.isDirectory()) {
+            String versionDirPath = activity.getIntent().getStringExtra("MC_PATH");
+            String profileId = activity.getIntent()
+                    .getStringExtra(MinecraftLauncher.EXTRA_STORAGE_PROFILE_ID);
+            if (versionDirPath == null || versionDirPath.isEmpty() || profileId == null) {
                 return;
             }
-            Class<?> viewClass = findOverlayViewClass(apks, activity, nativeLibDir);
+            File versionDir = new File(versionDirPath);
+            List<File> apks = collectApks(versionDir);
+            File libDir = runtimeLibDir(activity, profileId);
+            if (apks.isEmpty() || libDir == null || !libDir.isDirectory()) {
+                return;
+            }
+            Class<?> viewClass = findOverlayViewClass(apks, activity);
             if (viewClass == null) {
                 return;
             }
-            loadExtraLibs(nativeLibDir);
+            loadExtraLibs(libDir);
             View overlay = createOverlay(activity, viewClass);
             if (overlay == null) {
                 return;
@@ -55,35 +63,35 @@ public final class ClientModBridge {
         }
     }
 
-    private static List<File> collectApks(MinecraftActivity activity) {
+    private static File runtimeLibDir(MinecraftActivity activity, String profileId) {
+        String abi = null;
+        for (String candidate : Build.SUPPORTED_ABIS) {
+            if (candidate.contains("arm64-v8a") || candidate.contains("armeabi-v7a")
+                    || candidate.contains("x86_64") || candidate.contains("x86")) {
+                abi = candidate;
+                break;
+            }
+        }
+        if (abi == null) return null;
+        File dir = MinecraftLauncher.getRuntimeLibAbiDir(activity, profileId, abi);
+        return dir != null && dir.isDirectory() ? dir : null;
+    }
+
+    private static List<File> collectApks(File versionDir) {
         List<File> apks = new ArrayList<>();
-        File root = activity.getFilesDir().getParentFile();
-        scanApks(root, apks, 0);
+        File base = new File(versionDir, "base.apk.levi");
+        if (base.isFile()) apks.add(base);
+        File[] splits = new File(versionDir, "splits").listFiles();
+        if (splits != null) {
+            for (File split : splits) {
+                if (split.isFile() && split.getName().endsWith(".apk.levi")) apks.add(split);
+            }
+        }
         return apks;
     }
 
-    private static void scanApks(File dir, List<File> out, int depth) {
-        if (dir == null || depth > 4 || !dir.isDirectory()) return;
-        File[] children = dir.listFiles();
-        if (children == null) return;
-        for (File child : children) {
-            String name = child.getName();
-            if (child.isFile() && (name.equals("base.apk.levi")
-                    || (name.endsWith(".apk.levi") && !name.equals("base.apk.levi")))) {
-                out.add(child);
-            } else if (child.isDirectory() && !name.equals("splits")) {
-                scanApks(child, out, depth + 1);
-            } else if (child.isDirectory()) {
-                File[] splits = child.listFiles();
-                if (splits != null) for (File split : splits) {
-                    if (split.isFile() && split.getName().endsWith(".apk.levi")) out.add(split);
-                }
-            }
-        }
-    }
-
     /** Finds a GLES3JNIView-style overlay class in the APK's dex. */
-    private static Class<?> findOverlayViewClass(List<File> apks, Context context, File nativeLibDir) throws Exception {
+    private static Class<?> findOverlayViewClass(List<File> apks, Context context) throws Exception {
         StringBuilder searchPaths = new StringBuilder();
         for (File apk : apks) searchPaths.append(File.pathSeparatorChar).append(apk.getAbsolutePath());
         DexClassLoader loader = new DexClassLoader(
