@@ -1,17 +1,13 @@
 {
   "schemaVersion": 1,
-  "headline": "LeviLauncher Modder v1.5.27-modder.69",
-  "summary": "Polish for the in-launcher Xbox profiles: the add-friend button no longer appears for yourself when browsing someone's lists, and all new profile strings are available in Vietnamese.",
+  "headline": "LeviLauncher Modder v1.5.27-modder.70",
+  "summary": "Client APKs with a built-in mod menu (Sigma/Apollon-style ImGui clients) now show their menu when run through the launcher: the client's extra native library and its overlay view are loaded from the imported APK.",
   "sections": [
     {
-      "title": "Fixes",
+      "title": "Features",
       "items": [
         {
-          "text": "The add button in friends/following/followers lists is now hidden for your own row and for existing friends.",
-          "url": "https://github.com/sang765/LeviDroid-Modder"
-        },
-        {
-          "text": "Vietnamese translations for the new profile screens.",
+          "text": "Mod menus of imported client APKs (GLES3JNIView-style ImGui overlays) now load inside the launcher.",
           "url": "https://github.com/sang765/LeviDroid-Modder"
         }
       ]

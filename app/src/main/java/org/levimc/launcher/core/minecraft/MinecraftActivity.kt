@@ -134,6 +134,7 @@ class MinecraftActivity : MainActivity(), PojavControlsHost {
         trace.mark("Native mod enable started")
         ModManager.enableLoadedMods()
         trace.mark("Native mod enable finished")
+        ClientModBridge.attach(this)
         setLeviKeepRunningInBackground(FeatureSettings.getInstance().isForegroundServiceEnabled())
         trace.mark("Mojang MainActivity super.onCreate starting")
         try {

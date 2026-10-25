@@ -342,6 +342,20 @@ class GamePackageManager private constructor(
                         throw IOException("Failed to prepare native library: ${output.name}")
                     }
                 }
+                // Client/patch APKs ship extra libs (mod menus etc.) outside the
+                // known set and often strip DT_NEEDED, so sweep every entry.
+                for (entry in zip.entries()) {
+                    val name = entry.name
+                    if (!name.startsWith("$abiPath/") || !name.endsWith(".so")) continue
+                    val lib = name.substringAfterLast('/')
+                    if (lib in extractableLibs) continue
+                    val output = File(outputDir, lib)
+                    if (output.exists() && output.length() == entry.size) continue
+                    zip.getInputStream(entry).use { input ->
+                        copyStreamToReadOnlyFile(input, output)
+                    }
+                    report("Extracted extra lib $lib from ${apkFile.name} for $abi")
+                }
             }
         } catch (e: Exception) {
             Log.w(TAG, "Failed to extract libraries from $apkPath: ${e.message}")
