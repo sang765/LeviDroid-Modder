@@ -1,10 +1,13 @@
 package org.levimc.launcher.core.minecraft
 
 import android.content.Context
+import android.net.ConnectivityManager
+import android.net.NetworkCapabilities
 import android.content.Intent
 import android.content.pm.ApplicationInfo
 import android.os.Build
 import org.levimc.launcher.R
+import org.levimc.launcher.core.auth.MsftAccountStore
 import org.levimc.launcher.core.auth.MsftAuthManager
 import org.levimc.launcher.core.mods.Mod
 import org.levimc.launcher.core.mods.ModManager
@@ -43,6 +46,13 @@ object MinecraftRuntimePreparer {
         override fun onLog(message: String) = Unit
     }
 
+    private fun isNetworkAvailable(context: Context): Boolean {
+        val manager = context.getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
+        val network = manager.activeNetwork ?: return false
+        val capabilities = manager.getNetworkCapabilities(network) ?: return false
+        return capabilities.hasCapability(NetworkCapabilities.NET_CAPABILITY_VALIDATED)
+    }
+
     fun prepare(
         context: Context,
         launchIntent: Intent,
@@ -57,16 +67,23 @@ object MinecraftRuntimePreparer {
         trace.mark("Minecraft version resolved", "${version.directoryName} ${version.versionCode}")
 
         if (FeatureSettings.getInstance().isLauncherManagedMcLoginEnabled) {
-            listener.onProgress(8, context.getString(R.string.ms_login_auth_xbox_device))
-            listener.onLog("Preparing Microsoft account")
-            try {
-                MsftAuthManager.prepareActiveAccount(context.applicationContext)
-                trace.mark("Microsoft credentials prepared")
-            } catch (error: Exception) {
-                throw IllegalStateException(
-                    context.getString(R.string.ms_login_failed_detail, MsftAuthManager.describeError(error)),
-                    error
-                )
+            val activeAccount = MsftAccountStore.getActive(context.applicationContext)
+            val hasCachedAccount = activeAccount?.serializedAuthManager?.isNotEmpty() == true
+            if (hasCachedAccount && !isNetworkAvailable(context.applicationContext)) {
+                listener.onLog("Offline mode: using the cached Microsoft account")
+                trace.mark("Microsoft credentials reused from cache", "offline")
+            } else {
+                listener.onProgress(8, context.getString(R.string.ms_login_auth_xbox_device))
+                listener.onLog("Preparing Microsoft account")
+                try {
+                    MsftAuthManager.prepareActiveAccount(context.applicationContext)
+                    trace.mark("Microsoft credentials prepared")
+                } catch (error: Exception) {
+                    throw IllegalStateException(
+                        context.getString(R.string.ms_login_failed_detail, MsftAuthManager.describeError(error)),
+                        error
+                    )
+                }
             }
         }
 

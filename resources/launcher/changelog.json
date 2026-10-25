@@ -1,33 +1,17 @@
 {
   "schemaVersion": 1,
-  "headline": "LeviLauncher Modder v1.5.27-modder.57",
-  "summary": "Outgoing Xbox friend requests can now be listed and canceled, friend profiles open correctly, Minecraft-style content metadata renders its colors, and the theme picker keeps only Dark AMOLED.",
+  "headline": "LeviLauncher Modder v1.5.27-modder.60",
+  "summary": "The launcher can now start Minecraft offline using the cached Microsoft account when no validated network connection is available.",
   "sections": [
     {
       "title": "Fixes",
       "items": [
         {
-          "text": "Show sent friend requests in the Requests tab and allow canceling them.",
+          "text": "Allow offline launch when the launcher-managed Microsoft account already has cached credentials.",
           "url": "https://github.com/sang765/LeviDroid-Modder"
         },
         {
-          "text": "Refresh the dashboard Xbox friends card when the active account changes or the app starts.",
-          "url": "https://github.com/sang765/LeviDroid-Modder"
-        },
-        {
-          "text": "Refresh friends and request lists automatically after accept, decline, cancel, and remove actions.",
-          "url": "https://github.com/sang765/LeviDroid-Modder"
-        },
-        {
-          "text": "Open Xbox friend profiles through the account.xbox.com profile page.",
-          "url": "https://github.com/sang765/LeviDroid-Modder"
-        },
-        {
-          "text": "Apply the selected theme color to Xbox friends tabs, buttons, and dialogs.",
-          "url": "https://github.com/sang765/LeviDroid-Modder"
-        },
-        {
-          "text": "Render Minecraft section-sign color codes in pack and mod names and descriptions.",
+          "text": "Open Xbox friend profiles using the modern gamertag URL slug.",
           "url": "https://github.com/sang765/LeviDroid-Modder"
         }
       ]
