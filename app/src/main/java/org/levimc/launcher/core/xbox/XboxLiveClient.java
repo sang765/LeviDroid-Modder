@@ -19,7 +19,9 @@ import org.levimc.launcher.core.auth.MsftAuthManager;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
@@ -41,6 +43,7 @@ public class XboxLiveClient {
     private static final String TAG = "XboxLiveClient";
     private static final String PEOPLEHUB_API = "https://peoplehub.xboxlive.com";
     private static final String SOCIAL_API = "https://social.xboxlive.com";
+    private static final String PROFILE_API = "https://profile.xboxlive.com";
     private static final MediaType JSON = MediaType.parse("application/json");
     private static final long TOKEN_MARGIN_MS = 60_000;
 
@@ -138,6 +141,7 @@ public class XboxLiveClient {
                         PeopleResponse.class);
                 List<XboxFriend> friends = parsed != null && parsed.people != null
                         ? parsed.people : new ArrayList<>();
+                refreshProfileFields(friends);
                 MAIN.post(() -> callback.onFriends(friends));
             } catch (IOException | RuntimeException error) {
                 MAIN.post(() -> callback.onError(errorMessage(error)));
@@ -173,6 +177,7 @@ public class XboxLiveClient {
                         PeopleResponse.class);
                 List<XboxFriend> list = parsed != null && parsed.people != null
                         ? parsed.people : new ArrayList<>();
+                refreshProfileFields(list);
                 MAIN.post(() -> callback.onList(list));
             } catch (IOException | RuntimeException error) {
                 MAIN.post(() -> callback.onError(errorMessage(error)));
@@ -189,6 +194,7 @@ public class XboxLiveClient {
                         PeopleResponse.class);
                 List<XboxFriend> list = parsed != null && parsed.people != null
                         ? parsed.people : new ArrayList<>();
+                refreshProfileFields(list);
                 MAIN.post(() -> callback.onList(list));
             } catch (IOException | RuntimeException error) {
                 MAIN.post(() -> callback.onError(errorMessage(error)));
@@ -250,6 +256,72 @@ public class XboxLiveClient {
                 .build();
         try (Response response = HTTP.newCall(request).execute()) {
             return readBody(response);
+        }
+    }
+
+    private String post(String url, String body, int contract) throws IOException {
+        Request request = new Request.Builder()
+                .url(url)
+                .header("Authorization", "XBL3.0 x=" + userHash + ";" + xblToken)
+                .header("x-xbl-contract-version", String.valueOf(contract))
+                .header("Accept", "application/json")
+                .post(RequestBody.create(body, JSON))
+                .build();
+        try (Response response = HTTP.newCall(request).execute()) {
+            return readBody(response);
+        }
+    }
+
+    /**
+     * PeopleHub keeps decorating people with stale gamertags after a rename, so
+     * overlay the fields from the profile service the games themselves use.
+     * Best effort: on failure the PeopleHub data is kept as is.
+     */
+    private void refreshProfileFields(List<XboxFriend> people) {
+        if (people.isEmpty()) return;
+        StringBuilder userIds = new StringBuilder();
+        for (XboxFriend friend : people) {
+            if (TextUtils.isEmpty(friend.xuid)) continue;
+            if (userIds.length() > 0) userIds.append(',');
+            userIds.append('"').append(friend.xuid).append('"');
+        }
+        if (userIds.length() == 0) return;
+        String body = "{\"settings\":[\"Gamertag\",\"ModernGamertag\",\"ModernGamertagSuffix\","
+                + "\"UniqueModernGamertag\",\"GameDisplayPicRaw\"],\"userIds\":[" + userIds + "]}";
+        try {
+            ProfileResponse parsed = GSON.fromJson(
+                    post(PROFILE_API + "/users/batch/profile/settings", body, 3), ProfileResponse.class);
+            if (parsed == null || parsed.profileUsers == null) return;
+            Map<String, ProfileUser> byXuid = new HashMap<>();
+            for (ProfileUser user : parsed.profileUsers) {
+                byXuid.put(user.id, user);
+            }
+            for (XboxFriend friend : people) {
+                ProfileUser user = byXuid.get(friend.xuid);
+                if (user == null || user.settings == null) continue;
+                for (ProfileSetting setting : user.settings) {
+                    if (setting.value == null) continue;
+                    switch (setting.id) {
+                        case "Gamertag":
+                            friend.gamertag = setting.value;
+                            break;
+                        case "ModernGamertag":
+                            friend.modernGamertag = setting.value;
+                            break;
+                        case "ModernGamertagSuffix":
+                            friend.modernGamertagSuffix = setting.value;
+                            break;
+                        case "UniqueModernGamertag":
+                            friend.uniqueModernGamertag = setting.value;
+                            break;
+                        case "GameDisplayPicRaw":
+                            friend.displayPicRaw = setting.value;
+                            break;
+                    }
+                }
+            }
+        } catch (IOException | RuntimeException error) {
+            Log.w(TAG, "profile refresh failed, keeping PeopleHub data", error);
         }
     }
 
@@ -323,5 +395,19 @@ public class XboxLiveClient {
 
     private static class PeopleResponse {
         List<XboxFriend> people;
+    }
+
+    private static class ProfileResponse {
+        List<ProfileUser> profileUsers;
+    }
+
+    private static class ProfileUser {
+        String id;
+        List<ProfileSetting> settings;
+    }
+
+    private static class ProfileSetting {
+        String id;
+        String value;
     }
 }
