@@ -118,7 +118,7 @@ public class XboxRequestsAdapter extends RecyclerView.Adapter<RecyclerView.ViewH
         }
         RequestHolder requestHolder = (RequestHolder) holder;
         XboxLiveClient.XboxFriend friend = item.friend;
-        requestHolder.gamertag.setText(friend.gamertag);
+        requestHolder.gamertag.setText(XboxLiveClient.displayName(friend));
         Glide.with(requestHolder.avatar)
                 .load(friend.displayPicRaw)
                 .circleCrop()

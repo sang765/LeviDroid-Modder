@@ -914,7 +914,7 @@ import okhttp3.OkHttpClient;
         column.setOrientation(LinearLayout.VERTICAL);
 
         TextView gamertag = new TextView(this);
-        gamertag.setText(friend.gamertag);
+        gamertag.setText(XboxLiveClient.displayName(friend));
         gamertag.setTextSize(android.util.TypedValue.COMPLEX_UNIT_SP, 12);
         gamertag.setTextColor(ContextCompat.getColor(this, R.color.on_surface));
         gamertag.setTypeface(getResources().getFont(R.font.misans));

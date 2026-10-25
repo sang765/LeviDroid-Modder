@@ -82,7 +82,7 @@ public class XboxFriendsActivity extends BaseActivity {
             @Override
             public void onAccept(XboxLiveClient.XboxFriend friend) {
                 performAction(callback -> client.acceptRequest(friend.xuid, callback),
-                        getString(R.string.xbox_friends_request_accepted, friend.gamertag));
+                        getString(R.string.xbox_friends_request_accepted, XboxLiveClient.displayName(friend)));
             }
 
             @Override
@@ -93,7 +93,7 @@ public class XboxFriendsActivity extends BaseActivity {
             @Override
             public void onCancelOutgoing(XboxLiveClient.XboxFriend friend) {
                 performAction(callback -> client.removeFriend(friend.xuid, callback),
-                        getString(R.string.xbox_friends_request_cancelled, friend.gamertag));
+                        getString(R.string.xbox_friends_request_cancelled, XboxLiveClient.displayName(friend)));
             }
         });
         friendsList.setAdapter(friendsAdapter);
@@ -314,10 +314,10 @@ public class XboxFriendsActivity extends BaseActivity {
     private void confirmAdd(XboxLiveClient.XboxFriend friend) {
         new CustomAlertDialog(this)
                 .setTitleText(getString(R.string.xbox_friends_add))
-                .setMessage(getString(R.string.xbox_friends_add_confirm, friend.gamertag))
+                .setMessage(getString(R.string.xbox_friends_add_confirm, XboxLiveClient.displayName(friend)))
                 .setPositiveButton(getString(R.string.xbox_friends_add), v ->
                         performAction(callback -> client.acceptRequest(friend.xuid, callback),
-                                getString(R.string.xbox_friends_added, friend.gamertag)))
+                                getString(R.string.xbox_friends_added, XboxLiveClient.displayName(friend))))
                 .setNegativeButton(getString(R.string.dialog_negative_cancel), null)
                 .show();
     }
@@ -325,10 +325,10 @@ public class XboxFriendsActivity extends BaseActivity {
     private void showRemoveDialog(XboxLiveClient.XboxFriend friend) {
         new CustomAlertDialog(this)
                 .setTitleText(getString(R.string.xbox_friends_remove_title))
-                .setMessage(getString(R.string.xbox_friends_remove_confirm, friend.gamertag))
+                .setMessage(getString(R.string.xbox_friends_remove_confirm, XboxLiveClient.displayName(friend)))
                 .setPositiveButton(getString(R.string.xbox_friends_remove), v ->
                         performAction(callback -> client.removeFriend(friend.xuid, callback),
-                                getString(R.string.xbox_friends_removed, friend.gamertag)))
+                                getString(R.string.xbox_friends_removed, XboxLiveClient.displayName(friend))))
                 .setNegativeButton(getString(R.string.dialog_negative_cancel), null)
                 .show();
     }

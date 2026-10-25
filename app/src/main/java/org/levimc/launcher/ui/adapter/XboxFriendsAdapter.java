@@ -54,7 +54,7 @@ public class XboxFriendsAdapter extends RecyclerView.Adapter<XboxFriendsAdapter.
     @Override
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
         XboxLiveClient.XboxFriend friend = items.get(position);
-        holder.gamertag.setText(friend.gamertag);
+        holder.gamertag.setText(XboxLiveClient.displayName(friend));
         holder.presence.setText(XboxLiveClient.presenceLabel(holder.itemView.getContext(), friend));
         holder.presence.setTextColor(XboxLiveClient.presenceColor(holder.itemView.getContext(), friend));
         applyOnlineBorder(holder.avatar, friend);

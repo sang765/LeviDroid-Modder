@@ -80,6 +80,16 @@ public class XboxLiveClient {
         return slug == null ? "" : slug.replace("#", "");
     }
 
+    /** The legacy gamertag field lags behind renames; the game and xbox.com show the modern one. */
+    public static String displayName(XboxFriend friend) {
+        if (friend == null) return "";
+        if (!TextUtils.isEmpty(friend.modernGamertag)) {
+            String suffix = friend.modernGamertagSuffix == null ? "" : friend.modernGamertagSuffix;
+            return friend.modernGamertag + suffix.replace("#", "");
+        }
+        return friend.gamertag == null ? "" : friend.gamertag;
+    }
+
     public interface FriendsCallback {
         void onFriends(List<XboxFriend> friends);
 
