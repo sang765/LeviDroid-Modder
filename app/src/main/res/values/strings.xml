@@ -517,6 +517,7 @@
     <string name="xbox_profile_error">Could not load this profile.</string>
     <string name="xbox_profile_empty_list">Nothing to show here</string>
     <string name="xbox_profile_filter_hint">Filter people</string>
+    <string name="transfer_settings">Settings (options.txt)</string>
     <string name="github_import_action">Import</string>
     <string name="github_import_choose_asset">Choose file</string>
     <string name="github_import_invalid_repo">Repository not recognized</string>

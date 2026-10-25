@@ -70,6 +70,7 @@ public class InstancesActivity extends BaseActivity {
     private static final String KIND_BEHAVIOR_PACKS = "behavior_packs";
     private static final String KIND_SKIN_PACKS = "skin_packs";
     private static final String KIND_SCREENSHOTS = "screenshots";
+    private static final String KIND_SETTINGS = "settings";
 
     private VersionManager versionManager;
     private RecyclerView recyclerView;
@@ -374,6 +375,7 @@ public class InstancesActivity extends BaseActivity {
                     if (((CheckBox) dialogView.findViewById(R.id.check_behavior_packs)).isChecked()) kinds.add(KIND_BEHAVIOR_PACKS);
                     if (((CheckBox) dialogView.findViewById(R.id.check_skin_packs)).isChecked()) kinds.add(KIND_SKIN_PACKS);
                     if (((CheckBox) dialogView.findViewById(R.id.check_screenshots)).isChecked()) kinds.add(KIND_SCREENSHOTS);
+                    if (((CheckBox) dialogView.findViewById(R.id.check_settings)).isChecked()) kinds.add(KIND_SETTINGS);
                     boolean move = modeGroup.getCheckedRadioButtonId() == R.id.radio_move;
                     runProfileTransfer(source, target, kinds, move);
                 })
@@ -405,6 +407,7 @@ public class InstancesActivity extends BaseActivity {
                     srcDir = new File(sourceBase, contentDirName(kind));
                     dstDir = new File(targetBase, contentDirName(kind));
                 }
+                if (KIND_SETTINGS.equals(kind)) continue;
                 if (srcDir.equals(dstDir) || !srcDir.isDirectory()) continue;
                 pairs.add(new File[]{srcDir, dstDir});
                 labels.add(getString(kindLabelRes(kind)));
@@ -436,6 +439,23 @@ public class InstancesActivity extends BaseActivity {
                 skipped += result.skipped;
             }
 
+            // Settings is a single overwrite-able file, unlike the merge-by-skip dirs.
+            if (kinds.contains(KIND_SETTINGS)) {
+                File src = settingsOptionsFile(source);
+                File dst = settingsOptionsFile(target);
+                if (src.isFile() && !src.equals(dst)) {
+                    try {
+                        dst.getParentFile().mkdirs();
+                        java.nio.file.Files.copy(src.toPath(), dst.toPath(),
+                                java.nio.file.StandardCopyOption.REPLACE_EXISTING);
+                        copied++;
+                        if (move) src.delete();
+                    } catch (Exception e) {
+                        Log.w(TAG, "Settings transfer failed: " + e.getMessage());
+                    }
+                }
+            }
+
             int finalCopied = copied;
             int finalSkipped = skipped;
             runOnUiThread(() -> {
@@ -460,8 +480,15 @@ public class InstancesActivity extends BaseActivity {
             case KIND_RESOURCE_PACKS -> R.string.resource_packs_category;
             case KIND_BEHAVIOR_PACKS -> R.string.behavior_packs_category;
             case KIND_SKIN_PACKS -> R.string.skin_packs_category;
+            case KIND_SETTINGS -> R.string.transfer_settings;
             default -> R.string.screenshots_category;
         };
+    }
+
+    private File settingsOptionsFile(GameVersion version) {
+        File filesRoot = LauncherStorage.getStorageFilesRoot(this,
+                version.getStorageProfileId(), version.versionIsolation, false);
+        return new File(filesRoot, "games/com.mojang/minecraftpe/options.txt");
     }
 
     private File contentBaseDir(GameVersion version) {

@@ -1,13 +1,13 @@
 {
   "schemaVersion": 1,
-  "headline": "LeviLauncher Modder v1.5.27-modder.70",
-  "summary": "Client APKs with a built-in mod menu (Sigma/Apollon-style ImGui clients) now show their menu when run through the launcher: the client's extra native library and its overlay view are loaded from the imported APK.",
+  "headline": "LeviLauncher Modder v1.5.27-modder.71",
+  "summary": "The transfer tool between instances can now copy or move Minecraft settings (options.txt) alongside worlds, packs and mods.",
   "sections": [
     {
       "title": "Features",
       "items": [
         {
-          "text": "Mod menus of imported client APKs (GLES3JNIView-style ImGui overlays) now load inside the launcher.",
+          "text": "Copy or move MCBE settings (options.txt) between instances from Transfer content.",
           "url": "https://github.com/sang765/LeviDroid-Modder"
         }
       ]

@@ -473,6 +473,7 @@
     <string name="xbox_profile_error">Không tải được profile này.</string>
     <string name="xbox_profile_empty_list">Không có gì để hiển thị</string>
     <string name="xbox_profile_filter_hint">Lọc danh sách</string>
+    <string name="transfer_settings">Cài đặt (options.txt)</string>
     <string name="github_import_action">Nhập</string>
     <string name="github_import_choose_asset">Chọn tệp</string>
     <string name="github_import_invalid_repo">Không nhận diện được repository</string>
