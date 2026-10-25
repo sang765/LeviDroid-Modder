@@ -1,13 +1,13 @@
 {
   "schemaVersion": 1,
-  "headline": "LeviLauncher Modder v1.5.27-modder.61",
-  "summary": "Returning to the launcher after Android killed a suspended Minecraft session no longer crashes; the launcher restarts cleanly instead.",
+  "headline": "LeviLauncher Modder v1.5.27-modder.62",
+  "summary": "Xbox friends who rename themselves now show their current gamertag immediately after a refresh.",
   "sections": [
     {
       "title": "Fixes",
       "items": [
         {
-          "text": "Fix a crash when returning to the launcher after a suspended Minecraft session was killed in the background.",
+          "text": "Show renamed Xbox friends under their new gamertag by reading names from the profile service instead of the stale PeopleHub cache.",
           "url": "https://github.com/sang765/LeviDroid-Modder"
         }
       ]
