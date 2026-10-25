@@ -1,6 +1,6 @@
 {
   "schemaVersion": 1,
-  "headline": "LeviLauncher Modder v1.5.27-modder.64",
+  "headline": "LeviLauncher Modder v1.5.27-modder.66",
   "summary": "The Xbox friends list now uses the exact friends endpoint the game itself uses, so friends who rename themselves show up under their new gamertag as soon as the game does.",
   "sections": [
     {
