@@ -1,13 +1,17 @@
 {
   "schemaVersion": 1,
-  "headline": "LeviLauncher Modder v1.5.27-modder.72",
-  "summary": "Client APK mod-menu libraries are now extracted even when the library cache was built by an older launcher version, so Apollon-style menus attach on the next game start without re-importing.",
+  "headline": "LeviLauncher Modder v1.5.27-modder.73",
+  "summary": "Client APK mod-menu libraries are now extracted even on cached installs, and the transfer dialog is now scrollable to prevent buttons from being pushed off-screen on smaller devices.",
   "sections": [
     {
       "title": "Fixes",
       "items": [
         {
           "text": "Mod-menu libraries of imported client APKs are picked up on cached installs, not only fresh imports.",
+          "url": "https://github.com/sang765/LeviDroid-Modder"
+        },
+        {
+          "text": "Transfer content dialog is now scrollable to prevent buttons from being pushed off-screen.",
           "url": "https://github.com/sang765/LeviDroid-Modder"
         }
       ]
