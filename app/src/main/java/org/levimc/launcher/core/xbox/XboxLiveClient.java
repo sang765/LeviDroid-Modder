@@ -59,6 +59,7 @@ public class XboxLiveClient {
     private String userHash;
     private long tokenExpireMs;
     private String cachedAccountId;
+    private String localXuid;
 
     public static class XboxFriend {
         public String xuid;
@@ -136,9 +137,13 @@ public class XboxLiveClient {
         EXECUTOR.execute(() -> {
             try {
                 ensureToken();
-                PeopleResponse parsed = GSON.fromJson(get(PEOPLEHUB_API
-                        + "/users/me/people/friends/decoration/detail,preferredColor,presenceDetail,multiplayerSummary", 7),
-                        PeopleResponse.class);
+                // Same call shape the game's XSAPI social manager uses
+                // (xuid-addressed friends list); the /users/me variant has
+                // served stale gamertags after renames.
+                String subpath = TextUtils.isEmpty(localXuid)
+                        ? "/users/me/people/friends/decoration/detail,preferredColor,presenceDetail,multiplayerSummary"
+                        : "/users/xuid(" + localXuid + ")/people/friends/decoration/detail,preferredColor,presenceDetail";
+                PeopleResponse parsed = GSON.fromJson(get(PEOPLEHUB_API + subpath, 7), PeopleResponse.class);
                 List<XboxFriend> friends = parsed != null && parsed.people != null
                         ? parsed.people : new ArrayList<>();
                 if (refreshProfileFields(friends) <= 0) {
@@ -438,6 +443,7 @@ public class XboxLiveClient {
                 }
             }
             cachedAccountId = account.id;
+            localXuid = account.xuid;
             try {
                 JsonObject json = JsonParser.parseString(account.serializedAuthManager).getAsJsonObject();
                 BedrockAuthManager auth = BedrockAuthManager.fromJson(

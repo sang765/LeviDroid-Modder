@@ -1,13 +1,13 @@
 {
   "schemaVersion": 1,
-  "headline": "LeviLauncher Modder v1.5.27-modder.63",
-  "summary": "Xbox friends who rename themselves now show their new gamertag after a refresh, read from the profile and social services instead of the stale PeopleHub cache.",
+  "headline": "LeviLauncher Modder v1.5.27-modder.64",
+  "summary": "The Xbox friends list now uses the exact friends endpoint the game itself uses, so friends who rename themselves show up under their new gamertag as soon as the game does.",
   "sections": [
     {
       "title": "Fixes",
       "items": [
         {
-          "text": "Show renamed Xbox friends under their new gamertag by reading names from the profile and social services.",
+          "text": "Fetch the friends list through the game's own xuid-addressed PeopleHub endpoint instead of the users/me variant that kept serving stale gamertags.",
           "url": "https://github.com/sang765/LeviDroid-Modder"
         }
       ]
