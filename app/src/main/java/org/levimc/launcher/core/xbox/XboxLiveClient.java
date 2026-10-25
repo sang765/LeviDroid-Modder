@@ -60,9 +60,24 @@ public class XboxLiveClient {
     public static class XboxFriend {
         public String xuid;
         public String gamertag;
+        public String modernGamertag;
+        public String modernGamertagSuffix;
+        public String uniqueModernGamertag;
         public String displayPicRaw;
         public String presenceState;
         public String presenceText;
+    }
+
+    /** Xbox.com profile URLs use the modern gamertag with its suffix, without the '#'. */
+    public static String profileSlug(XboxFriend friend) {
+        if (friend == null) return "";
+        String slug = friend.uniqueModernGamertag;
+        if (TextUtils.isEmpty(slug)) {
+            slug = TextUtils.isEmpty(friend.modernGamertag)
+                    ? friend.gamertag
+                    : friend.modernGamertag + (friend.modernGamertagSuffix == null ? "" : friend.modernGamertagSuffix);
+        }
+        return slug == null ? "" : slug.replace("#", "");
     }
 
     public interface FriendsCallback {

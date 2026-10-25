@@ -68,8 +68,8 @@ public class XboxFriendsActivity extends BaseActivity {
         friendsAdapter = new XboxFriendsAdapter(new XboxFriendsAdapter.Listener() {
             @Override
             public void onViewProfile(XboxLiveClient.XboxFriend friend) {
-                Uri uri = Uri.parse("https://account.xbox.com/en-US/Profile?gamertag="
-                        + Uri.encode(friend.gamertag));
+                Uri uri = Uri.parse("https://www.xbox.com/en-US/play/user/"
+                        + Uri.encode(XboxLiveClient.profileSlug(friend)));
                 startActivity(new Intent(Intent.ACTION_VIEW, uri));
             }
 
