@@ -39,7 +39,7 @@ billing = "8.3.0"
 sqliteFramework = "2.6.2"
 dynamicanimation = "1.1.0"
 xcrash = "3.1.2"
-shadowhook = "2.0.1"
+shadowhook = "1.1.1"
 
 [libraries]
 androidx-room-compiler = { module = "androidx.room:room-compiler", version.ref = "roomRuntime" }
