@@ -117,7 +117,9 @@ public class ContentDetailsActivity extends BaseActivity {
     private void initWebView() {
         summary.setBackgroundColor(android.graphics.Color.TRANSPARENT);
         WebSettings settings = summary.getSettings();
-        settings.setJavaScriptEnabled(false);
+        // Descriptions come from CurseForge project pages; embedded YouTube
+        // players are iframes that need JS, so it stays enabled here.
+        settings.setJavaScriptEnabled(true);
         settings.setDomStorageEnabled(false);
         settings.setDatabaseEnabled(false);
         settings.setLoadWithOverviewMode(true);
