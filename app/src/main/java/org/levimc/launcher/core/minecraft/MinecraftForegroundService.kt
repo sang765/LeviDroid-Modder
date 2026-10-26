@@ -9,7 +9,6 @@ import android.content.Context
 import android.content.Intent
 import android.content.pm.ServiceInfo
 import android.os.Build
-import android.net.wifi.WifiManager
 import android.os.IBinder
 import android.os.PowerManager
 import android.util.Log
@@ -20,7 +19,6 @@ import org.levimc.launcher.settings.FeatureSettings
 
 class MinecraftForegroundService : Service() {
     private var wakeLock: PowerManager.WakeLock? = null
-    private var wifiLock: WifiManager.WifiLock? = null
 
     override fun onCreate() {
         super.onCreate()
@@ -65,27 +63,10 @@ class MinecraftForegroundService : Service() {
                 acquire()
             }
         }
-
-        if (wifiLock?.isHeld != true) {
-            val wifiManager = applicationContext.getSystemService(WifiManager::class.java)
-            wifiLock = wifiManager?.createWifiLock(
-                WifiManager.WIFI_MODE_FULL_HIGH_PERF,
-                "$packageName:MinecraftForegroundWifi"
-            )?.apply {
-                setReferenceCounted(false)
-                acquire()
-            }
-        }
+        // Note: WifiLock removed to reduce MIUI/scheduler overhead on BP-heavy worlds
     }
 
     private fun releaseBackgroundLocks() {
-        try {
-            if (wifiLock?.isHeld == true) wifiLock?.release()
-        } catch (_: Throwable) {
-        } finally {
-            wifiLock = null
-        }
-
         try {
             if (wakeLock?.isHeld == true) wakeLock?.release()
         } catch (_: Throwable) {
