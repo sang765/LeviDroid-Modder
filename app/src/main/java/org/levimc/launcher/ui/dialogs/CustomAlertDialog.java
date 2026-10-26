@@ -10,10 +10,12 @@ import android.os.Build;
 import android.os.Bundle;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.ViewTreeObserver;
 import android.view.Window;
 import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.LinearLayout;
+import android.widget.ScrollView;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
@@ -42,6 +44,7 @@ public class CustomAlertDialog extends Dialog {
     private boolean mUseBorderedBackground;
     private boolean mDismissing;
     private Runnable mDismissAnimationEndListener;
+    private int mDialogWidth;
 
     public CustomAlertDialog(Context context) {
         super(context);
@@ -237,6 +240,7 @@ public class CustomAlertDialog extends Dialog {
             int screenWidth = getContext().getResources().getDisplayMetrics().widthPixels;
             int maxWidth = (int) (400 * density);
             int dialogWidth = Math.min((int) (screenWidth * 0.9), maxWidth);
+            mDialogWidth = dialogWidth;
             window.setLayout(dialogWidth, WindowManager.LayoutParams.WRAP_CONTENT);
 
             if (mBlurBackground) {
@@ -279,7 +283,55 @@ public class CustomAlertDialog extends Dialog {
                             | View.SYSTEM_UI_FLAG_LAYOUT_STABLE
             );
             window.clearFlags(WindowManager.LayoutParams.FLAG_NOT_FOCUSABLE);
+            View content = findViewById(android.R.id.content);
+            if (content != null && mCustomView != null) {
+                // OnGlobalLayout (not post): posts can run before the first layout pass.
+                content.getViewTreeObserver().addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
+                    @Override
+                    public void onGlobalLayout() {
+                        if (!fitCustomViewToScreen(window)) return;
+                        content.getViewTreeObserver().removeOnGlobalLayoutListener(this);
+                    }
+                });
+            }
         }
+    }
+
+    /**
+     * Caps an oversized dialog so the button row stays on screen: the custom view is wrapped
+     * in a scroll container and the remaining height goes to it.
+     *
+     * @return false when the dialog has not been laid out yet, so the caller can retry.
+     */
+    private boolean fitCustomViewToScreen(Window window) {
+        if (mCustomView == null || !isShowing()) return true;
+        LinearLayout customViewContainer = findViewById(R.id.custom_view_container);
+        View content = findViewById(android.R.id.content);
+        if (customViewContainer == null || content == null) return true;
+
+        float density = getContext().getResources().getDisplayMetrics().density;
+        int screenHeight = getContext().getResources().getDisplayMetrics().heightPixels;
+        int maxDialogHeight = Math.min((int) (500 * density),
+                Math.max((int) (240 * density), (int) (screenHeight * 0.92f)));
+        int measuredHeight = content.getHeight();
+        if (measuredHeight <= 0) return false;
+        if (measuredHeight <= maxDialogHeight) return true;
+
+        View child = customViewContainer.getChildAt(0);
+        if (child != null && !(child instanceof ScrollView)) {
+            customViewContainer.removeAllViews();
+            ScrollView scrollView = new ScrollView(getContext());
+            scrollView.addView(child);
+            customViewContainer.addView(scrollView);
+        }
+
+        // Give the scroll container exactly the space left after title and buttons.
+        int otherHeight = measuredHeight - customViewContainer.getHeight();
+        ViewGroup.LayoutParams containerParams = customViewContainer.getLayoutParams();
+        containerParams.height = Math.max(0, maxDialogHeight - otherHeight);
+        customViewContainer.setLayoutParams(containerParams);
+        window.setLayout(mDialogWidth, maxDialogHeight);
+        return true;
     }
 
     @Override

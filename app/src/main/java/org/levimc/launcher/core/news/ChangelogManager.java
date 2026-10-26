@@ -76,7 +76,6 @@ public final class ChangelogManager {
         dialog.setCanceledOnTouchOutside(false);
         dialog.show();
         prepareContinueButton(activity, dialog);
-        fitDialogToScreen(activity, dialog, content);
     }
 
     private static void prepareContinueButton(Context context, CustomAlertDialog dialog) {
@@ -102,54 +101,6 @@ public final class ChangelogManager {
             parent.requestLayout();
         }
         button.requestLayout();
-    }
-
-    private static void fitDialogToScreen(Activity activity, CustomAlertDialog dialog, View content) {
-        View dialogContent = dialog.findViewById(android.R.id.content);
-        if (!(dialogContent instanceof ViewGroup)) return;
-        ViewGroup contentGroup = (ViewGroup) dialogContent;
-        if (contentGroup.getChildCount() == 0) return;
-        View dialogRoot = contentGroup.getChildAt(0);
-        dialogRoot.post(() -> dialogRoot.post(() -> {
-            if (!dialog.isShowing()) return;
-            View customContainerView = dialog.findViewById(R.id.custom_view_container);
-            View buttonContainer = dialog.findViewById(R.id.btn_container);
-            if (!(dialogRoot instanceof LinearLayout) || !(customContainerView instanceof LinearLayout)) return;
-
-            int availableHeight = getAvailableHeight(activity);
-            int maxDialogHeight = Math.min(dp(activity, 500), Math.max(dp(activity, 240), (int) (availableHeight * 0.92f)));
-            int measuredHeight = dialogRoot.getMeasuredHeight();
-            if (measuredHeight <= 0 || measuredHeight <= maxDialogHeight) return;
-
-            ViewGroup.LayoutParams rootParams = dialogRoot.getLayoutParams();
-            rootParams.height = maxDialogHeight;
-            dialogRoot.setLayoutParams(rootParams);
-
-            LinearLayout.LayoutParams customParams = (LinearLayout.LayoutParams) customContainerView.getLayoutParams();
-            customParams.height = 0;
-            customParams.weight = 1f;
-            customContainerView.setLayoutParams(customParams);
-
-            ViewGroup.LayoutParams contentParams = content.getLayoutParams();
-            contentParams.height = ViewGroup.LayoutParams.MATCH_PARENT;
-            content.setLayoutParams(contentParams);
-
-            if (buttonContainer != null) {
-                buttonContainer.setMinimumHeight(dp(activity, 48));
-                buttonContainer.requestLayout();
-            }
-            customContainerView.requestLayout();
-            dialogRoot.requestLayout();
-        }));
-    }
-
-    private static int getAvailableHeight(Activity activity) {
-        int height = activity.getResources().getDisplayMetrics().heightPixels;
-        View decor = activity.getWindow().getDecorView();
-        if (decor != null && decor.getHeight() > 0) {
-            height = Math.min(height, decor.getHeight());
-        }
-        return height;
     }
 
     private static int dp(Context context, int value) {
