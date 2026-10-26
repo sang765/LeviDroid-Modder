@@ -53,6 +53,21 @@ public final class AppLevelLogSink {
         }
     }
 
+    // Unhook while third-party game/mod .so files are dlopened: their
+    // constructors run arbitrary code and an active log hook in that window
+    // has caused launch hangs on device.
+    public static void suspendCapture() {
+        try {
+            uninstallNative();
+        } catch (Throwable ignored) {
+        }
+    }
+
+    public static boolean resumeCapture() {
+        installFailed = false;
+        return ensureInstalled();
+    }
+
     public static void addListener(Listener listener) {
         listeners.add(listener);
     }

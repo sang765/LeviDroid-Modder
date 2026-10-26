@@ -94,6 +94,7 @@ public class ModNativeLoader {
             }
 
             try {
+                Log.i(TAG, "Preparing cached entry: " + mod.getDisplayName());
                 CachedModEntry cachedEntry = prepareCachedEntry(modManager, cacheModsDir, mod);
                 File targetFile = cachedEntry.targetFile;
                 if (targetFile == null || !targetFile.isFile()) {
@@ -104,9 +105,14 @@ public class ModNativeLoader {
                 }
 
                 ensureReadOnly(targetFile);
+                // Breadcrumbs so a stalled launch can be pinpointed to an
+                // exact call from the logcat overlay timestamps.
+                Log.i(TAG, "System.load: " + targetFile.getName());
                 System.load(targetFile.getAbsolutePath());
+                Log.i(TAG, "System.load done: " + targetFile.getName());
 
                 if (ModManager.ensurePreloaderLoaded()) {
+                    Log.i(TAG, "Initializing native mod: " + mod.getDisplayName());
                     if (!ModManager.initializeLoadedMod(
                             targetFile.getAbsolutePath(),
                             cachedEntry.sourceDirectory.getAbsolutePath(),

@@ -523,30 +523,29 @@ public class LogcatOverlay extends FrameLayout {
             Toast.makeText(getContext(), R.string.logcat_export_empty, Toast.LENGTH_SHORT).show();
             return;
         }
-        if (ioExecutor.isShutdown() || ioExecutor.isTerminated()) return;
-        ioExecutor.submit(() -> {
-            File file;
+        // Own thread: ioExecutor's single worker is occupied forever by the
+        // render loop, so tasks submitted there would never run.
+        new Thread(() -> {
             try {
-                file = writeExportFile(snapshot);
+                File file = writeExportFile(snapshot);
+                Context ctx = getContext();
+                Uri uri = FileProvider.getUriForFile(ctx, ctx.getPackageName() + ".fileprovider", file);
+                Intent send = new Intent(Intent.ACTION_SEND)
+                        .setType("text/plain")
+                        .putExtra(Intent.EXTRA_STREAM, uri)
+                        .addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION | Intent.FLAG_ACTIVITY_NEW_TASK);
+                mainHandler.post(() -> {
+                    try {
+                        ctx.startActivity(Intent.createChooser(send, ctx.getString(R.string.logcat_export)));
+                    } catch (Exception e) {
+                        Toast.makeText(ctx, R.string.logcat_export_failed, Toast.LENGTH_SHORT).show();
+                    }
+                });
             } catch (Exception e) {
                 mainHandler.post(() -> Toast.makeText(getContext(),
                         R.string.logcat_export_failed, Toast.LENGTH_SHORT).show());
-                return;
             }
-            Context ctx = getContext();
-            Uri uri = FileProvider.getUriForFile(ctx, ctx.getPackageName() + ".fileprovider", file);
-            Intent send = new Intent(Intent.ACTION_SEND)
-                    .setType("text/plain")
-                    .putExtra(Intent.EXTRA_STREAM, uri)
-                    .addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION | Intent.FLAG_ACTIVITY_NEW_TASK);
-            mainHandler.post(() -> {
-                try {
-                    ctx.startActivity(Intent.createChooser(send, ctx.getString(R.string.logcat_export)));
-                } catch (Exception e) {
-                    Toast.makeText(ctx, R.string.logcat_export_failed, Toast.LENGTH_SHORT).show();
-                }
-            });
-        });
+        }, "LogcatExport").start();
     }
 
     private File writeExportFile(List<String> lines) throws IOException {

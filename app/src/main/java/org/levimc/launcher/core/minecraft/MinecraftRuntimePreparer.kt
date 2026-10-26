@@ -149,6 +149,11 @@ object MinecraftRuntimePreparer {
         //nativeSetupRuntime(modManager.currentVersion?.modsDir?.absolutePath.toString())
         val nativeModResult = loadNativeMods(context, launchIntent, modManager, listener, trace)
 
+        // Native loading is done; safe to hook liblog again.
+        if (FeatureSettings.getInstance().isAppLevelLoggingEnabled()) {
+            AppLevelLogSink.resumeCapture()
+        }
+
         try {
             val profileId = MinecraftLauncher.getStorageProfileId(version)
             val internalGameData = LauncherStorage.getStorageGameDataDir(context, profileId, version.versionIsolation, false)
@@ -262,11 +267,9 @@ object MinecraftRuntimePreparer {
         listener.onProgress(46, "Loading native libraries")
         trace.mark("Minecraft library loading started")
 
-        // Hook the in-process log sink before any game lib loads so launch
-        // failures are captured even when logd drops them (MIUI/HyperOS).
-        if (FeatureSettings.getInstance().isAppLevelLoggingEnabled()) {
-            AppLevelLogSink.ensureInstalled()
-        }
+        // Keep the log hook out of the whole native-loading window (game
+        // libs + inbuilt + user mods); reinstalled after mods are loaded.
+        AppLevelLogSink.suspendCapture()
 
         val initializeBundledSdk = gameManager.shouldLoadMallocRedirect()
         if (shouldLoadHttpClient(version)) {

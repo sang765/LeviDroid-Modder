@@ -1,22 +1,26 @@
 {
   "schemaVersion": 1,
-  "headline": "LeviLauncher Modder v1.5.27-modder.79",
-  "summary": "The logcat overlay gains an export button, and every remaining launcher string now speaks Vietnamese.",
+  "headline": "LeviLauncher Modder v1.5.27-modder.80",
+  "summary": "Fixes the launch hang during native mod loading and the logcat export button that did nothing.",
   "sections": [
     {
-      "title": "Features",
+      "title": "Fixes",
       "items": [
         {
-          "text": "Export button in the logcat overlay: save or share the current log as a text file from any app.",
+          "text": "Fixed the launch hang at native mod loading: the log hook is now detached while game and mod libraries load.",
+          "url": "https://github.com/sang765/LeviDroid-Modder"
+        },
+        {
+          "text": "Fixed the logcat export button doing nothing when tapped; it now always opens the share sheet.",
           "url": "https://github.com/sang765/LeviDroid-Modder"
         }
       ]
     },
     {
-      "title": "Localization",
+      "title": "Under the hood",
       "items": [
         {
-          "text": "The 51 remaining untranslated strings (create-world screen included) now have Vietnamese translations.",
+          "text": "Per-mod breadcrumbs (cached copy, System.load, init) so a stalled launch can be pinpointed from the overlay timestamps.",
           "url": "https://github.com/sang765/LeviDroid-Modder"
         }
       ]
