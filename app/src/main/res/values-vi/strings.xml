@@ -669,6 +669,9 @@
     <string name="logcat_autoscroll">Tự động cuộn</string>
     <string name="logcat_pause">Dừng</string>
     <string name="logcat_clear">Xóa</string>
+    <string name="logcat_export">Xuất log ra ngoài</string>
+    <string name="logcat_export_empty">Chưa có gì để xuất cả!</string>
+    <string name="logcat_export_failed">Chết, xuất log hỏng mất rồi!</string>
     <string name="logcat_close">Đóng</string>
     <string name="logcat_corner_bottom_left">Thay đổi kích thước: góc dưới bên trái</string>
     <string name="logcat_corner_bottom_right">Thay đổi kích thước: góc dưới bên phải</string>

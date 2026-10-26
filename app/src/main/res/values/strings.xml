@@ -773,6 +773,9 @@
     <string name="logcat_autoscroll">Auto-scroll</string>
     <string name="logcat_pause">Pause</string>
     <string name="logcat_clear">Clear</string>
+    <string name="logcat_export">Export logs</string>
+    <string name="logcat_export_empty">Nothing to export yet</string>
+    <string name="logcat_export_failed">Export failed, oops!</string>
     <string name="logcat_close">Close</string>
     <string name="logcat_corner_bottom_left">Resize: bottom-left</string>
     <string name="logcat_corner_bottom_right">Resize: bottom-right</string>

@@ -3,11 +3,13 @@ package org.levimc.launcher.ui.dialogs;
 import static android.content.Context.MODE_PRIVATE;
 
 import android.content.Context;
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.graphics.Typeface;
 import android.graphics.Rect;
 import android.graphics.drawable.GradientDrawable;
+import android.net.Uri;
 import android.os.Build;
 import android.os.Handler;
 import android.os.Looper;
@@ -31,6 +33,7 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.annotation.NonNull;
 import androidx.appcompat.widget.ListPopupWindow;
 import androidx.core.content.ContextCompat;
+import androidx.core.content.FileProvider;
 
 import org.levimc.launcher.R;
 import org.levimc.launcher.core.logging.AppLevelLogSink;
@@ -41,8 +44,10 @@ import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
+import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
+import java.text.SimpleDateFormat;
 import java.io.RandomAccessFile;
 import java.nio.channels.FileChannel;
 import java.nio.channels.FileLock;
@@ -67,7 +72,7 @@ public class LogcatOverlay extends FrameLayout {
     private ListPopupWindow levelPopup;
     private View filterBar;
     private ImageButton pauseButton, clearButton, autoScrollButton, closeButton, minimizeBubble;
-    private ImageButton filterButton, filterClearButton;
+    private ImageButton filterButton, filterClearButton, exportButton;
     private View overlayHeader, bottomResizeBar, cornerBottomLeft, cornerBottomRight;
 
     private final Handler mainHandler = new Handler(Looper.getMainLooper());
@@ -119,6 +124,7 @@ public class LogcatOverlay extends FrameLayout {
         levelFilterView = findViewById(R.id.level_filter);
         filterBar = findViewById(R.id.filter_bar);
         clearButton = findViewById(R.id.btn_clear);
+        exportButton = findViewById(R.id.btn_export);
         pauseButton = findViewById(R.id.btn_pause);
         autoScrollButton = findViewById(R.id.btn_autoscroll);
         closeButton = findViewById(R.id.btn_close);
@@ -164,6 +170,8 @@ public class LogcatOverlay extends FrameLayout {
             paused = !paused;
             pauseButton.setImageResource(paused ? android.R.drawable.ic_media_play : android.R.drawable.ic_media_pause);
         });
+
+        exportButton.setOnClickListener(v -> exportLogs());
 
         autoScrollButton.setOnClickListener(v -> {
             autoScrollLocked = !autoScrollLocked;
@@ -506,6 +514,54 @@ public class LogcatOverlay extends FrameLayout {
                 }
             }
         });
+    }
+
+    private void exportLogs() {
+        List<String> snapshot;
+        synchronized (logBuffer) { snapshot = new ArrayList<>(logBuffer); }
+        if (snapshot.isEmpty()) {
+            Toast.makeText(getContext(), R.string.logcat_export_empty, Toast.LENGTH_SHORT).show();
+            return;
+        }
+        if (ioExecutor.isShutdown() || ioExecutor.isTerminated()) return;
+        ioExecutor.submit(() -> {
+            File file;
+            try {
+                file = writeExportFile(snapshot);
+            } catch (Exception e) {
+                mainHandler.post(() -> Toast.makeText(getContext(),
+                        R.string.logcat_export_failed, Toast.LENGTH_SHORT).show());
+                return;
+            }
+            Context ctx = getContext();
+            Uri uri = FileProvider.getUriForFile(ctx, ctx.getPackageName() + ".fileprovider", file);
+            Intent send = new Intent(Intent.ACTION_SEND)
+                    .setType("text/plain")
+                    .putExtra(Intent.EXTRA_STREAM, uri)
+                    .addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION | Intent.FLAG_ACTIVITY_NEW_TASK);
+            mainHandler.post(() -> {
+                try {
+                    ctx.startActivity(Intent.createChooser(send, ctx.getString(R.string.logcat_export)));
+                } catch (Exception e) {
+                    Toast.makeText(ctx, R.string.logcat_export_failed, Toast.LENGTH_SHORT).show();
+                }
+            });
+        });
+    }
+
+    private File writeExportFile(List<String> lines) throws IOException {
+        File dir = new File(getContext().getCacheDir(), "exports");
+        if (!dir.exists()) dir.mkdirs();
+        String stamp = new SimpleDateFormat("yyyyMMdd_HHmmss", Locale.US).format(new Date());
+        File out = new File(dir, "logcat_" + stamp + ".txt");
+        try (BufferedWriter writer = new BufferedWriter(new OutputStreamWriter(
+                new FileOutputStream(out), StandardCharsets.UTF_8))) {
+            for (String line : lines) {
+                writer.write(sanitizeHistoryLine(line));
+                writer.newLine();
+            }
+        }
+        return out;
     }
 
     private void appendChunk(String chunk) {
