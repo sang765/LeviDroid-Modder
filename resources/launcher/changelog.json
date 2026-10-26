@@ -1,22 +1,13 @@
 {
   "schemaVersion": 1,
-  "headline": "LeviLauncher Modder v1.5.27-modder.81",
-  "summary": "Fixed mod launches hanging: the App-Level Logging hook now installs only after all mods finish loading.",
+  "headline": "LeviLauncher Modder v1.5.27-modder.82",
+  "summary": "Fixed BP-heavy map stutter: disabled ForceDark/SurfaceSyncer conflict and dropped high-power WifiLock.",
   "sections": [
     {
       "title": "Fixes",
       "items": [
         {
-          "text": "Fixed launches hanging at 1/N during native mod loading: the log hook is no longer initialized before or during the mod loading window.",
-          "url": "https://github.com/sang765/LeviDroid-Modder"
-        }
-      ]
-    },
-    {
-      "title": "Changes",
-      "items": [
-        {
-          "text": "App-Level Logging is now active in-game only; before a launch the overlay falls back to regular logcat.",
+          "text": "Fixed periodic frame stutter on behavior-pack-heavy worlds: disabled ForceDark surface sync conflict and removed high-performance WifiLock that caused MIUI/Android scheduling stalls.",
           "url": "https://github.com/sang765/LeviDroid-Modder"
         }
       ]
