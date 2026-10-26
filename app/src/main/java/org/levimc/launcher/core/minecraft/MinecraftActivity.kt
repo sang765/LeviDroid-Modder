@@ -101,12 +101,7 @@ class MinecraftActivity : MainActivity(), PojavControlsHost {
         trace = LaunchTrace.ensure(intent)
         trace.mark("MinecraftActivity onCreate entered")
         window.setBackgroundDrawable(android.graphics.drawable.ColorDrawable(resolveLaunchBackgroundColor()))
-        // Force-disable dark mode / ForceDark to prevent SurfaceSyncer stutter on BP-heavy worlds
-        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.Q) {
-            android.view.WindowManager.LayoutParams lp = window.attributes
-            lp.privateFlags = lp.privateFlags | android.view.WindowManager.LayoutParams.PRIVATE_FLAG_FORCE_DARK_DISABLED
-            window.setAttributes(lp)
-        }
+        window.decorView?.setForceDarkAllowed(false)
 
         if (savedInstanceState != null) {
             trace.mark("MinecraftActivity finishing restored instance")
