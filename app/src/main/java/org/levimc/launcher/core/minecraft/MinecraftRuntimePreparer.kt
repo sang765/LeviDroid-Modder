@@ -7,6 +7,7 @@ import android.content.Intent
 import android.content.pm.ApplicationInfo
 import android.os.Build
 import org.levimc.launcher.R
+import org.levimc.launcher.core.logging.AppLevelLogSink
 import org.levimc.launcher.core.auth.MsftAccountStore
 import org.levimc.launcher.core.auth.MsftAuthManager
 import org.levimc.launcher.core.mods.Mod
@@ -260,6 +261,12 @@ object MinecraftRuntimePreparer {
     ) {
         listener.onProgress(46, "Loading native libraries")
         trace.mark("Minecraft library loading started")
+
+        // Hook the in-process log sink before any game lib loads so launch
+        // failures are captured even when logd drops them (MIUI/HyperOS).
+        if (FeatureSettings.getInstance().isAppLevelLoggingEnabled()) {
+            AppLevelLogSink.ensureInstalled()
+        }
 
         val initializeBundledSdk = gameManager.shouldLoadMallocRedirect()
         if (shouldLoadHttpClient(version)) {

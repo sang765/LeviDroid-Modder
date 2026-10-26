@@ -755,6 +755,8 @@
     <string name="dialog_message_exit_app">Are you sure you want to exit?</string>
     <string name="dialog_positive_exit">Exit</string>
     <string name="show_logcat_overlay">Logcat overlay</string>
+    <string name="app_level_logging">App-Level Logging</string>
+    <string name="app_level_logging_desc">Capture launcher and game logs inside the process — works on MIUI/HyperOS where logcat is blocked</string>
     <string name="foreground_service">Foreground service</string>
     <string name="foreground_service_desc">Keep Minecraft running when you switch apps by preventing Bedrock from suspending the active session and keeping the process, CPU, and Wi-Fi active.</string>
     <string name="foreground_service_warning">Note: May make your phone heat up faster and increase battery usage.</string>

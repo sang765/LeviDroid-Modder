@@ -33,6 +33,8 @@ import androidx.appcompat.widget.ListPopupWindow;
 import androidx.core.content.ContextCompat;
 
 import org.levimc.launcher.R;
+import org.levimc.launcher.core.logging.AppLevelLogSink;
+import org.levimc.launcher.settings.FeatureSettings;
 
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
@@ -94,6 +96,12 @@ public class LogcatOverlay extends FrameLayout {
 
     private Process logcatProc;
     private Thread readerThread;
+    private boolean appLevelSource = false;
+    private boolean sinkActive = false;
+
+    private final AppLevelLogSink.Listener appLevelListener = line -> {
+        if (!paused) pendingLines.offer(line);
+    };
 
     public LogcatOverlay(Context context) { super(context); prefs = init(context); }
     public LogcatOverlay(Context context, AttributeSet attrs) { super(context, attrs); prefs = init(context); }
@@ -393,13 +401,26 @@ public class LogcatOverlay extends FrameLayout {
     }
 
     public void start() {
-        if (readerThread != null && readerThread.isAlive()) return;
+        boolean wantAppLevel = FeatureSettings.getInstance().isAppLevelLoggingEnabled()
+                && AppLevelLogSink.ensureInstalled();
+        boolean running = wantAppLevel ? sinkActive : (readerThread != null && readerThread.isAlive());
+        if (running && appLevelSource == wantAppLevel) return;
+        stopReader();
         paused = false;
         if (ioExecutor.isShutdown() || ioExecutor.isTerminated()) {
             ioExecutor = Executors.newSingleThreadExecutor();
         }
         startBackgroundRenderLoop();
-        startReader();
+        if (wantAppLevel) {
+            appLevelSource = true;
+            sinkActive = true;
+            // Replay what was captured while the overlay was hidden.
+            for (String line : AppLevelLogSink.snapshotRing()) pendingLines.offer(line);
+            AppLevelLogSink.addListener(appLevelListener);
+        } else {
+            appLevelSource = false;
+            startReader();
+        }
     }
 
     public void stop() {
@@ -436,6 +457,8 @@ public class LogcatOverlay extends FrameLayout {
     }
 
     private void stopReader() {
+        AppLevelLogSink.removeListener(appLevelListener);
+        sinkActive = false;
         try {
             if (logcatProc != null) logcatProc.destroy();
             if (readerThread != null && readerThread.isAlive()) readerThread.interrupt();

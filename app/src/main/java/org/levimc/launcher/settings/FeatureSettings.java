@@ -9,6 +9,7 @@ public class FeatureSettings {
     private boolean launcherManagedMcLoginEnabled = false;
     private boolean patchWarningSkipped = false;
     private boolean logcatOverlayEnabled = false;
+    private boolean appLevelLoggingEnabled = false;
     private boolean foregroundServiceEnabled = false;
     private Boolean crashUploadEnabled = true;
 
@@ -49,6 +50,9 @@ public class FeatureSettings {
 
     public boolean isLogcatOverlayEnabled() { return logcatOverlayEnabled; }
     public void setLogcatOverlayEnabled(boolean enabled) { this.logcatOverlayEnabled = enabled; autoSave(); }
+
+    public boolean isAppLevelLoggingEnabled() { return appLevelLoggingEnabled; }
+    public void setAppLevelLoggingEnabled(boolean enabled) { this.appLevelLoggingEnabled = enabled; autoSave(); }
 
     public boolean isForegroundServiceEnabled() { return foregroundServiceEnabled; }
     public void setForegroundServiceEnabled(boolean enabled) { this.foregroundServiceEnabled = enabled; autoSave(); }

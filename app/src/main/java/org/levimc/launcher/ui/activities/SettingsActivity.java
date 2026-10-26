@@ -35,6 +35,7 @@ import androidx.core.content.FileProvider;
 
 import org.levimc.launcher.R;
 import org.levimc.launcher.core.crash.CrashReporter;
+import org.levimc.launcher.core.logging.AppLevelLogSink;
 import org.levimc.launcher.preloader.PreloaderSignatureRulesManager;
 import org.levimc.launcher.settings.FeatureSettings;
 import org.levimc.launcher.ui.animation.DynamicAnim;
@@ -297,9 +298,23 @@ public class SettingsActivity extends BaseActivity {
         });
 
         SwitchMaterial switchLogcat = findViewById(R.id.switch_logcat);
+        SwitchMaterial switchAppLevelLog = findViewById(R.id.switch_logcat_app_level);
+        switchAppLevelLog.setChecked(fs.isAppLevelLoggingEnabled());
+        switchAppLevelLog.setEnabled(fs.isLogcatOverlayEnabled());
+        switchAppLevelLog.setAlpha(fs.isLogcatOverlayEnabled() ? 1f : 0.5f);
         switchLogcat.setChecked(fs.isLogcatOverlayEnabled());
         switchLogcat.setOnCheckedChangeListener((btn, checked) -> {
             fs.setLogcatOverlayEnabled(checked);
+            switchAppLevelLog.setEnabled(checked);
+            switchAppLevelLog.setAlpha(checked ? 1f : 0.5f);
+            try {
+                LogcatOverlayManager mgr = LogcatOverlayManager.getInstance();
+                if (mgr != null) mgr.refreshVisibility();
+            } catch (Throwable ignored) {}
+        });
+        switchAppLevelLog.setOnCheckedChangeListener((btn, checked) -> {
+            fs.setAppLevelLoggingEnabled(checked);
+            if (!checked) AppLevelLogSink.teardown();
             try {
                 LogcatOverlayManager mgr = LogcatOverlayManager.getInstance();
                 if (mgr != null) mgr.refreshVisibility();
@@ -612,6 +627,14 @@ public class SettingsActivity extends BaseActivity {
             switchLogcat.setThumbTintList(new ColorStateList(states, new int[]{accent, 0xFFAAAAAA}));
             int trackChecked = Color.argb(100, Color.red(accent), Color.green(accent), Color.blue(accent));
             switchLogcat.setTrackTintList(new ColorStateList(states, new int[]{trackChecked, 0xFF555555}));
+        }
+
+        SwitchMaterial switchAppLevelLog = findViewById(R.id.switch_logcat_app_level);
+        if (switchAppLevelLog != null && accent != 0) {
+            int[][] states = {{android.R.attr.state_checked}, {}};
+            switchAppLevelLog.setThumbTintList(new ColorStateList(states, new int[]{accent, 0xFFAAAAAA}));
+            int trackChecked = Color.argb(100, Color.red(accent), Color.green(accent), Color.blue(accent));
+            switchAppLevelLog.setTrackTintList(new ColorStateList(states, new int[]{trackChecked, 0xFF555555}));
         }
         
         SwitchMaterial switchForegroundService = findViewById(R.id.switch_foreground_service);

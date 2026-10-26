@@ -39,6 +39,7 @@ billing = "8.3.0"
 sqliteFramework = "2.6.2"
 dynamicanimation = "1.1.0"
 xcrash = "3.1.2"
+shadowhook = "2.0.1"
 
 [libraries]
 androidx-room-compiler = { module = "androidx.room:room-compiler", version.ref = "roomRuntime" }
@@ -88,6 +89,7 @@ simple-xml = { group = "org.simpleframework", name = "simple-xml", version.ref =
 billing = { group = "com.android.billingclient", name = "billing", version.ref = "billing" }
 androidx-dynamicanimation = { module = "androidx.dynamicanimation:dynamicanimation", version.ref = "dynamicanimation" }
 xcrash = { module = "com.github.RadiantByte:xCrash", version.ref = "xcrash" }
+shadowhook = { module = "com.bytedance.android:shadowhook", version.ref = "shadowhook" }
 
 [plugins]
 android-application = { id = "com.android.application", version.ref = "agp" }
