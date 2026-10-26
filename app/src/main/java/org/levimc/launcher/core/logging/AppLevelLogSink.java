@@ -26,6 +26,7 @@ public final class AppLevelLogSink {
     private static final ArrayDeque<String> ring = new ArrayDeque<>(MAX_LINES);
     private static final List<Listener> listeners = new CopyOnWriteArrayList<>();
     private static volatile boolean installFailed;
+    private static volatile boolean installed;
 
     static {
         System.loadLibrary("loghook");
@@ -40,7 +41,17 @@ public final class AppLevelLogSink {
         } catch (Throwable ignored) {
             installFailed = true;
         }
+        installed = !installFailed;
         return !installFailed;
+    }
+
+    // True only while the native hook is actually installed. The overlay
+    // checks this instead of installing on its own: shadowhook's init hooks
+    // the linker's do_dlopen for the rest of the process lifetime, which has
+    // deadlocked NMDK mod dlopens. Installation must stay in the launch flow,
+    // after all game and mod libraries are loaded.
+    public static boolean isReady() {
+        return installed;
     }
 
     public static void teardown() {
@@ -48,6 +59,7 @@ public final class AppLevelLogSink {
             uninstallNative();
         } catch (Throwable ignored) {
         }
+        installed = false;
         synchronized (ring) {
             ring.clear();
         }
@@ -61,6 +73,7 @@ public final class AppLevelLogSink {
             uninstallNative();
         } catch (Throwable ignored) {
         }
+        installed = false;
     }
 
     public static boolean resumeCapture() {

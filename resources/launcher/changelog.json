@@ -1,26 +1,22 @@
 {
   "schemaVersion": 1,
-  "headline": "LeviLauncher Modder v1.5.27-modder.80",
-  "summary": "Fixes the launch hang during native mod loading and the logcat export button that did nothing.",
+  "headline": "LeviLauncher Modder v1.5.27-modder.81",
+  "summary": "Fixed mod launches hanging: the App-Level Logging hook now installs only after all mods finish loading.",
   "sections": [
     {
       "title": "Fixes",
       "items": [
         {
-          "text": "Fixed the launch hang at native mod loading: the log hook is now detached while game and mod libraries load.",
-          "url": "https://github.com/sang765/LeviDroid-Modder"
-        },
-        {
-          "text": "Fixed the logcat export button doing nothing when tapped; it now always opens the share sheet.",
+          "text": "Fixed launches hanging at 1/N during native mod loading: the log hook is no longer initialized before or during the mod loading window.",
           "url": "https://github.com/sang765/LeviDroid-Modder"
         }
       ]
     },
     {
-      "title": "Under the hood",
+      "title": "Changes",
       "items": [
         {
-          "text": "Per-mod breadcrumbs (cached copy, System.load, init) so a stalled launch can be pinpointed from the overlay timestamps.",
+          "text": "App-Level Logging is now active in-game only; before a launch the overlay falls back to regular logcat.",
           "url": "https://github.com/sang765/LeviDroid-Modder"
         }
       ]

@@ -1209,5 +1209,5 @@
     <string name="diff_hard">Khó</string>
     <string name="github_import_hint">github.com/user/repo, user/repo hoặc user repo</string>
     <string name="app_level_logging">App-Level Logging</string>
-    <string name="app_level_logging_desc">Bắt log của launcher và game ngay trong tiến trình — quên đi cảnh logcat trống trơn trên MIUI/HyperOS!</string>
+    <string name="app_level_logging_desc">Bắt log launcher và game ngay trong tiến trình — hoạt động khi vào game, hook chỉ cài sau khi mod load xong để không treo lúc khởi động</string>
 </resources>

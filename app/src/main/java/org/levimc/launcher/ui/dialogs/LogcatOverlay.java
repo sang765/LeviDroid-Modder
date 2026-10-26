@@ -409,8 +409,11 @@ public class LogcatOverlay extends FrameLayout {
     }
 
     public void start() {
+        // Never install from here: shadowhook's do_dlopen hook persists once
+        // initialized and has deadlocked NMDK mod loading. The launch flow
+        // installs the hook only after all mods are loaded (resumeCapture).
         boolean wantAppLevel = FeatureSettings.getInstance().isAppLevelLoggingEnabled()
-                && AppLevelLogSink.ensureInstalled();
+                && AppLevelLogSink.isReady();
         boolean running = wantAppLevel ? sinkActive : (readerThread != null && readerThread.isAlive());
         if (running && appLevelSource == wantAppLevel) return;
         stopReader();
