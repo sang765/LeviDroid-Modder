@@ -1,6 +1,6 @@
 {
   "schemaVersion": 1,
-  "headline": "LeviLauncher Modder v1.5.27-modder.82",
+  "headline": "LeviLauncher Modder v1.5.27-modder.83",
   "summary": "Fixed BP-heavy map stutter: disabled ForceDark/SurfaceSyncer conflict and dropped high-power WifiLock.",
   "sections": [
     {
