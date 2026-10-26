@@ -1,30 +1,13 @@
 {
   "schemaVersion": 1,
-  "headline": "LeviLauncher Modder v1.5.27-modder.77",
-  "summary": "Stability fixes for behavior-pack-heavy maps, YouTube playback in mod descriptions, and the new create-world screen.",
+  "headline": "LeviLauncher Modder v1.5.27-modder.78",
+  "summary": "The Logcat overlay now keeps working on Xiaomi devices: the new App-Level Logging option captures launcher and game logs in-process.",
   "sections": [
-    {
-      "title": "Fixes",
-      "items": [
-        {
-          "text": "Periodic frame stutter on maps with behavior packs: removed the high-power WifiLock that forced MIUI/Android to throttle during GC.",
-          "url": "https://github.com/sang765/LeviDroid-Modder"
-        },
-        {
-          "text": "Embedded YouTube videos in mod descriptions now play — the description WebView allows JavaScript, which the players need.",
-          "url": "https://github.com/sang765/LeviDroid-Modder"
-        },
-        {
-          "text": "Custom dialogs no longer grow past the screen, so their buttons stay reachable.",
-          "url": "https://github.com/sang765/LeviDroid-Modder"
-        }
-      ]
-    },
     {
       "title": "Features",
       "items": [
         {
-          "text": "Custom flat world is replaced with the full create-world screen.",
+          "text": "App-Level Logging sub-option for the Logcat overlay: captures launcher and game logs in-process, bypassing MIUI/HyperOS logcat restrictions.",
           "url": "https://github.com/sang765/LeviDroid-Modder"
         }
       ]
