@@ -88,7 +88,7 @@ public class ContentListActivity extends BaseActivity {
     private String pendingScreenshotPath;
     private ActivityResultLauncher<Intent> exportLauncher;
     private ActivityResultLauncher<Intent> exportPackLauncher;
-    private ActivityResultLauncher<Intent> customFlatWorldLauncher;
+    private ActivityResultLauncher<Intent> createWorldLauncher;
     private ActivityResultLauncher<Intent> structureExportLauncher;
     private ActivityResultLauncher<Intent> batchExportFolderLauncher;
     private WorldItem pendingExportWorld;
@@ -186,7 +186,7 @@ public class ContentListActivity extends BaseActivity {
             }
         );
 
-        customFlatWorldLauncher = registerForActivityResult(
+        createWorldLauncher = registerForActivityResult(
             new ActivityResultContracts.StartActivityForResult(),
             result -> {
             }
@@ -284,7 +284,7 @@ public class ContentListActivity extends BaseActivity {
 
         binding.customFlatButton.setOnClickListener(v -> {
             if (contentType == TYPE_SERVERS) showAddServerDialog();
-            else openCustomFlatWorld();
+            else openCreateWorld();
         });
         binding.selectButton.setOnClickListener(v -> enterSelectionMode());
         binding.selectAllButton.setOnClickListener(v -> selectAllVisible());
@@ -864,15 +864,15 @@ public class ContentListActivity extends BaseActivity {
         });
     }
 
-    private void openCustomFlatWorld() {
+    private void openCreateWorld() {
         if (worldsDirectory == null || !worldsDirectory.exists()) {
             Toast.makeText(this, R.string.worlds_directory_unavailable, Toast.LENGTH_SHORT).show();
             return;
         }
-        
-        Intent intent = new Intent(this, CustomFlatWorldActivity.class);
-        intent.putExtra(CustomFlatWorldActivity.EXTRA_WORLDS_DIRECTORY, worldsDirectory.getAbsolutePath());
-        customFlatWorldLauncher.launch(intent, ActivityOptionsCompat.makeCustomAnimation(
+
+        Intent intent = new Intent(this, CreateWorldActivity.class);
+        intent.putExtra(CreateWorldActivity.EXTRA_WORLDS_DIRECTORY, worldsDirectory.getAbsolutePath());
+        createWorldLauncher.launch(intent, ActivityOptionsCompat.makeCustomAnimation(
                 this, R.anim.fade_in, R.anim.fade_out));
     }
 

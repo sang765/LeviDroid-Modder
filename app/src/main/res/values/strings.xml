@@ -419,6 +419,56 @@
         <item quantity="other">%1$d layers • bottom → top</item>
     </plurals>
 
+    <!-- Create New World -->
+    <string name="create_new_world">Create New World</string>
+    <string name="create_new_world_subtitle">Generate a world for the selected instance</string>
+    <string name="section_general">General</string>
+    <string name="section_advanced">Advanced</string>
+    <string name="section_cheats">Cheats</string>
+    <string name="section_behavior_packs">Behavior Packs</string>
+    <string name="section_resource_packs">Resource Packs</string>
+    <string name="difficulty">Difficulty</string>
+    <string name="hardcore">Hardcore</string>
+    <string name="hardcore_hint">Hard difficulty, one life only</string>
+    <string name="seed">Seed</string>
+    <string name="seed_hint">Leave blank for a random seed</string>
+    <string name="flat_world">Flat World</string>
+    <string name="cheats">Cheats</string>
+    <string name="cheats_hint">Enables commands such as /gamemode</string>
+    <string name="command_blocks">Command Blocks</string>
+    <string name="education_features">Education Features</string>
+    <string name="start_with_map">Starting Map</string>
+    <string name="bonus_chest">Bonus Chest</string>
+    <string name="show_coordinates">Show Coordinates</string>
+    <string name="show_days_played">Show Days Played</string>
+    <string name="recipe_unlocking">Recipe Unlocking</string>
+    <string name="fire_spreads">Fire Spreads</string>
+    <string name="tnt_explodes">TNT Explodes</string>
+    <string name="mob_loot">Mob Loot</string>
+    <string name="natural_regeneration">Natural Regeneration</string>
+    <string name="tile_drops">Tile Drops</string>
+    <string name="mob_spawning">Mob Spawning</string>
+    <string name="mob_griefing">Mob Griefing</string>
+    <string name="entities_drop_loot">Entities Drop Loot</string>
+    <string name="weather_cycle">Weather Cycle</string>
+    <string name="keep_inventory">Keep Inventory</string>
+    <string name="immediate_respawn">Immediate Respawn</string>
+    <string name="respawn_blocks_explode">Respawn Blocks Explode</string>
+    <string name="required_sleeping_players">Required Sleeping Players</string>
+    <string name="respawn_radius">Respawn Radius</string>
+    <string name="simulation_distance">Simulation Distance</string>
+    <string name="chunks_count">%1$d chunks</string>
+    <string name="achievements_disabled_note">Achievements can’t be earned with these settings</string>
+    <string name="achievements_enabled_note">Achievements can be earned in this world</string>
+    <string name="no_packs_installed">No packs installed</string>
+    <string name="mode_survival">Survival</string>
+    <string name="mode_creative">Creative</string>
+    <string name="mode_adventure">Adventure</string>
+    <string name="diff_peaceful">Peaceful</string>
+    <string name="diff_easy">Easy</string>
+    <string name="diff_normal">Normal</string>
+    <string name="diff_hard">Hard</string>
+
     <!-- Play Store Validation -->
     <string name="minecraft_not_installed_title">Minecraft Not Installed</string>
     <string name="minecraft_not_installed_message">Minecraft isn’t installed on your device. Install Minecraft from Google Play or another source you trust to use this launcher.</string>

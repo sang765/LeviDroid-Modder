@@ -101,7 +101,7 @@
                     android:minHeight="0dp"
                     android:minWidth="0dp"
                     android:paddingHorizontal="14dp"
-                    android:text="@string/custom_flat_world"
+                    android:text="@string/create_new_world"
                     android:textAllCaps="false"
                     android:textColor="@color/on_primary"
                     android:textSize="12sp"

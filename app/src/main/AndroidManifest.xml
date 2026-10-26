@@ -138,12 +138,12 @@
             android:label="@string/edit_options" />
 
         <activity
-            android:name="org.levimc.launcher.ui.activities.CustomFlatWorldActivity"
+            android:name="org.levimc.launcher.ui.activities.CreateWorldActivity"
             android:exported="false"
             android:screenOrientation="sensorLandscape"
             android:configChanges="fontScale|density|smallestScreenSize|screenSize|uiMode|screenLayout|orientation|navigation|keyboardHidden|keyboard|touchscreen|locale|mnc|mcc"
             tools:ignore="DiscouragedApi"
-            android:label="@string/custom_flat_world" />
+            android:label="@string/create_new_world" />
 
         <activity
             android:name="org.levimc.launcher.ui.activities.AboutActivity"
