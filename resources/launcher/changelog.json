@@ -1,13 +1,22 @@
 {
   "schemaVersion": 1,
-  "headline": "LeviLauncher Modder v1.5.27-modder.78",
-  "summary": "The Logcat overlay now keeps working on Xiaomi devices: the new App-Level Logging option captures launcher and game logs in-process.",
+  "headline": "LeviLauncher Modder v1.5.27-modder.79",
+  "summary": "The logcat overlay gains an export button, and every remaining launcher string now speaks Vietnamese.",
   "sections": [
     {
       "title": "Features",
       "items": [
         {
-          "text": "App-Level Logging sub-option for the Logcat overlay: captures launcher and game logs in-process, bypassing MIUI/HyperOS logcat restrictions.",
+          "text": "Export button in the logcat overlay: save or share the current log as a text file from any app.",
+          "url": "https://github.com/sang765/LeviDroid-Modder"
+        }
+      ]
+    },
+    {
+      "title": "Localization",
+      "items": [
+        {
+          "text": "The 51 remaining untranslated strings (create-world screen included) now have Vietnamese translations.",
           "url": "https://github.com/sang765/LeviDroid-Modder"
         }
       ]
