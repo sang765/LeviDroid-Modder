@@ -1,17 +1,22 @@
 {
   "schemaVersion": 1,
-  "headline": "LeviLauncher Modder v1.5.27-modder.74",
-  "summary": "Client APK mod-menu libraries are now extracted even on cached installs, and the transfer dialog is now scrollable to prevent buttons from being pushed off-screen on smaller devices.",
+  "headline": "LeviLauncher Modder v1.5.27-modder.75",
+  "summary": "A full Create New World screen replaces the flat-world tool — game mode, difficulty, cheats, gamerules and packs, stamped with the selected instance's version — and dialogs no longer push their buttons off-screen on small devices.",
   "sections": [
+    {
+      "title": "New",
+      "items": [
+        {
+          "text": "Create New World replaces Custom Flat World: choose game mode, difficulty, hardcore, seed, flat layers, gamerules, cheats and behavior/resource packs. Worlds are stamped with the selected instance's game version, and behavior packs no longer void achievements.",
+          "url": "https://github.com/sang765/LeviDroid-Modder"
+        }
+      ]
+    },
     {
       "title": "Fixes",
       "items": [
         {
-          "text": "Mod-menu libraries of imported client APKs are picked up on cached installs, not only fresh imports.",
-          "url": "https://github.com/sang765/LeviDroid-Modder"
-        },
-        {
-          "text": "Transfer content dialog is now scrollable to prevent buttons from being pushed off-screen.",
+          "text": "Dialog content is clamped to the screen height and made scrollable, so bottom buttons such as CANCEL/TRANSFER stay reachable on small devices.",
           "url": "https://github.com/sang765/LeviDroid-Modder"
         }
       ]
