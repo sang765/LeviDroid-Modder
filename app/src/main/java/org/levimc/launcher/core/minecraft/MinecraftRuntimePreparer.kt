@@ -27,7 +27,8 @@ object MinecraftRuntimePreparer {
     data class PreparedRuntime(
         val version: GameVersion?,
         val gameManager: GamePackageManager,
-        val skippedIncompatibleMods: List<String> = emptyList()
+        val skippedIncompatibleMods: List<String> = emptyList(),
+        val loadedModIds: Set<String> = emptySet()
     )
 
     private data class NativeModLoadResult(
@@ -179,7 +180,7 @@ object MinecraftRuntimePreparer {
 
         listener.onProgress(100, "Runtime ready", "Entering Minecraft")
         trace.milestone("Runtime preparation finished")
-        return PreparedRuntime(version, gameManager, nativeModResult.skippedIncompatibleMods)
+        return PreparedRuntime(version, gameManager, nativeModResult.skippedIncompatibleMods, nativeModResult.loadedModIds)
     }
 
     @JvmStatic

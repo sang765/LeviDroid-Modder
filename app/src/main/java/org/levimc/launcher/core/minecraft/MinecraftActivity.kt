@@ -22,6 +22,7 @@ import androidx.appcompat.widget.AppCompatEditText
 import com.mojang.minecraftpe.MainActivity
 import org.levimc.launcher.core.crash.CrashReporter
 import org.levimc.launcher.core.mods.ModManager
+import org.levimc.launcher.core.mods.inbuilt.manager.InbuiltModManager
 import org.levimc.launcher.core.mods.inbuilt.nativemod.PojavControlsMod
 import org.levimc.launcher.core.mods.inbuilt.overlay.InbuiltOverlayManager
 import org.levimc.launcher.preloader.PreloaderInput
@@ -133,7 +134,10 @@ class MinecraftActivity : MainActivity(), PojavControlsHost {
             return
         }
         trace.mark("Native mod enable started")
-        ModManager.enableLoadedMods()
+        val hasNativeMods = preparedRuntime.loadedModIds.isNotEmpty()
+        if (hasNativeMods || InbuiltModManager.getInstance(this).isModMenuEnabled()) {
+            ModManager.enableLoadedMods()
+        }
         trace.mark("Native mod enable finished")
         ClientModBridge.attach(this)
         setLeviKeepRunningInBackground(FeatureSettings.getInstance().isForegroundServiceEnabled())
