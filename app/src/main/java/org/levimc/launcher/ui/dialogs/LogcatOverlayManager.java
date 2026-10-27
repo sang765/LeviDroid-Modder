@@ -106,7 +106,9 @@ public class LogcatOverlayManager {
 
     private void registerExportLauncher(Activity act) {
         if (exportLaunchers.containsKey(act)) return;
-        exportLaunchers.put(act, act.getActivityResultRegistry().register(
+        if (!(act instanceof androidx.activity.ComponentActivity)) return;
+        androidx.activity.ComponentActivity ca = (androidx.activity.ComponentActivity) act;
+        exportLaunchers.put(act, ca.getActivityResultRegistry().register(
                 "logcat_export",
                 act,
                 new ActivityResultContracts.CreateDocument("text/plain"),
