@@ -1,17 +1,13 @@
 {
   "schemaVersion": 1,
-  "headline": "LeviLauncher Modder v1.5.27-modder.88",
-  "summary": "Skips preloader menu-state hooks when nothing needs them and hardens the overlay visibility debounce against alternating hook flapping.",
+  "headline": "LeviLauncher Modder v1.5.27-modder.89",
+  "summary": "The client menu GL overlay (ClientModBridge) no longer attaches when the mod menu is disabled and no native mods are loaded.",
   "sections": [
     {
       "title": "Fixes",
       "items": [
         {
-          "text": "Preloader menu-state hooks are no longer installed when the mod menu is disabled and no native mods are loaded — with nothing to poll, the game runs without injected hooks (matches vanilla behavior).",
-          "url": "https://github.com/sang765/LeviDroid-Modder"
-        },
-        {
-          "text": "Overlay visibility debounce now also collapses pending state when flags return to the applied value, so alternating single-tick hook flapping can no longer apply visibility changes every few ticks.",
+          "text": "ClientModBridge no longer attaches its full-screen GLES3JNIView overlay, loads extra libraries or scans the game APK dex on sessions where the mod menu is disabled and no native mods are loaded.",
           "url": "https://github.com/sang765/LeviDroid-Modder"
         }
       ]
