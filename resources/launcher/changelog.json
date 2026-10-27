@@ -1,13 +1,17 @@
 {
   "schemaVersion": 1,
-  "headline": "LeviLauncher Modder v1.5.27-modder.87",
-  "summary": "Debounces inbuilt overlay visibility so single-tick hook flapping can no longer churn overlay windows and freeze the game for seconds.",
+  "headline": "LeviLauncher Modder v1.5.27-modder.88",
+  "summary": "Skips preloader menu-state hooks when nothing needs them and hardens the overlay visibility debounce against alternating hook flapping.",
   "sections": [
     {
       "title": "Fixes",
       "items": [
         {
-          "text": "Recurring in-game freezes on behavior-pack-heavy maps: overlay visibility now applies only after the state holds steady for 3 ticks, so single-tick flapping of hook-derived flags (signature drift on newer Minecraft builds) can no longer churn the overlay sub-windows, resize the game surface and stall rendering.",
+          "text": "Preloader menu-state hooks are no longer installed when the mod menu is disabled and no native mods are loaded — with nothing to poll, the game runs without injected hooks (matches vanilla behavior).",
+          "url": "https://github.com/sang765/LeviDroid-Modder"
+        },
+        {
+          "text": "Overlay visibility debounce now also collapses pending state when flags return to the applied value, so alternating single-tick hook flapping can no longer apply visibility changes every few ticks.",
           "url": "https://github.com/sang765/LeviDroid-Modder"
         }
       ]
