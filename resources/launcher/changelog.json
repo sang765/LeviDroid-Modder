@@ -1,13 +1,21 @@
 {
   "schemaVersion": 1,
-  "headline": "LeviLauncher Modder v1.5.27-modder.84",
-  "summary": "The logcat export button now opens the file manager so you can save the log anywhere as a .log file.",
+  "headline": "LeviLauncher Modder v1.5.27-modder.85",
+  "summary": "Fixes recurring multi-second in-game freezes and restores the AMOLED theme after exiting a game.",
   "sections": [
     {
-      "title": "Changes",
+      "title": "Fixes",
       "items": [
         {
-          "text": "Logcat export now opens the system file manager to pick a folder and save the log as a .log file, with a completion toast.",
+          "text": "Recurring ~3s in-game freezes: the Hotbar Slot inbuilt mod no longer installs its native hooks at launch unless the mod is actually enabled (stale signatures on newer Minecraft builds caused freeze loops, see upstream #365).",
+          "url": "https://github.com/LiteLDev/LeviLaunchroid/issues/365"
+        },
+        {
+          "text": "AMOLED theme: returning to the launcher after a game session no longer falls back to the M3 dark palette; the AMOLED configuration is now scoped to its own Resources instead of the shared AssetManager.",
+          "url": "https://github.com/sang765/LeviDroid-Modder"
+        },
+        {
+          "text": "Theme state: removed the global night-mode overrides that fought the selected theme during process start and theme manager construction.",
           "url": "https://github.com/sang765/LeviDroid-Modder"
         }
       ]
