@@ -1,13 +1,13 @@
 {
   "schemaVersion": 1,
-  "headline": "LeviLauncher Modder v1.5.27-modder.91",
-  "summary": "Adds a thread freeze sampler for App-Level Logging sessions: when an in-game thread stops progressing, its name and wait channel are logged into the capture.",
+  "headline": "LeviLauncher Modder v1.5.27-modder.92",
+  "summary": "Freeze sampler upgraded to nanosecond CPU precision and only tracks consistently-active threads; stall reports now include process-wide major page faults.",
   "sections": [
     {
       "title": "Improvements",
       "items": [
         {
-          "text": "While App-Level Logging is enabled, a sampler watches every thread of the game process once per second and logs the thread name plus its kernel wait channel whenever a previously-active thread stalls, so in-game freezes identify the exact blocked thread.",
+          "text": "Thread freeze sampler now reads schedstat nanosecond CPU time (with utime/stime fallback), tracks only consistently-active game threads, and includes the process major-page-fault delta in stall reports to expose swap storms.",
           "url": "https://github.com/sang765/LeviDroid-Modder"
         }
       ]
