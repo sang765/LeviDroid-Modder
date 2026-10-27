@@ -1,13 +1,13 @@
 {
   "schemaVersion": 1,
-  "headline": "LeviLauncher Modder v1.5.27-modder.89",
-  "summary": "The client menu GL overlay (ClientModBridge) no longer attaches when the mod menu is disabled and no native mods are loaded.",
+  "headline": "LeviLauncher Modder v1.5.27-modder.90",
+  "summary": "App-Level Logging now keeps 10000 captured lines so an in-game freeze window survives until export.",
   "sections": [
     {
-      "title": "Fixes",
+      "title": "Improvements",
       "items": [
         {
-          "text": "ClientModBridge no longer attaches its full-screen GLES3JNIView overlay, loads extra libraries or scans the game APK dex on sessions where the mod menu is disabled and no native mods are loaded.",
+          "text": "App-Level Logging ring buffer raised from 2000 to 10000 lines, so the log window covering an in-game freeze survives until you open the log overlay and export it.",
           "url": "https://github.com/sang765/LeviDroid-Modder"
         }
       ]

@@ -22,7 +22,7 @@ public final class AppLevelLogSink {
         void onLogLine(String line);
     }
 
-    private static final int MAX_LINES = 2000;
+    private static final int MAX_LINES = 10000;
     private static final ArrayDeque<String> ring = new ArrayDeque<>(MAX_LINES);
     private static final List<Listener> listeners = new CopyOnWriteArrayList<>();
     private static volatile boolean installFailed;
