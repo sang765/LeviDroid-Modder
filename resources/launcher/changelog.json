@@ -1,13 +1,13 @@
 {
   "schemaVersion": 1,
-  "headline": "LeviLauncher Modder v1.5.27-modder.86",
-  "summary": "Disables the ANR watchdog whose thread dump froze the whole process for seconds on low-RAM devices and could force-exit the game mid-session.",
+  "headline": "LeviLauncher Modder v1.5.27-modder.87",
+  "summary": "Debounces inbuilt overlay visibility so single-tick hook flapping can no longer churn overlay windows and freeze the game for seconds.",
   "sections": [
     {
       "title": "Fixes",
       "items": [
         {
-          "text": "Disabled the xCrash fork's ANR watchdog: its dump suspended every thread for seconds (full-process freeze on low-RAM devices) and the ANR callback force-exited the game via MainActivity when it fired mid-session. Java and native crash handlers remain enabled.",
+          "text": "Recurring in-game freezes on behavior-pack-heavy maps: overlay visibility now applies only after the state holds steady for 3 ticks, so single-tick flapping of hook-derived flags (signature drift on newer Minecraft builds) can no longer churn the overlay sub-windows, resize the game surface and stall rendering.",
           "url": "https://github.com/sang765/LeviDroid-Modder"
         }
       ]
