@@ -20,6 +20,8 @@ public class ThemeManager {
     public ThemeManager(Activity activity) {
         this.activity = activity;
         prefs = activity.getSharedPreferences(THEME_PREFS, Activity.MODE_PRIVATE);
+        // Force disable ForceDark globally to prevent SurfaceSyncer stutter on BP-heavy worlds
+        AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO);
     }
 
     public void applyTheme() {

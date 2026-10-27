@@ -145,8 +145,9 @@ public class LogcatOverlayManager {
             } catch (Exception e) {
                 ok = false;
             }
+            final boolean success = ok;
             mainHandler.post(() -> Toast.makeText(app,
-                    ok ? R.string.logcat_export_done : R.string.logcat_export_failed,
+                    success ? R.string.logcat_export_done : R.string.logcat_export_failed,
                     Toast.LENGTH_SHORT).show());
         }, "LogcatExport").start();
     }
