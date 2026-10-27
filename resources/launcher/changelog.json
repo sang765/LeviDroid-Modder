@@ -1,13 +1,13 @@
 {
   "schemaVersion": 1,
-  "headline": "LeviLauncher Modder v1.5.27-modder.90",
-  "summary": "App-Level Logging now keeps 10000 captured lines so an in-game freeze window survives until export.",
+  "headline": "LeviLauncher Modder v1.5.27-modder.91",
+  "summary": "Adds a thread freeze sampler for App-Level Logging sessions: when an in-game thread stops progressing, its name and wait channel are logged into the capture.",
   "sections": [
     {
       "title": "Improvements",
       "items": [
         {
-          "text": "App-Level Logging ring buffer raised from 2000 to 10000 lines, so the log window covering an in-game freeze survives until you open the log overlay and export it.",
+          "text": "While App-Level Logging is enabled, a sampler watches every thread of the game process once per second and logs the thread name plus its kernel wait channel whenever a previously-active thread stalls, so in-game freezes identify the exact blocked thread.",
           "url": "https://github.com/sang765/LeviDroid-Modder"
         }
       ]
