@@ -137,6 +137,11 @@ class MinecraftActivity : MainActivity(), PojavControlsHost {
             return
         }
         trace.mark("Native mod enable started")
+        try {
+            com.bumptech.glide.Glide.get(applicationContext).clearMemory()
+        } catch (_: Throwable) {
+        }
+        System.gc()
         if (hasLoadedNativeMods || InbuiltModManager.getInstance(this).isModMenuEnabled()) {
             ModManager.enableLoadedMods()
             ClientModBridge.attach(this)

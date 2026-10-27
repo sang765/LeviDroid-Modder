@@ -1,13 +1,13 @@
 {
   "schemaVersion": 1,
-  "headline": "LeviLauncher Modder v1.5.27-modder.92",
-  "summary": "Freeze sampler upgraded to nanosecond CPU precision and only tracks consistently-active threads; stall reports now include process-wide major page faults.",
+  "headline": "LeviLauncher Modder v1.5.27-modder.93",
+  "summary": "Frees launcher image caches and hints garbage collection before the game loads to reduce memory pressure on low-RAM devices.",
   "sections": [
     {
       "title": "Improvements",
       "items": [
         {
-          "text": "Thread freeze sampler now reads schedstat nanosecond CPU time (with utime/stime fallback), tracks only consistently-active game threads, and includes the process major-page-fault delta in stall reports to expose swap storms.",
+          "text": "Launcher image caches are cleared and a garbage collection pass runs before the game loads. Device captures showed thousands of major page faults per second while playing on low-RAM devices; freeing launcher-side memory reduces the pressure behind those stalls.",
           "url": "https://github.com/sang765/LeviDroid-Modder"
         }
       ]
