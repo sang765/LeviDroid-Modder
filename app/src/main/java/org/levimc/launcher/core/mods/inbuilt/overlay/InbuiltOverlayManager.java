@@ -1157,7 +1157,11 @@ public class InbuiltOverlayManager {
         stateHash = 31L * stateHash + (chickPetOverlay == null ? 0L : System.identityHashCode(chickPetOverlay));
         stateHash = 31L * stateHash + (modMenuButton == null ? 0L : System.identityHashCode(modMenuButton));
         stateHash = 31L * stateHash + (hudOverlay == null ? 0L : System.identityHashCode(hudOverlay));
-        if (stateHash == lastVisibilityStateHash) return;
+        if (stateHash == lastVisibilityStateHash) {
+            pendingVisibilityStateHash = Long.MIN_VALUE;
+            pendingVisibilityTicks = 0;
+            return;
+        }
         if (!forceVisibilityApply) {
             if (stateHash == pendingVisibilityStateHash) {
                 if (++pendingVisibilityTicks < VISIBILITY_APPLY_TICKS) return;
