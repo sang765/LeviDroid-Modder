@@ -10,9 +10,8 @@ import org.levimc.launcher.R;
 
 /**
  * Hands out a Resources instance pinned to the values-appliance-night (pure black)
- * palette. The configuration is built directly on the wrapped Resources so that
- * neither AppCompat night-mode reconfiguration nor the framework can rewrite the
- * uiMode bits before resource matching happens.
+ * palette via createConfigurationContext, so the configuration stays scoped to the
+ * derived Resources instead of being pushed into the shared AssetManager.
  */
 public final class AmoledContext extends ContextWrapper {
     private static final String TAG = "AmoledContext";
@@ -25,22 +24,23 @@ public final class AmoledContext extends ContextWrapper {
     @Override
     public Resources getResources() {
         if (resources == null) {
-            Resources base = super.getResources();
-            Configuration config = new Configuration(base.getConfiguration());
+            Resources baseRes = super.getResources();
+            Configuration config = new Configuration(baseRes.getConfiguration());
             config.uiMode = (config.uiMode & ~Configuration.UI_MODE_TYPE_MASK)
                     | Configuration.UI_MODE_TYPE_APPLIANCE
                     | Configuration.UI_MODE_NIGHT_YES;
-            Resources amoled = new Resources(base.getAssets(), base.getDisplayMetrics(), config);
-            // The deprecated ctor does not push the configuration into the shared
-            // AssetManager, and matching happens there — push it explicitly.
-            amoled.updateConfiguration(config, base.getDisplayMetrics());
+            // The deprecated new Resources(...) + updateConfiguration() route pushes
+            // the configuration into the shared AssetManager; the game session runs
+            // in this same process and overwrites it, so AMOLED degraded to the M3
+            // dark palette after returning to the launcher.
+            Resources amoled = getBaseContext().createConfigurationContext(config).getResources();
             // Self-check: if the appliance qualifier is not honored, degrade to the
             // M3 dark palette instead of showing a mixed screen.
             int background = amoled.getColor(R.color.background, null);
             if (background != 0xFF000000) {
                 Log.w(TAG, "AMOLED palette did not resolve (background=#"
                         + Integer.toHexString(background) + "), falling back to base resources");
-                resources = base;
+                resources = baseRes;
             } else {
                 resources = amoled;
                 Log.i(TAG, "AMOLED palette active (background=#"

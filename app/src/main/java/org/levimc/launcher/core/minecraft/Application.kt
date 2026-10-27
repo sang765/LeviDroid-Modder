@@ -14,8 +14,6 @@ class LauncherApplication : Application() {
 
     override fun onCreate() {
         super.onCreate()
-        // Force-disable ForceDark globally for the launcher to prevent SurfaceSyncer stutter on BP-heavy worlds
-        androidx.appcompat.app.AppCompatDelegate.setDefaultNightMode(androidx.appcompat.app.AppCompatDelegate.MODE_NIGHT_NO)
         context = applicationContext
         FeatureSettings.init(applicationContext)
         CrashReporter.init(this)
