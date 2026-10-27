@@ -1,0 +1,63 @@
+name: Game bug
+description: Report a problem that happens inside Minecraft after launching through LeviLauncher (crash, freeze, broken assets, ...).
+title: "[Game] "
+labels: ["bug", "game bug"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Use this when the launcher itself works but Minecraft crashes, freezes, or misbehaves after launch.
+  - type: input
+    id: launcher-version
+    attributes:
+      label: LeviLauncher version
+    validations:
+      required: true
+  - type: input
+    id: game-version
+    attributes:
+      label: Minecraft version (release / preview)
+      placeholder: "1.21.130"
+    validations:
+      required: true
+  - type: input
+    id: device
+    attributes:
+      label: Device & Android version
+    validations:
+      required: true
+  - type: dropdown
+    id: how-launched
+    attributes:
+      label: How was the game launched?
+      options:
+        - Installed Minecraft (Play Store / any source)
+        - Imported APK (no install)
+        - Patched/MCPatch build
+    validations:
+      required: true
+  - type: textarea
+    id: mods
+    attributes:
+      label: Mods / resource packs / shader packs loaded
+      description: List .so / .levipack mods, texture packs, etc.
+  - type: textarea
+    id: steps
+    attributes:
+      label: Steps to reproduce in-game
+    validations:
+      required: true
+  - type: textarea
+    id: actual
+    attributes:
+      label: What happens (crash log if available)
+      render: shell
+  - type: input
+    id: happens-without-launcher
+    attributes:
+      label: Does it happen when launching the same APK normally (without LeviLauncher)?
+      placeholder: "Yes / No / Not tested"
+  - type: textarea
+    id: extra
+    attributes:
+      label: Additional context

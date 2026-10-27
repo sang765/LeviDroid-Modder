@@ -1,0 +1,59 @@
+name: Launcher bug
+description: Report a problem in the LeviLauncher app (UI, version management, launching, accounts, worlds, settings, ...).
+title: "[Launcher] "
+labels: ["bug", "launcher bug"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Thanks for reporting. Please fill out what you can. Attach a screenshot or crash log if possible.
+  - type: input
+    id: launcher-version
+    attributes:
+      label: LeviLauncher version
+      description: 'Shown on About screen / release name (e.g. v1.5.27-modder.86)'
+      placeholder: "v1.5.27-modder.86"
+    validations:
+      required: true
+  - type: input
+    id: device
+    attributes:
+      label: Device & Android version
+      placeholder: "Redmi 10C, Android 13"
+    validations:
+      required: true
+  - type: input
+    id: minecraft-version
+    attributes:
+      label: "Minecraft: Bedrock Edition version (if relevant)"
+      placeholder: "1.21.130 (release) / 1.21.132 (preview)"
+  - type: textarea
+    id: steps
+    attributes:
+      label: Steps to reproduce
+      description: Minimal steps from a fresh install if possible.
+      placeholder: |
+        1. Open LeviLauncher
+        2. ...
+        3. See error
+    validations:
+      required: true
+  - type: textarea
+    id: expected
+    attributes:
+      label: Expected behavior
+  - type: textarea
+    id: actual
+    attributes:
+      label: Actual behavior / error message
+  - type: textarea
+    id: logs
+    attributes:
+      label: Logs / crash dump
+      description: Use the launcher's "copy log" button or paste relevant lines.
+      render: shell
+  - type: textarea
+    id: extra
+    attributes:
+      label: Additional context
+      description: Screenshots, device quirks, mods installed, etc.

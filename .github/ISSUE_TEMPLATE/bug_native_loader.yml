@@ -1,0 +1,63 @@
+name: Native loader bug
+description: Report an issue loading/running native modules (.so / .levipack) or the inbuilt native mod loader.
+title: "[Native loader] "
+labels: ["bug", "native loader bug"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Use this for module loading failures, crashes in native code, hook/signature issues, or loader errors.
+  - type: input
+    id: launcher-version
+    attributes:
+      label: LeviLauncher version
+    validations:
+      required: true
+  - type: input
+    id: game-version
+    attributes:
+      label: Minecraft version
+    validations:
+      required: true
+  - type: input
+    id: device
+    attributes:
+      label: Device & Android / ABI
+      placeholder: "Pixel 7, Android 14, arm64-v8a"
+    validations:
+      required: true
+  - type: input
+    id: module
+    attributes:
+      label: Module name & version
+      placeholder: "my_mod 1.2 (user/repo)"
+    validations:
+      required: true
+  - type: dropdown
+    id: module-type
+    attributes:
+      label: Module type
+      options:
+        - External .so / .levipack
+        - Inbuilt mod
+        - Preloader hook
+        - Other
+    validations:
+      required: true
+  - type: textarea
+    id: error
+    attributes:
+      label: Loader / error output
+      description: Paste the full error shown by the launcher or logcat.
+      render: shell
+    validations:
+      required: true
+  - type: textarea
+    id: maybe-worked-before
+    attributes:
+      label: Did this work on an older launcher / game version?
+      placeholder: "Yes, on v... / No / Unknown"
+  - type: textarea
+    id: extra
+    attributes:
+      label: Additional context
