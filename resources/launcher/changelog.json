@@ -1,6 +1,6 @@
 {
   "schemaVersion": 1,
-  "headline": "LeviLauncher Modder v1.5.27-modder.82",
+  "headline": "LeviLauncher Modder v1.5.27-modder.84",
   "summary": "The logcat export button now opens the file manager so you can save the log anywhere as a .log file.",
   "sections": [
     {
