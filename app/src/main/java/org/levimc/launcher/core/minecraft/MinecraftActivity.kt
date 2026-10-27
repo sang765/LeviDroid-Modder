@@ -121,10 +121,12 @@ class MinecraftActivity : MainActivity(), PojavControlsHost {
             return
         }
 
+        var hasLoadedNativeMods = false
         try {
             val preparedRuntime = MinecraftLaunchSession.getPreparedRuntime()
                 ?: MinecraftRuntimePreparer.prepare(applicationContext, intent)
             gameManager = preparedRuntime.gameManager
+            hasLoadedNativeMods = preparedRuntime.loadedModIds.isNotEmpty()
             configureMinecraftFirebase()
             trace.mark("Prepared runtime consumed")
         } catch (throwable: Throwable) {
@@ -134,8 +136,7 @@ class MinecraftActivity : MainActivity(), PojavControlsHost {
             return
         }
         trace.mark("Native mod enable started")
-        val hasNativeMods = preparedRuntime.loadedModIds.isNotEmpty()
-        if (hasNativeMods || InbuiltModManager.getInstance(this).isModMenuEnabled()) {
+        if (hasLoadedNativeMods || InbuiltModManager.getInstance(this).isModMenuEnabled()) {
             ModManager.enableLoadedMods()
         }
         trace.mark("Native mod enable finished")
