@@ -110,7 +110,7 @@ public class LogcatOverlayManager {
         androidx.activity.ComponentActivity ca = (androidx.activity.ComponentActivity) act;
         exportLaunchers.put(act, ca.getActivityResultRegistry().register(
                 "logcat_export",
-                act,
+                ca,
                 new ActivityResultContracts.CreateDocument("text/plain"),
                 this::handleExportResult));
     }
