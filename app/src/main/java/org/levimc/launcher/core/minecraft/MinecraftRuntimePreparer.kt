@@ -12,6 +12,8 @@ import org.levimc.launcher.core.auth.MsftAccountStore
 import org.levimc.launcher.core.auth.MsftAuthManager
 import org.levimc.launcher.core.mods.Mod
 import org.levimc.launcher.core.mods.ModManager
+import org.levimc.launcher.core.mods.inbuilt.manager.InbuiltModManager
+import org.levimc.launcher.core.mods.inbuilt.model.ModIds
 import org.levimc.launcher.core.mods.ModNativeLoader
 import org.levimc.launcher.core.versions.GameVersion
 import org.levimc.launcher.preloader.PreloaderInput
@@ -140,8 +142,15 @@ object MinecraftRuntimePreparer {
         } catch (_: Throwable) {}
 
         try {
-            org.levimc.launcher.core.mods.inbuilt.nativemod.HotbarSlotMod.initialize()
-            org.levimc.launcher.core.mods.inbuilt.overlay.HotbarSlotOverlay.preloadArtwork(context)
+            // HotbarSlotMod.initialize() installs its native game hooks at nativeInit
+            // regardless of the enabled flag; stale signatures on newer Minecraft
+            // builds then freeze the game for seconds in a loop (upstream #365).
+            // Only pre-initialize when the mod is enabled — the overlay path calls
+            // it on demand via HotbarSlotMod.setEnabled(true).
+            if (InbuiltModManager.getInstance(context).resolveInbuiltModEnabled(ModIds.HOTBAR_SLOT, false)) {
+                org.levimc.launcher.core.mods.inbuilt.nativemod.HotbarSlotMod.initialize()
+                org.levimc.launcher.core.mods.inbuilt.overlay.HotbarSlotOverlay.preloadArtwork(context)
+            }
         } catch (error: Throwable) {
             trace.warning("Hotbar Slot preparation unavailable", error.message ?: error.javaClass.simpleName)
         }
