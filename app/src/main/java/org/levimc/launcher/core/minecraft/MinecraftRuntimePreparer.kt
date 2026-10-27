@@ -142,11 +142,6 @@ object MinecraftRuntimePreparer {
         } catch (_: Throwable) {}
 
         try {
-            // HotbarSlotMod.initialize() installs its native game hooks at nativeInit
-            // regardless of the enabled flag; stale signatures on newer Minecraft
-            // builds then freeze the game for seconds in a loop (upstream #365).
-            // Only pre-initialize when the mod is enabled — the overlay path calls
-            // it on demand via HotbarSlotMod.setEnabled(true).
             if (InbuiltModManager.getInstance(context).resolveInbuiltModEnabled(ModIds.HOTBAR_SLOT, false)) {
                 org.levimc.launcher.core.mods.inbuilt.nativemod.HotbarSlotMod.initialize()
                 org.levimc.launcher.core.mods.inbuilt.overlay.HotbarSlotOverlay.preloadArtwork(context)

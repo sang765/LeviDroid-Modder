@@ -64,11 +64,6 @@ public class InbuiltOverlayManager {
     private static final int SPACING = 70;
     private static final int START_X = 50;
     private long lastVisibilityStateHash = Long.MIN_VALUE;
-    // Hook-derived visibility flags can flap for a single tick when signatures
-    // drift on newer Minecraft builds; applying every flap churns the overlay
-    // sub-windows, forces the game surface to re-sync (multi-second freezes on
-    // MIUI) and spams ForceDark/traversals. Apply only once the new state has
-    // held steady for a few ticks — a real menu open/close persists far longer.
     private static final int VISIBILITY_APPLY_TICKS = 3;
     private long pendingVisibilityStateHash = Long.MIN_VALUE;
     private int pendingVisibilityTicks;

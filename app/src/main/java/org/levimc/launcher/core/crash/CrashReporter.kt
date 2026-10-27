@@ -49,11 +49,6 @@ object CrashReporter {
                 setLogDir(logDir.absolutePath)
                 setJavaCallback(buildCrashCallback(appContext, CRASH_TYPE_JAVA))
                 setNativeCallback(buildCrashCallback(appContext, CRASH_TYPE_NATIVE))
-                // Stock xCrash only monitors ANRs via /data/anr/, which is
-                // inaccessible on modern Android; this fork adds a working
-                // watchdog whose dump suspends every thread for seconds — a
-                // full-process freeze on low-RAM devices — and the callback
-                // then force-exits the game via MainActivity. Keep ANR dumps off.
                 disableAnrCrashHandler()
                 setJavaRethrow(false)
                 setNativeRethrow(false)

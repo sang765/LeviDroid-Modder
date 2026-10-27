@@ -8,11 +8,6 @@ import android.util.Log;
 
 import org.levimc.launcher.R;
 
-/**
- * Hands out a Resources instance pinned to the values-appliance-night (pure black)
- * palette via createConfigurationContext, so the configuration stays scoped to the
- * derived Resources instead of being pushed into the shared AssetManager.
- */
 public final class AmoledContext extends ContextWrapper {
     private static final String TAG = "AmoledContext";
     private Resources resources;
@@ -29,13 +24,7 @@ public final class AmoledContext extends ContextWrapper {
             config.uiMode = (config.uiMode & ~Configuration.UI_MODE_TYPE_MASK)
                     | Configuration.UI_MODE_TYPE_APPLIANCE
                     | Configuration.UI_MODE_NIGHT_YES;
-            // The deprecated new Resources(...) + updateConfiguration() route pushes
-            // the configuration into the shared AssetManager; the game session runs
-            // in this same process and overwrites it, so AMOLED degraded to the M3
-            // dark palette after returning to the launcher.
             Resources amoled = getBaseContext().createConfigurationContext(config).getResources();
-            // Self-check: if the appliance qualifier is not honored, degrade to the
-            // M3 dark palette instead of showing a mixed screen.
             int background = amoled.getColor(R.color.background, null);
             if (background != 0xFF000000) {
                 Log.w(TAG, "AMOLED palette did not resolve (background=#"
