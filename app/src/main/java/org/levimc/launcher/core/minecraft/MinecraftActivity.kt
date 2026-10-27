@@ -21,6 +21,7 @@ import android.view.inputmethod.InputMethodManager
 import androidx.appcompat.widget.AppCompatEditText
 import com.mojang.minecraftpe.MainActivity
 import org.levimc.launcher.core.crash.CrashReporter
+import org.levimc.launcher.core.logging.ThreadFreezeSampler
 import org.levimc.launcher.core.mods.ModManager
 import org.levimc.launcher.core.mods.inbuilt.manager.InbuiltModManager
 import org.levimc.launcher.core.mods.inbuilt.nativemod.PojavControlsMod
@@ -139,6 +140,9 @@ class MinecraftActivity : MainActivity(), PojavControlsHost {
         if (hasLoadedNativeMods || InbuiltModManager.getInstance(this).isModMenuEnabled()) {
             ModManager.enableLoadedMods()
             ClientModBridge.attach(this)
+        }
+        if (FeatureSettings.getInstance().isAppLevelLoggingEnabled()) {
+            ThreadFreezeSampler.start()
         }
         trace.mark("Native mod enable finished")
         setLeviKeepRunningInBackground(FeatureSettings.getInstance().isForegroundServiceEnabled())
@@ -539,6 +543,7 @@ class MinecraftActivity : MainActivity(), PojavControlsHost {
     }
 
     override fun onDestroy() {
+        ThreadFreezeSampler.stop()
         PreloaderInput.cancelDocumentRequest("Minecraft closed")
         ModManager.disableAndUnloadLoadedMods()
         val shouldPrepareNormalExit = shouldRestartAfterNormalExit()
