@@ -1,13 +1,13 @@
 {
   "schemaVersion": 1,
-  "headline": "LeviLauncher Modder v1.5.27-modder.83",
-  "summary": "Fixed BP-heavy map stutter: disabled ForceDark/SurfaceSyncer conflict and dropped high-power WifiLock.",
+  "headline": "LeviLauncher Modder v1.5.27-modder.82",
+  "summary": "The logcat export button now opens the file manager so you can save the log anywhere as a .log file.",
   "sections": [
     {
-      "title": "Fixes",
+      "title": "Changes",
       "items": [
         {
-          "text": "Fixed periodic frame stutter on behavior-pack-heavy worlds: disabled ForceDark surface sync conflict and removed high-performance WifiLock that caused MIUI/Android scheduling stalls.",
+          "text": "Logcat export now opens the system file manager to pick a folder and save the log as a .log file, with a completion toast.",
           "url": "https://github.com/sang765/LeviDroid-Modder"
         }
       ]

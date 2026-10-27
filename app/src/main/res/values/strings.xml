@@ -776,6 +776,7 @@
     <string name="logcat_export">Export logs</string>
     <string name="logcat_export_empty">Nothing to export yet</string>
     <string name="logcat_export_failed">Export failed, oops!</string>
+    <string name="logcat_export_done">Log exported successfully</string>
     <string name="logcat_close">Close</string>
     <string name="logcat_corner_bottom_left">Resize: bottom-left</string>
     <string name="logcat_corner_bottom_right">Resize: bottom-right</string>

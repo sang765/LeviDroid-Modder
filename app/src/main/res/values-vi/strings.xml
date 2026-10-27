@@ -672,6 +672,7 @@
     <string name="logcat_export">Xuất log ra ngoài</string>
     <string name="logcat_export_empty">Chưa có gì để xuất cả!</string>
     <string name="logcat_export_failed">Chết, xuất log hỏng mất rồi!</string>
+    <string name="logcat_export_done">Đã xuất log ra ngoài rồi nha!</string>
     <string name="logcat_close">Đóng</string>
     <string name="logcat_corner_bottom_left">Thay đổi kích thước: góc dưới bên trái</string>
     <string name="logcat_corner_bottom_right">Thay đổi kích thước: góc dưới bên phải</string>
