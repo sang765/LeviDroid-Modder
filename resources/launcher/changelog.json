@@ -1,13 +1,13 @@
 {
   "schemaVersion": 1,
-  "headline": "LeviLauncher Modder v1.6.0-modder.4",
-  "summary": "The log overlay no longer pushes the full 10000-line capture through the UI when the game resumes, fixing the app-not-responding dialog at game startup.",
+  "headline": "LeviLauncher Modder v1.6.0-modder.5",
+  "summary": "The version transfer dialog now uses two direct action buttons, so it no longer pushes its confirm button off-screen.",
   "sections": [
     {
       "title": "Fixes",
       "items": [
         {
-          "text": "With App-Level Logging enabled, resuming the game replayed the entire 10000-line capture into the log overlay's RecyclerView on the main thread, freezing game startup on low-RAM devices. The on-screen history is now capped at 300 lines while exports keep the full capture.",
+          "text": "Version transfer dialog: the Copy and Move choices are now two accent action buttons that start the transfer immediately. The separate confirm row below the dialog is gone, which stops the button from being pushed off-screen in landscape.",
           "url": "https://github.com/sang765/LeviDroid-Modder"
         }
       ]

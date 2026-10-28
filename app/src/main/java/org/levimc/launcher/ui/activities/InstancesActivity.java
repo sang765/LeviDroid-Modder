@@ -18,7 +18,6 @@ import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
-import android.widget.RadioGroup;
 import android.widget.ScrollView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -362,26 +361,33 @@ public class InstancesActivity extends BaseActivity {
 
     private void showTransferOptionsDialog(GameVersion source, GameVersion target) {
         View dialogView = getLayoutInflater().inflate(R.layout.dialog_transfer_profile, null);
-        RadioGroup modeGroup = dialogView.findViewById(R.id.transfer_mode_group);
-        new CustomAlertDialog(this)
+        CustomAlertDialog dialog = new CustomAlertDialog(this)
                 .setTitleText(getString(R.string.transfer_profile_title) + "\n"
                         + source.displayName + " → " + target.displayName)
                 .setCustomView(dialogView)
-                .setPositiveButton(getString(R.string.transfer), v -> {
-                    Set<String> kinds = new LinkedHashSet<>();
-                    if (((CheckBox) dialogView.findViewById(R.id.check_mods)).isChecked()) kinds.add(KIND_MODS);
-                    if (((CheckBox) dialogView.findViewById(R.id.check_worlds)).isChecked()) kinds.add(KIND_WORLDS);
-                    if (((CheckBox) dialogView.findViewById(R.id.check_resource_packs)).isChecked()) kinds.add(KIND_RESOURCE_PACKS);
-                    if (((CheckBox) dialogView.findViewById(R.id.check_behavior_packs)).isChecked()) kinds.add(KIND_BEHAVIOR_PACKS);
-                    if (((CheckBox) dialogView.findViewById(R.id.check_skin_packs)).isChecked()) kinds.add(KIND_SKIN_PACKS);
-                    if (((CheckBox) dialogView.findViewById(R.id.check_screenshots)).isChecked()) kinds.add(KIND_SCREENSHOTS);
-                    if (((CheckBox) dialogView.findViewById(R.id.check_settings)).isChecked()) kinds.add(KIND_SETTINGS);
-                    boolean move = modeGroup.getCheckedRadioButtonId() == R.id.radio_move;
-                    runProfileTransfer(source, target, kinds, move);
-                })
-                .setNegativeButton(getString(R.string.cancel), null)
-                .setBlurBackground(true)
-                .show();
+                .setBlurBackground(true);
+        TextView copyButton = dialogView.findViewById(R.id.btn_transfer_copy);
+        TextView moveButton = dialogView.findViewById(R.id.btn_transfer_move);
+        applyAccentButtonStyle(copyButton);
+        applyAccentButtonStyle(moveButton);
+        copyButton.setOnClickListener(v -> startProfileTransfer(dialog, dialogView, source, target, false));
+        moveButton.setOnClickListener(v -> startProfileTransfer(dialog, dialogView, source, target, true));
+        dialog.show();
+    }
+
+    private void startProfileTransfer(CustomAlertDialog dialog, View dialogView,
+            GameVersion source, GameVersion target, boolean move) {
+        Set<String> kinds = new LinkedHashSet<>();
+        if (((CheckBox) dialogView.findViewById(R.id.check_mods)).isChecked()) kinds.add(KIND_MODS);
+        if (((CheckBox) dialogView.findViewById(R.id.check_worlds)).isChecked()) kinds.add(KIND_WORLDS);
+        if (((CheckBox) dialogView.findViewById(R.id.check_resource_packs)).isChecked()) kinds.add(KIND_RESOURCE_PACKS);
+        if (((CheckBox) dialogView.findViewById(R.id.check_behavior_packs)).isChecked()) kinds.add(KIND_BEHAVIOR_PACKS);
+        if (((CheckBox) dialogView.findViewById(R.id.check_skin_packs)).isChecked()) kinds.add(KIND_SKIN_PACKS);
+        if (((CheckBox) dialogView.findViewById(R.id.check_screenshots)).isChecked()) kinds.add(KIND_SCREENSHOTS);
+        if (((CheckBox) dialogView.findViewById(R.id.check_settings)).isChecked()) kinds.add(KIND_SETTINGS);
+        if (kinds.isEmpty()) return;
+        dialog.dismiss();
+        runProfileTransfer(source, target, kinds, move);
     }
 
     private void runProfileTransfer(GameVersion source, GameVersion target, Set<String> kinds, boolean move) {

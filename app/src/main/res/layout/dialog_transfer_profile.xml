@@ -4,7 +4,8 @@
     android:layout_height="wrap_content"
     android:orientation="vertical"
     android:paddingHorizontal="24dp"
-    android:paddingTop="8dp">
+    android:paddingTop="8dp"
+    android:paddingBottom="8dp">
 
     <ScrollView
         android:layout_width="match_parent"
@@ -85,33 +86,32 @@
                 android:textColor="@color/on_surface"
                 android:textSize="14sp" />
 
-            <RadioGroup
-                android:id="@+id/transfer_mode_group"
+            <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="12dp"
+                android:layout_marginTop="16dp"
                 android:orientation="horizontal">
 
-                <RadioButton
-                    android:id="@+id/radio_copy"
-                    android:layout_width="wrap_content"
+                <Button
+                    android:id="@+id/btn_transfer_copy"
+                    android:layout_width="0dp"
                     android:layout_height="wrap_content"
-                    android:checked="true"
+                    android:layout_marginEnd="6dp"
+                    android:layout_weight="1"
                     android:fontFamily="@font/misans"
                     android:text="@string/transfer_copy"
-                    android:textColor="@color/on_surface"
                     android:textSize="14sp" />
 
-                <RadioButton
-                    android:id="@+id/radio_move"
-                    android:layout_width="wrap_content"
+                <Button
+                    android:id="@+id/btn_transfer_move"
+                    android:layout_width="0dp"
                     android:layout_height="wrap_content"
-                    android:layout_marginStart="24dp"
+                    android:layout_marginStart="6dp"
+                    android:layout_weight="1"
                     android:fontFamily="@font/misans"
                     android:text="@string/transfer_move"
-                    android:textColor="@color/on_surface"
                     android:textSize="14sp" />
-            </RadioGroup>
+            </LinearLayout>
         </LinearLayout>
     </ScrollView>
 </LinearLayout>
