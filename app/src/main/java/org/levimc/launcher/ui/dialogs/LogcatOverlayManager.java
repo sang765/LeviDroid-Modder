@@ -40,6 +40,7 @@ public class LogcatOverlayManager {
     private final Handler mainHandler = new Handler(Looper.getMainLooper());
     private volatile boolean onSplash = false;
     private volatile boolean onLoading = false;
+    private volatile boolean gameHudHidden = false;
 
     // SAF export: one picker launcher per activity, registered at CREATED so
     // the registry can deliver the result after the file manager closes.
@@ -75,7 +76,7 @@ public class LogcatOverlayManager {
     }
 
     private void updateVisibility() {
-        boolean show = FeatureSettings.getInstance().isLogcatOverlayEnabled() && !onSplash && !onLoading;
+        boolean show = FeatureSettings.getInstance().isLogcatOverlayEnabled() && !onSplash && !onLoading && !gameHudHidden;
         mainHandler.post(() -> {
             if (overlay == null) return;
             if (show) overlay.show(); else overlay.hide();
@@ -191,6 +192,12 @@ public class LogcatOverlayManager {
         sp.registerOnSharedPreferenceChangeListener((prefs, key) -> {
             if ("settings_json".equals(key)) updateVisibility();
         });
+    }
+
+    public void setGameHudHidden(boolean hidden) {
+        if (gameHudHidden == hidden) return;
+        gameHudHidden = hidden;
+        updateVisibility();
     }
 
     public void refreshVisibility() { updateVisibility(); }

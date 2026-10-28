@@ -1,13 +1,38 @@
 {
   "schemaVersion": 1,
-  "headline": "LeviLauncher Modder v1.5.27-modder.93",
-  "summary": "Frees launcher image caches and hints garbage collection before the game loads to reduce memory pressure on low-RAM devices.",
+  "headline": "LeviLauncher Modder v1.6.0-modder.1",
+  "summary": "Merges upstream 1.6.0 (Minecraft 26.60 support, hideable launcher HUD, world map and NBT editing) on top of the fork's freeze and theme fixes.",
   "sections": [
     {
-      "title": "Improvements",
+      "title": "From upstream 1.6.0",
       "items": [
         {
-          "text": "Launcher image caches are cleared and a garbage collection pass runs before the game loads. Device captures showed thousands of major page faults per second while playing on low-RAM devices; freeing launcher-side memory reduces the pressure behind those stalls.",
+          "text": "Support for Minecraft 26.60 — updated libinbuiltmods signatures and preloader signature rules.",
+          "url": "https://github.com/LiteLDev/LeviLaunchroid"
+        },
+        {
+          "text": "New option to hide the launcher HUD and overlay buttons.",
+          "url": "https://github.com/LiteLDev/LeviLaunchroid"
+        },
+        {
+          "text": "World map, advanced NBT editing and performance optimisations.",
+          "url": "https://github.com/LiteLDev/LeviLaunchroid"
+        }
+      ]
+    },
+    {
+      "title": "Fork fixes carried over",
+      "items": [
+        {
+          "text": "Recurring in-game freezes: Hotbar Slot hooks stay gated, overlay visibility debounce, preloader hooks skipped when unused, ClientModBridge overlay gated, and the thread freeze sampler under App-Level Logging.",
+          "url": "https://github.com/sang765/LeviDroid-Modder"
+        },
+        {
+          "text": "AMOLED theme survives game sessions; xCrash fork ANR watchdog stays disabled so game launches are not interrupted.",
+          "url": "https://github.com/sang765/LeviDroid-Modder"
+        },
+        {
+          "text": "Launcher image caches clear before the game loads to reduce memory pressure on low-RAM devices.",
           "url": "https://github.com/sang765/LeviDroid-Modder"
         }
       ]

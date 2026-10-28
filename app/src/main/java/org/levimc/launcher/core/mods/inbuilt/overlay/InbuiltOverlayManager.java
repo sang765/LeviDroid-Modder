@@ -11,6 +11,7 @@ import org.levimc.launcher.core.mods.inbuilt.model.MoreButtonConfig;
 import org.levimc.launcher.core.mods.inbuilt.model.ModIds;
 import org.levimc.launcher.core.mods.inbuilt.nativemod.PojavControlsMod;
 import org.levimc.launcher.core.mods.inbuilt.nativemod.HotbarSlotMod;
+import org.levimc.launcher.ui.dialogs.LogcatOverlayManager;
 import org.levimc.pojavcontrols.PojavControls;
 import org.levimc.pojavcontrols.PojavControlsHost;
 
@@ -68,6 +69,7 @@ public class InbuiltOverlayManager {
     private long pendingVisibilityStateHash = Long.MIN_VALUE;
     private int pendingVisibilityTicks;
     private boolean forceVisibilityApply = true;
+    private volatile boolean launcherHudHidden;
 
     public InbuiltOverlayManager(Activity activity) {
         this.activity = activity;
@@ -222,6 +224,12 @@ public class InbuiltOverlayManager {
         if (manager.resolveInbuiltModEnabled(modId, false)) {
             handleModToggle(modId, true);
         }
+    }
+
+    public void setLauncherHudHidden(boolean hidden) {
+        if (launcherHudHidden == hidden) return;
+        launcherHudHidden = hidden;
+        refreshRuntimeVisibility();
     }
 
     public void handleModToggle(String modId, boolean enabled) {
@@ -711,6 +719,10 @@ public class InbuiltOverlayManager {
         hotbarSlotOverlayMap.clear();
         modActiveStates.clear();
         modPositionMap.clear();
+        launcherHudHidden = false;
+        PojavControls.setHudVisible(true);
+        LogcatOverlayManager logcatManager = LogcatOverlayManager.getInstance();
+        if (logcatManager != null) logcatManager.setGameHudHidden(false);
         if (chickPetOverlay != null) {
             chickPetOverlay.hide();
             chickPetOverlay = null;
@@ -853,6 +865,7 @@ public class InbuiltOverlayManager {
     }
 
     public boolean handleScrollEvent(float scrollDelta) {
+        if (launcherHudHidden && InbuiltModManager.getInstance(activity).isLauncherHudHideEnabled()) return false;
         for (ExternalButtonOverlay overlay : externalButtonOverlayMap.values()) {
             if (overlay.onScroll(scrollDelta)) {
                 return true;
@@ -866,6 +879,7 @@ public class InbuiltOverlayManager {
     }
 
     public boolean handleTouchEvent(MotionEvent event) {
+        if (launcherHudHidden && InbuiltModManager.getInstance(activity).isLauncherHudHideEnabled()) return false;
         if (cpsDisplayOverlay != null) {
             return cpsDisplayOverlay.handleTouchEvent(event);
         }
@@ -873,6 +887,7 @@ public class InbuiltOverlayManager {
     }
 
     public boolean handleMouseEvent(MotionEvent event) {
+        if (launcherHudHidden && InbuiltModManager.getInstance(activity).isLauncherHudHideEnabled()) return false;
         if (cpsDisplayOverlay != null) {
             return cpsDisplayOverlay.handleMouseEvent(event);
         }
@@ -1116,13 +1131,14 @@ public class InbuiltOverlayManager {
         boolean isShowingMenu = org.levimc.launcher.preloader.PreloaderInput.isShowingMenu();
         boolean isFloatingModMenuButtonHidden = ExternalModBridge.isFloatingModMenuButtonHidden();
         boolean showGameOverlays = isHudScreenOpen && !isShowingMenu && !isPauseOpen;
+        boolean hideLauncherOverlays = launcherHudHidden && manager.isLauncherHudHideEnabled();
         if (!showGameOverlays && hasPressedKeybinds) activity.runOnUiThread(this::releaseKeybinds);
         boolean inbuiltVisible = hudEditorMode || showGameOverlays;
         int hotbarGameplayState = HotbarSlotMod.getGameplayVisibilityState();
         boolean hotbarGameplayVisible = hotbarGameplayState >= 0
                 ? hotbarGameplayState == 1 : showGameOverlays;
-        boolean hotbarVisible = hudEditorMode || hotbarGameplayVisible ||
-                manager.isOverlayShowEverywhere(ModIds.HOTBAR_SLOT);
+        boolean hotbarVisible = !hideLauncherOverlays && (hudEditorMode || hotbarGameplayVisible ||
+                manager.isOverlayShowEverywhere(ModIds.HOTBAR_SLOT));
 
         if (hotbarTrackingEnabled && hotbarVisible && !hotbarSlotOverlayMap.isEmpty()) {
             HotbarSlotMod.copyItemCounts(hotbarItemCounts);
@@ -1132,7 +1148,8 @@ public class InbuiltOverlayManager {
         }
 
         for (BaseOverlayButton overlay : overlays) {
-            if (inbuiltVisible || manager.isOverlayShowEverywhere(overlay.getOverlayConfigKey())) {
+            if ((!hideLauncherOverlays || overlay instanceof ToggleHudOverlay) &&
+                    (inbuiltVisible || manager.isOverlayShowEverywhere(overlay.getOverlayConfigKey()))) {
                 overlay.tick();
             }
         }
@@ -1141,6 +1158,7 @@ public class InbuiltOverlayManager {
         }
 
         long stateHash = manager.getOverlayVisibilityRevision();
+        stateHash = 31L * stateHash + (hideLauncherOverlays ? 1L : 0L);
         stateHash = 31L * stateHash + (isPauseOnly ? 1L : 0L);
         stateHash = 31L * stateHash + (isPauseOpen ? 1L : 0L);
         stateHash = 31L * stateHash + (isHudScreenOpen ? 1L : 0L);
@@ -1175,8 +1193,11 @@ public class InbuiltOverlayManager {
         lastVisibilityStateHash = stateHash;
 
         activity.runOnUiThread(() -> {
+            PojavControls.setHudVisible(!hideLauncherOverlays);
+            LogcatOverlayManager logcatManager = LogcatOverlayManager.getInstance();
+            if (logcatManager != null) logcatManager.setGameHudHidden(hideLauncherOverlays);
             if (modMenuButton != null) {
-                int visibility = !isFloatingModMenuButtonHidden && !hudEditorMode &&
+                int visibility = !hideLauncherOverlays && !isFloatingModMenuButtonHidden && !hudEditorMode &&
                         (!isPauseOnly || (isPauseOpen && isShowingMenu))
                         ? android.view.View.VISIBLE
                         : android.view.View.GONE;
@@ -1188,7 +1209,7 @@ public class InbuiltOverlayManager {
             }
 
             if (hudOverlay != null) {
-                int visibility = hudOverlay.isHudEditorMode() || showGameOverlays
+                int visibility = !hideLauncherOverlays && (hudOverlay.isHudEditorMode() || showGameOverlays)
                         ? android.view.View.VISIBLE
                         : android.view.View.GONE;
                 if (hudOverlay.getVisibility() != visibility) {
@@ -1198,8 +1219,10 @@ public class InbuiltOverlayManager {
 
             for (BaseOverlayButton overlay : overlays) {
                 if (overlay.overlayView != null) {
-                    boolean visible = overlay instanceof HotbarSlotOverlay ? hotbarVisible :
-                            inbuiltVisible || manager.isOverlayShowEverywhere(overlay.getOverlayConfigKey());
+                    boolean visible = overlay instanceof ToggleHudOverlay
+                            ? inbuiltVisible || manager.isOverlayShowEverywhere(overlay.getOverlayConfigKey())
+                            : !hideLauncherOverlays && (overlay instanceof HotbarSlotOverlay ? hotbarVisible :
+                            inbuiltVisible || manager.isOverlayShowEverywhere(overlay.getOverlayConfigKey()));
                     int visibility = visible
                             ? android.view.View.VISIBLE
                             : android.view.View.GONE;
@@ -1210,21 +1233,21 @@ public class InbuiltOverlayManager {
             }
 
             if (chickPetOverlay != null) {
-                int visibility = inbuiltVisible || manager.isOverlayShowEverywhere(ModIds.CHICK_PET)
+                int visibility = !hideLauncherOverlays && (inbuiltVisible || manager.isOverlayShowEverywhere(ModIds.CHICK_PET))
                         ? android.view.View.VISIBLE
                         : android.view.View.GONE;
                 chickPetOverlay.setVisibility(visibility);
             }
 
             if (fpsDisplayOverlay != null) {
-                int visibility = inbuiltVisible || manager.isOverlayShowEverywhere(ModIds.FPS_DISPLAY)
+                int visibility = !hideLauncherOverlays && (inbuiltVisible || manager.isOverlayShowEverywhere(ModIds.FPS_DISPLAY))
                         ? android.view.View.VISIBLE
                         : android.view.View.GONE;
                 fpsDisplayOverlay.setVisibility(visibility);
             }
 
             if (cpsDisplayOverlay != null) {
-                int visibility = inbuiltVisible || manager.isOverlayShowEverywhere(ModIds.CPS_DISPLAY)
+                int visibility = !hideLauncherOverlays && (inbuiltVisible || manager.isOverlayShowEverywhere(ModIds.CPS_DISPLAY))
                         ? android.view.View.VISIBLE
                         : android.view.View.GONE;
                 cpsDisplayOverlay.setVisibility(visibility);
