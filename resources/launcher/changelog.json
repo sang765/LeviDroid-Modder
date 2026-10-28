@@ -1,13 +1,13 @@
 {
   "schemaVersion": 1,
-  "headline": "LeviLauncher Modder v1.6.0-modder.3",
-  "summary": "Restores the 26.50-era preloader menu signatures for Minecraft builds up to 26.5x, fixing the app-not-responding dialog when opening the pause or mod menu after the 1.6.0 merge.",
+  "headline": "LeviLauncher Modder v1.6.0-modder.4",
+  "summary": "The log overlay no longer pushes the full 10000-line capture through the UI when the game resumes, fixing the app-not-responding dialog at game startup.",
   "sections": [
     {
       "title": "Fixes",
       "items": [
         {
-          "text": "Opening the pause menu or mod menu no longer freezes into an app-not-responding dialog on Minecraft 26.5x builds: upstream's 1.6.0 signature rules retuned the 1.26.50+ entry for 26.60, so preloader hooks landed on wrong functions. The working 26.5x signatures are restored for that entry while the new 26.60 entry stays for newer builds (rules revision 6, picked up automatically by the in-app rules refresh).",
+          "text": "With App-Level Logging enabled, resuming the game replayed the entire 10000-line capture into the log overlay's RecyclerView on the main thread, freezing game startup on low-RAM devices. The on-screen history is now capped at 300 lines while exports keep the full capture.",
           "url": "https://github.com/sang765/LeviDroid-Modder"
         }
       ]

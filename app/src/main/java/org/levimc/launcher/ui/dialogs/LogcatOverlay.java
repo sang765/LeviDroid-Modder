@@ -420,8 +420,13 @@ public class LogcatOverlay extends FrameLayout {
         if (wantAppLevel) {
             appLevelSource = true;
             sinkActive = true;
-            // Replay what was captured while the overlay was hidden.
-            for (String line : AppLevelLogSink.snapshotRing()) pendingLines.offer(line);
+            // Replay a capped slice for the on-screen history: pushing the full
+            // 10000-line ring through the RecyclerView on the main thread
+            // freezes game startup on low-RAM devices. The full ring stays
+            // available to exportLogs().
+            java.util.List<String> replay = AppLevelLogSink.snapshotRing();
+            int from = Math.max(0, replay.size() - 300);
+            for (String line : replay.subList(from, replay.size())) pendingLines.offer(line);
             AppLevelLogSink.addListener(appLevelListener);
         } else {
             appLevelSource = false;
@@ -516,7 +521,11 @@ public class LogcatOverlay extends FrameLayout {
 
     private void exportLogs() {
         List<String> snapshot;
-        synchronized (logBuffer) { snapshot = new ArrayList<>(logBuffer); }
+        if (appLevelSource) {
+            snapshot = AppLevelLogSink.snapshotRing();
+        } else {
+            synchronized (logBuffer) { snapshot = new ArrayList<>(logBuffer); }
+        }
         if (snapshot.isEmpty()) {
             Toast.makeText(getContext(), R.string.logcat_export_empty, Toast.LENGTH_SHORT).show();
             return;
