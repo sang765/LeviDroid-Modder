@@ -138,6 +138,9 @@ object MinecraftRuntimePreparer {
         listener.onLog("Loading native mods")
 
         try {
+            org.levimc.launcher.core.mods.inbuilt.nativemod.InbuiltModsNative.setPreferNewSignatures(
+                gameManager.isVersionAtLeast(version.versionCode, "1.26.60.00")
+            )
             org.levimc.launcher.core.mods.inbuilt.nativemod.InbuiltModsNative.loadLibrary()
             org.levimc.launcher.core.mods.inbuilt.nativemod.GyroMod.nativePreResolve()
         } catch (_: Throwable) {}

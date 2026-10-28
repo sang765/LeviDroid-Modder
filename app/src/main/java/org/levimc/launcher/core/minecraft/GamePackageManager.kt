@@ -470,7 +470,7 @@ class GamePackageManager private constructor(
         return isVersionAtLeast(versionCode, targetVersion)
     }
 
-    private fun isVersionAtLeast(currentVersion: String, targetVersion: String): Boolean {
+    fun isVersionAtLeast(currentVersion: String, targetVersion: String): Boolean {
         return try {
             val current = currentVersion.replace(Regex("[^0-9.]"), "").split(".")
             val target = targetVersion.split(".")

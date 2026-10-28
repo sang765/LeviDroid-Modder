@@ -1,38 +1,13 @@
 {
   "schemaVersion": 1,
-  "headline": "LeviLauncher Modder v1.6.0-modder.1",
-  "summary": "Merges upstream 1.6.0 (Minecraft 26.60 support, hideable launcher HUD, world map and NBT editing) on top of the fork's freeze and theme fixes.",
+  "headline": "LeviLauncher Modder v1.6.0-modder.2",
+  "summary": "Fixes the crash when opening the mod menu on Minecraft builds older than 26.60 by shipping both inbuilt-mods libraries and selecting per game version.",
   "sections": [
     {
-      "title": "From upstream 1.6.0",
+      "title": "Fixes",
       "items": [
         {
-          "text": "Support for Minecraft 26.60 — updated libinbuiltmods signatures and preloader signature rules.",
-          "url": "https://github.com/LiteLDev/LeviLaunchroid"
-        },
-        {
-          "text": "New option to hide the launcher HUD and overlay buttons.",
-          "url": "https://github.com/LiteLDev/LeviLaunchroid"
-        },
-        {
-          "text": "World map, advanced NBT editing and performance optimisations.",
-          "url": "https://github.com/LiteLDev/LeviLaunchroid"
-        }
-      ]
-    },
-    {
-      "title": "Fork fixes carried over",
-      "items": [
-        {
-          "text": "Recurring in-game freezes: Hotbar Slot hooks stay gated, overlay visibility debounce, preloader hooks skipped when unused, ClientModBridge overlay gated, and the thread freeze sampler under App-Level Logging.",
-          "url": "https://github.com/sang765/LeviDroid-Modder"
-        },
-        {
-          "text": "AMOLED theme survives game sessions; xCrash fork ANR watchdog stays disabled so game launches are not interrupted.",
-          "url": "https://github.com/sang765/LeviDroid-Modder"
-        },
-        {
-          "text": "Launcher image caches clear before the game loads to reduce memory pressure on low-RAM devices.",
+          "text": "Opening the mod menu or enabling inbuilt mods on Minecraft builds older than 26.60 no longer crashes: both the 26.60-tuned and the legacy inbuilt-mods libraries now ship in the APK, and the launcher loads the one matching the selected game version.",
           "url": "https://github.com/sang765/LeviDroid-Modder"
         }
       ]
