@@ -1,13 +1,13 @@
 {
   "schemaVersion": 1,
-  "headline": "LeviLauncher Modder v1.6.0-modder.2",
-  "summary": "Fixes the crash when opening the mod menu on Minecraft builds older than 26.60 by shipping both inbuilt-mods libraries and selecting per game version.",
+  "headline": "LeviLauncher Modder v1.6.0-modder.3",
+  "summary": "Restores the 26.50-era preloader menu signatures for Minecraft builds up to 26.5x, fixing the app-not-responding dialog when opening the pause or mod menu after the 1.6.0 merge.",
   "sections": [
     {
       "title": "Fixes",
       "items": [
         {
-          "text": "Opening the mod menu or enabling inbuilt mods on Minecraft builds older than 26.60 no longer crashes: both the 26.60-tuned and the legacy inbuilt-mods libraries now ship in the APK, and the launcher loads the one matching the selected game version.",
+          "text": "Opening the pause menu or mod menu no longer freezes into an app-not-responding dialog on Minecraft 26.5x builds: upstream's 1.6.0 signature rules retuned the 1.26.50+ entry for 26.60, so preloader hooks landed on wrong functions. The working 26.5x signatures are restored for that entry while the new 26.60 entry stays for newer builds (rules revision 6, picked up automatically by the in-app rules refresh).",
           "url": "https://github.com/sang765/LeviDroid-Modder"
         }
       ]
