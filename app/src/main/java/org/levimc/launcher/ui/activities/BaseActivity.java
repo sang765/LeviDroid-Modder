@@ -308,7 +308,7 @@ public class BaseActivity extends AppCompatActivity {
             tintRailIcon(id, color);
         }
 
-        if (pm.hasBackgroundImage()) {
+        if (pm.hasBackgroundEffect()) {
             View navRoot = findViewById(R.id.nav_bar_root);
             if (navRoot != null) {
                 boolean isDark = (getResources().getConfiguration().uiMode & Configuration.UI_MODE_NIGHT_MASK)
@@ -637,7 +637,7 @@ public class BaseActivity extends AppCompatActivity {
         return getClass().getName().startsWith("org.levimc.launcher.ui.activities.")
                 && !(this instanceof SplashActivity)
                 && !LauncherBackgroundController.isMinecraftBlocked()
-                && new PersonalizationManager(this).hasBackgroundImage();
+                && new PersonalizationManager(this).hasBackgroundEffect();
     }
 
     private boolean isLauncherNavigation(Intent intent) {

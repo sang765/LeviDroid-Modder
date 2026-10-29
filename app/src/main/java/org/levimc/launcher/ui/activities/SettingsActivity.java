@@ -354,7 +354,36 @@ public class SettingsActivity extends BaseActivity {
 
         setupColorPicker();
         setupBackgroundImagePicker();
+        setupAnimatedBackgroundPicker();
         setupNavBarPositionRow();
+    }
+
+    private void setupAnimatedBackgroundPicker() {
+        String[] values = {"none", "matrix", "donut", "fireworks", "wave"};
+        int[] ids = {
+                R.id.bg_animation_none,
+                R.id.bg_animation_matrix,
+                R.id.bg_animation_donut,
+                R.id.bg_animation_fireworks,
+                R.id.bg_animation_wave
+        };
+        String current = personalizationManager.getBackgroundAnimation();
+        int accent = personalizationManager.getAccentColor();
+        int selectedColor = accent != 0 ? accent : getColor(R.color.primary);
+        for (int i = 0; i < ids.length; i++) {
+            Button btn = findViewById(ids[i]);
+            if (btn == null) continue;
+            String value = values[i];
+            boolean active = value.equals(current);
+            btn.setBackgroundTintList(android.content.res.ColorStateList.valueOf(
+                    active ? selectedColor : getColor(R.color.surface_variant)));
+            btn.setTextColor(active ? Color.WHITE : getColor(R.color.on_surface));
+            btn.setOnClickListener(v -> {
+                if (value.equals(personalizationManager.getBackgroundAnimation())) return;
+                personalizationManager.setBackgroundAnimation(value);
+                recreate();
+            });
+        }
     }
 
     private void setupNavBarPositionRow() {

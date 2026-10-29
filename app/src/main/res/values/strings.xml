@@ -1257,6 +1257,13 @@
     <string name="bg_media_importing">Importing background…</string>
     <string name="bg_media_import_failed">Could not load this background. Choose a supported photo or GIF.</string>
     <string name="bg_media_blur_unavailable">Android 12+</string>
+    <string name="bg_animation_title">Animated background</string>
+    <string name="bg_animation_desc">Procedural effects drawn behind the UI in your accent color. Replaces the background image while active.</string>
+    <string name="bg_animation_none">None</string>
+    <string name="bg_animation_matrix">Matrix</string>
+    <string name="bg_animation_donut">Donut</string>
+    <string name="bg_animation_fireworks">Fireworks</string>
+    <string name="bg_animation_wave">Wave</string>
     <string name="screenshot_saved">Screenshot saved</string>
     <string name="backup_select_downloads">Select the Downloads folder to save backups in Downloads/LeviLauncher Modder/Backups.</string>
     <string name="game_crash_title">Uh oh!</string>

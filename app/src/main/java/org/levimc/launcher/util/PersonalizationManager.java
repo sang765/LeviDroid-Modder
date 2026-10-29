@@ -54,6 +54,7 @@ public class PersonalizationManager {
     private static final String KEY_BG_IMAGE_BLUR = "bg_image_blur";
     private static final String KEY_BG_IMAGE_BRIGHTNESS = "bg_image_brightness";
     private static final String KEY_NAV_BAR_POSITION = "nav_bar_position";
+    private static final String KEY_BG_ANIMATION = "bg_animation";
 
     public static final int BG_BLUR_MIN = 0;
     public static final int BG_BLUR_MAX = 25;
@@ -152,6 +153,15 @@ public class PersonalizationManager {
 
     public void setNavBarPosition(String position) {
         prefs.edit().putString(KEY_NAV_BAR_POSITION, position).apply();
+        sChangeGeneration.incrementAndGet();
+    }
+
+    public String getBackgroundAnimation() {
+        return prefs.getString(KEY_BG_ANIMATION, "none");
+    }
+
+    public void setBackgroundAnimation(String type) {
+        prefs.edit().putString(KEY_BG_ANIMATION, type).apply();
         sChangeGeneration.incrementAndGet();
     }
 
@@ -312,11 +322,15 @@ public class PersonalizationManager {
 
         int accent = getAccentColor();
         boolean hasBg = hasBackgroundImage();
-
-        if (hasBg && !LauncherBackgroundController.isMinecraftBlocked()
+        boolean effectsAllowed = !LauncherBackgroundController.isMinecraftBlocked()
                 && !(activity instanceof org.levimc.launcher.core.minecraft.MinecraftLoadingActivity)
                 && !(activity instanceof org.levimc.launcher.core.minecraft.LauncherRestartActivity)
-                && !(activity instanceof org.levimc.launcher.core.minecraft.MinecraftActivity)) {
+                && !(activity instanceof org.levimc.launcher.core.minecraft.MinecraftActivity);
+
+        String animation = getBackgroundAnimation();
+        if (effectsAllowed && !"none".equals(animation)) {
+            applyAnimatedBackground(activity, rootView, animation);
+        } else if (hasBg && effectsAllowed) {
             applyBackgroundImage(activity, rootView);
         }
 
@@ -344,6 +358,43 @@ public class PersonalizationManager {
         textView.getPaint().setShader(null);
         textView.setTextColor(accentColor);
         textView.invalidate();
+    }
+
+    private void applyAnimatedBackground(Activity activity, ViewGroup rootView, String type) {
+        View background = rootView.findViewWithTag("personalization_bg");
+        if (background != null && (!(background instanceof org.levimc.launcher.ui.animation.AnimatedBackgroundView)
+                || !type.equals(((org.levimc.launcher.ui.animation.AnimatedBackgroundView) background).getType()))) {
+            rootView.removeView(background);
+            background = null;
+        }
+        if (background == null) {
+            org.levimc.launcher.ui.animation.AnimatedBackgroundView animatedView =
+                    new org.levimc.launcher.ui.animation.AnimatedBackgroundView(activity, type);
+            animatedView.setTag("personalization_bg");
+            rootView.addView(animatedView, 0, new ViewGroup.LayoutParams(
+                    ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT));
+            background = animatedView;
+        }
+        applyBackgroundChrome(activity, rootView, background);
+    }
+
+    private void applyBackgroundChrome(Activity activity, ViewGroup rootView, View background) {
+        View overlayView = rootView.findViewWithTag("personalization_overlay");
+        if (overlayView == null) {
+            overlayView = new View(activity);
+            overlayView.setTag("personalization_overlay");
+            overlayView.setLayoutParams(new ViewGroup.LayoutParams(
+                    ViewGroup.LayoutParams.MATCH_PARENT,
+                    ViewGroup.LayoutParams.MATCH_PARENT));
+            int bgIndex = rootView.indexOfChild(background);
+            rootView.addView(overlayView, bgIndex + 1);
+        }
+
+        boolean isDark = isDarkMode(activity);
+        overlayView.setBackgroundColor(isDark ? Color.argb(100, 0, 0, 0) : Color.argb(80, 255, 255, 255));
+        overlayView.setVisibility(View.VISIBLE);
+
+        makeChildBackgroundsTranslucent(rootView, activity);
     }
 
     private void applyBackgroundImage(Activity activity, ViewGroup rootView) {
@@ -389,22 +440,7 @@ public class PersonalizationManager {
         }
         if (!applyBackgroundImageToView(bgView)) return;
 
-        View overlayView = rootView.findViewWithTag("personalization_overlay");
-        if (overlayView == null) {
-            overlayView = new View(activity);
-            overlayView.setTag("personalization_overlay");
-            overlayView.setLayoutParams(new ViewGroup.LayoutParams(
-                    ViewGroup.LayoutParams.MATCH_PARENT,
-                    ViewGroup.LayoutParams.MATCH_PARENT));
-            int bgIndex = rootView.indexOfChild(background);
-            rootView.addView(overlayView, bgIndex + 1);
-        }
-
-        boolean isDark = isDarkMode(activity);
-        overlayView.setBackgroundColor(isDark ? Color.argb(100, 0, 0, 0) : Color.argb(80, 255, 255, 255));
-        overlayView.setVisibility(View.VISIBLE);
-
-        makeChildBackgroundsTranslucent(rootView, activity);
+        applyBackgroundChrome(activity, rootView, background);
     }
 
     public void refreshBackgroundEffects(Activity activity) {
@@ -810,15 +846,19 @@ public class PersonalizationManager {
         return nightModeFlags == android.content.res.Configuration.UI_MODE_NIGHT_YES;
     }
 
+    public boolean hasBackgroundEffect() {
+        return hasBackgroundImage() || !"none".equals(getBackgroundAnimation());
+    }
+
     public int getEffectiveSurfaceColor() {
-        if (hasBackgroundImage()) {
+        if (hasBackgroundEffect()) {
             return getGlassColor(isDarkMode(context));
         }
         return ContextCompat.getColor(context, R.color.surface);
     }
 
     public void applyGlassToView(View view) {
-        if (!hasBackgroundImage()) return;
+        if (!hasBackgroundEffect()) return;
         boolean isDark = isDarkMode(context);
         int glassColor = getGlassColor(isDark);
         int surfColor = ContextCompat.getColor(context, R.color.surface);
