@@ -1,22 +1,22 @@
 {
   "schemaVersion": 1,
-  "headline": "LeviLauncher Modder v1.6.0-modder.6",
-  "summary": "The launcher can now draw procedural animated backgrounds behind the UI — Matrix rain, a spinning donut, fireworks, and layered water waves — styled with your accent color and shaded for dark, light, and AMOLED themes.",
+  "headline": "LeviLauncher Modder v1.6.0-modder.7",
+  "summary": "The animated background lineup grows to eleven effects with a dropdown picker, and effects now follow accent color changes instantly.",
   "sections": [
     {
       "title": "Features",
       "items": [
         {
-          "text": "Added an Animated background picker in Settings → Personalize with None, Matrix, Donut, Fireworks, and Wave effects.",
-          "url": "https://github.com/sang765/LeviDroid-Modder/commit/475b740b0b56271d2a80e994d9b618e14491953d"
+          "text": "Seven new animated background effects — Warp, Ripple, Bubbles, Fireflies, Aurora, Synthwave, and Comet — join Matrix, Donut, Fireworks, and Wave.",
+          "url": "https://github.com/sang765/LeviDroid-Modder/commit/d3c0df264afecac5f89f4203520ca2b010050c07"
         },
         {
-          "text": "Effects follow the active accent color — including wallpaper-derived colors — and adapt their shading to dark, light, and AMOLED themes.",
-          "url": "https://github.com/sang765/LeviDroid-Modder/commit/475b740b0b56271d2a80e994d9b618e14491953d"
+          "text": "The Animated background picker is now a dropdown, so all eleven effects fit on narrow screens.",
+          "url": "https://github.com/sang765/LeviDroid-Modder/commit/d3c0df264afecac5f89f4203520ca2b010050c07"
         },
         {
-          "text": "An active effect replaces the imported background image until set back to None, while glass surfaces and the nav bar stay translucent so the animation shows through.",
-          "url": "https://github.com/sang765/LeviDroid-Modder/commit/475b740b0b56271d2a80e994d9b618e14491953d"
+          "text": "Vietnamese labels for every background effect.",
+          "url": "https://github.com/sang765/LeviDroid-Modder/commit/d3c0df264afecac5f89f4203520ca2b010050c07"
         }
       ]
     },
@@ -24,8 +24,8 @@
       "title": "Fixes",
       "items": [
         {
-          "text": "Fixed animation timing so effects advance at the intended pace instead of running several times too fast.",
-          "url": "https://github.com/sang765/LeviDroid-Modder/commit/475b740b0b56271d2a80e994d9b618e14491953d"
+          "text": "Accent color changes now update the running background effect immediately instead of waiting for the next screen recreate.",
+          "url": "https://github.com/sang765/LeviDroid-Modder/commit/587cb2b804fbc8836237c5d3742e1d42bac9c654"
         }
       ]
     }
