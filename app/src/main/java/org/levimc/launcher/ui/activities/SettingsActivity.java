@@ -359,12 +359,13 @@ public class SettingsActivity extends BaseActivity {
     }
 
     private void setupAnimatedBackgroundPicker() {
-        String[] values = {"none", "matrix", "donut", "fireworks"};
+        String[] values = {"none", "matrix", "donut", "fireworks", "wave"};
         int[] ids = {
                 R.id.bg_animation_none,
                 R.id.bg_animation_matrix,
                 R.id.bg_animation_donut,
-                R.id.bg_animation_fireworks
+                R.id.bg_animation_fireworks,
+                R.id.bg_animation_wave
         };
         String current = personalizationManager.getBackgroundAnimation();
         int accent = personalizationManager.getAccentColor();

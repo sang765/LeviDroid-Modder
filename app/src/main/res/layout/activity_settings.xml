@@ -675,6 +675,7 @@
 
                             <Button
                                 android:id="@+id/bg_animation_none"
+                                android:maxLines="1"
                                 android:layout_width="0dp"
                                 android:layout_height="32dp"
                                 android:layout_weight="1"
@@ -683,7 +684,7 @@
                                 android:minHeight="0dp"
                                 android:insetTop="0dp"
                                 android:insetBottom="0dp"
-                                android:paddingHorizontal="8dp"
+                                android:paddingHorizontal="4dp"
                                 android:text="@string/bg_animation_none"
                                 android:fontFamily="@font/misans"
                                 android:textColor="@color/on_surface"
@@ -693,6 +694,7 @@
 
                             <Button
                                 android:id="@+id/bg_animation_matrix"
+                                android:maxLines="1"
                                 android:layout_width="0dp"
                                 android:layout_height="32dp"
                                 android:layout_weight="1"
@@ -701,7 +703,7 @@
                                 android:minHeight="0dp"
                                 android:insetTop="0dp"
                                 android:insetBottom="0dp"
-                                android:paddingHorizontal="8dp"
+                                android:paddingHorizontal="4dp"
                                 android:text="@string/bg_animation_matrix"
                                 android:fontFamily="@font/misans"
                                 android:textColor="@color/on_surface"
@@ -711,6 +713,7 @@
 
                             <Button
                                 android:id="@+id/bg_animation_donut"
+                                android:maxLines="1"
                                 android:layout_width="0dp"
                                 android:layout_height="32dp"
                                 android:layout_weight="1"
@@ -719,7 +722,7 @@
                                 android:minHeight="0dp"
                                 android:insetTop="0dp"
                                 android:insetBottom="0dp"
-                                android:paddingHorizontal="8dp"
+                                android:paddingHorizontal="4dp"
                                 android:text="@string/bg_animation_donut"
                                 android:fontFamily="@font/misans"
                                 android:textColor="@color/on_surface"
@@ -729,6 +732,26 @@
 
                             <Button
                                 android:id="@+id/bg_animation_fireworks"
+                                android:maxLines="1"
+                                android:layout_width="0dp"
+                                android:layout_height="32dp"
+                                android:layout_weight="1"
+                                android:layout_marginEnd="6dp"
+                                android:minWidth="0dp"
+                                android:minHeight="0dp"
+                                android:insetTop="0dp"
+                                android:insetBottom="0dp"
+                                android:paddingHorizontal="4dp"
+                                android:text="@string/bg_animation_fireworks"
+                                android:fontFamily="@font/misans"
+                                android:textColor="@color/on_surface"
+                                android:textSize="11sp"
+                                android:textAllCaps="false"
+                                android:backgroundTint="@color/surface_variant" />
+
+                            <Button
+                                android:id="@+id/bg_animation_wave"
+                                android:maxLines="1"
                                 android:layout_width="0dp"
                                 android:layout_height="32dp"
                                 android:layout_weight="1"
@@ -736,8 +759,8 @@
                                 android:minHeight="0dp"
                                 android:insetTop="0dp"
                                 android:insetBottom="0dp"
-                                android:paddingHorizontal="8dp"
-                                android:text="@string/bg_animation_fireworks"
+                                android:paddingHorizontal="4dp"
+                                android:text="@string/bg_animation_wave"
                                 android:fontFamily="@font/misans"
                                 android:textColor="@color/on_surface"
                                 android:textSize="11sp"

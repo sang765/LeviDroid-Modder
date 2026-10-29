@@ -4,6 +4,7 @@ import android.content.Context;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
+import android.graphics.Path;
 import android.graphics.Typeface;
 import android.view.Choreographer;
 import android.view.View;
@@ -13,19 +14,15 @@ import org.levimc.launcher.util.PersonalizationManager;
 import java.util.Arrays;
 import java.util.Random;
 
-/**
- * Procedural background effects (Matrix rain, spinning donut, fireworks)
- * drawn behind the launcher UI. Colors derive from the accent color and are
- * shaded per theme: bright tints on dark themes, darkened tints on light
- * themes so particles stay visible against the glass overlay.
- */
 public class AnimatedBackgroundView extends View implements Choreographer.FrameCallback {
     private static final long FRAME_INTERVAL_MS = 33;
     private static final String TYPE_MATRIX = "matrix";
     private static final String TYPE_DONUT = "donut";
     private static final String TYPE_FIREWORKS = "fireworks";
+    private static final String TYPE_WAVE = "wave";
     private static final char[] GLYPHS = "01<>/*+-=アイウエオカキクケコサシスセソ".toCharArray();
     private static final int MATRIX_TRAIL = 14;
+    private static final int WAVE_LAYERS = 4;
     private static final int MAX_PARTICLES = 320;
 
     private final String type;
@@ -40,7 +37,6 @@ public class AnimatedBackgroundView extends View implements Choreographer.FrameC
     private long lastFrame;
     private int frameCount;
 
-    // Matrix state
     private float textSize;
     private float columnWidth;
     private float rowHeight;
@@ -48,7 +44,6 @@ public class AnimatedBackgroundView extends View implements Choreographer.FrameC
     private float[] columnY;
     private float[] columnSpeed;
 
-    // Donut state: unit torus (R=1, r=0.45) sampled once, projected per frame.
     private float[] torus;
     private float[] projectedX;
     private float[] projectedY;
@@ -57,7 +52,9 @@ public class AnimatedBackgroundView extends View implements Choreographer.FrameC
     private float angleX;
     private float angleZ;
 
-    // Fireworks state, pooled to avoid per-frame allocation.
+    private final Path wavePath = new Path();
+    private float time;
+
     private final float[] px = new float[MAX_PARTICLES];
     private final float[] py = new float[MAX_PARTICLES];
     private final float[] pvx = new float[MAX_PARTICLES];
@@ -85,7 +82,6 @@ public class AnimatedBackgroundView extends View implements Choreographer.FrameC
         Color.colorToHSV(pm.getAccentColor(), hsv);
         dark = pm.isDarkMode(context);
         if (!dark) {
-            // Darken the accent so particles read on the light background.
             hsv[1] = Math.min(1f, hsv[1] * 1.1f);
             hsv[2] *= 0.45f;
         }
@@ -206,6 +202,8 @@ public class AnimatedBackgroundView extends View implements Choreographer.FrameC
         } else if (TYPE_DONUT.equals(type)) {
             angleX += 0.7f * dt;
             angleZ += 0.45f * dt;
+        } else if (TYPE_WAVE.equals(type)) {
+            time += dt;
         } else if (TYPE_FIREWORKS.equals(type)) {
             stepFireworks(dt);
         }
@@ -229,9 +227,6 @@ public class AnimatedBackgroundView extends View implements Choreographer.FrameC
             if (!rocketActive[r]) continue;
             float target = rocketTargetY[r];
             float distance = rocketY[r] - target;
-            // Speed follows sqrt(distance) (deceleration under gravity), so the
-            // target is approached asymptotically: burst on the frame that
-            // reaches or passes it instead of waiting for distance <= 0.
             float step = (float) Math.sqrt(2f * gravity * distance) * dt;
             if (step >= distance) {
                 burst(rocketX[r], target);
@@ -278,6 +273,7 @@ public class AnimatedBackgroundView extends View implements Choreographer.FrameC
         super.onDraw(canvas);
         if (TYPE_MATRIX.equals(type)) drawMatrix(canvas);
         else if (TYPE_DONUT.equals(type)) drawDonut(canvas);
+        else if (TYPE_WAVE.equals(type)) drawWave(canvas);
         else if (TYPE_FIREWORKS.equals(type)) drawFireworks(canvas);
     }
 
@@ -313,8 +309,6 @@ public class AnimatedBackgroundView extends View implements Choreographer.FrameC
         float cosZ = (float) Math.cos(angleZ);
         float cx = getWidth() / 2f;
         float cy = getHeight() / 2f;
-        // Max projected extent is 0.496 * scale, so 0.85 * min-dimension
-        // fills the screen while every point stays in bounds.
         float scale = Math.min(getWidth(), getHeight()) * 0.85f;
         float baseRadius = 2.2f * density;
 
@@ -340,6 +334,38 @@ public class AnimatedBackgroundView extends View implements Choreographer.FrameC
             float depth = (z + 1.45f) / 2.9f;
             paint.setColor(shade(0.3f + 0.65f * depth * depth, 0.5f + 0.5f * depth, 0f));
             canvas.drawCircle(projectedX[i], projectedY[i], baseRadius * (1f + z * 0.18f), paint);
+        }
+    }
+
+    private void drawWave(Canvas canvas) {
+        int w = getWidth();
+        int h = getHeight();
+        float sampleStep = 16f * density;
+        float[] alphas = {0.14f, 0.24f, 0.36f, 0.52f};
+        float[] valueMul = {0.8f, 0.88f, 0.94f, 1f};
+        for (int i = 0; i < WAVE_LAYERS; i++) {
+            float baseY = h * (0.32f + i * 0.14f)
+                    + 10f * density * (float) Math.sin(time * (0.5f + i * 0.11f) + i * 2f);
+            float amplitude = (14f + i * 8f) * density;
+            float wavelength = w / (1.7f - i * 0.2f);
+            float phase = (0.8f + i * 0.25f) * (float) Math.sin(time * (0.45f + i * 0.13f) + i * 1.9f);
+            wavePath.reset();
+            boolean first = true;
+            for (float x = 0; x <= w + sampleStep; x += sampleStep) {
+                float y = baseY + amplitude
+                        * (float) Math.sin(x / wavelength * (float) (Math.PI * 2) + phase);
+                if (first) {
+                    wavePath.moveTo(x, y);
+                    first = false;
+                } else {
+                    wavePath.lineTo(x, y);
+                }
+            }
+            wavePath.lineTo(w, h);
+            wavePath.lineTo(0, h);
+            wavePath.close();
+            paint.setColor(shade(alphas[i], valueMul[i], 0f));
+            canvas.drawPath(wavePath, paint);
         }
     }
 

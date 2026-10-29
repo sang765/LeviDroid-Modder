@@ -156,9 +156,6 @@ public class PersonalizationManager {
         sChangeGeneration.incrementAndGet();
     }
 
-    // Procedural background effect: "none", "matrix", "donut", "fireworks".
-    // While active it replaces the imported background image; setting it back
-    // to "none" restores the image.
     public String getBackgroundAnimation() {
         return prefs.getString(KEY_BG_ANIMATION, "none");
     }
@@ -849,8 +846,6 @@ public class PersonalizationManager {
         return nightModeFlags == android.content.res.Configuration.UI_MODE_NIGHT_YES;
     }
 
-    // True when anything is drawn behind the UI (imported image/GIF or a
-    // procedural animation), i.e. when glass surfaces should be used.
     public boolean hasBackgroundEffect() {
         return hasBackgroundImage() || !"none".equals(getBackgroundAnimation());
     }
