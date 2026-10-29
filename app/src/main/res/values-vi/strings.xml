@@ -1155,6 +1155,13 @@
     <string name="bg_media_none">Không có nền nào được chọn</string>
     <string name="bg_media_importing">Đang nhập nền…</string>
     <string name="bg_media_import_failed">Không thể tải nền này. Vui lòng chọn ảnh hoặc GIF được hỗ trợ.</string>
+    <string name="bg_animation_warp">Warp</string>
+    <string name="bg_animation_ripple">Gợn sóng</string>
+    <string name="bg_animation_bubbles">Bong bóng</string>
+    <string name="bg_animation_fireflies">Đom đóm</string>
+    <string name="bg_animation_aurora">Cực quang</string>
+    <string name="bg_animation_grid">Synthwave</string>
+    <string name="bg_animation_comet">Sao băng</string>
     <string name="bg_media_blur_unavailable">Android 12+</string>
 <string name="bg_animation_title">Nền động</string>
     <string name="bg_animation_desc">Hiệu ứng được vẽ phía sau giao diện theo màu nhấn của bạn. Khi bật sẽ thay thế ảnh nền.</string>

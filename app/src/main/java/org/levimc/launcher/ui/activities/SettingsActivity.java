@@ -359,31 +359,53 @@ public class SettingsActivity extends BaseActivity {
     }
 
     private void setupAnimatedBackgroundPicker() {
-        String[] values = {"none", "matrix", "donut", "fireworks", "wave"};
-        int[] ids = {
-                R.id.bg_animation_none,
-                R.id.bg_animation_matrix,
-                R.id.bg_animation_donut,
-                R.id.bg_animation_fireworks,
-                R.id.bg_animation_wave
+        String[] values = {
+                "none", "matrix", "donut", "fireworks", "wave",
+                "warp", "ripple", "bubbles", "fireflies", "aurora", "grid", "comet"
         };
-        String current = personalizationManager.getBackgroundAnimation();
-        int accent = personalizationManager.getAccentColor();
-        int selectedColor = accent != 0 ? accent : getColor(R.color.primary);
-        for (int i = 0; i < ids.length; i++) {
-            Button btn = findViewById(ids[i]);
-            if (btn == null) continue;
-            String value = values[i];
-            boolean active = value.equals(current);
-            btn.setBackgroundTintList(android.content.res.ColorStateList.valueOf(
-                    active ? selectedColor : getColor(R.color.surface_variant)));
-            btn.setTextColor(active ? Color.WHITE : getColor(R.color.on_surface));
-            btn.setOnClickListener(v -> {
-                if (value.equals(personalizationManager.getBackgroundAnimation())) return;
-                personalizationManager.setBackgroundAnimation(value);
-                recreate();
-            });
+        String[] labels = {
+                getString(R.string.bg_animation_none),
+                getString(R.string.bg_animation_matrix),
+                getString(R.string.bg_animation_donut),
+                getString(R.string.bg_animation_fireworks),
+                getString(R.string.bg_animation_wave),
+                getString(R.string.bg_animation_warp),
+                getString(R.string.bg_animation_ripple),
+                getString(R.string.bg_animation_bubbles),
+                getString(R.string.bg_animation_fireflies),
+                getString(R.string.bg_animation_aurora),
+                getString(R.string.bg_animation_grid),
+                getString(R.string.bg_animation_comet)
+        };
+
+        TextView current = findViewById(R.id.bg_animation_current);
+        Spinner spinner = findViewById(R.id.bg_animation_spinner);
+        if (current == null || spinner == null) return;
+
+        String selected = personalizationManager.getBackgroundAnimation();
+        int selectedPosition = 0;
+        for (int i = 0; i < values.length; i++) {
+            if (values[i].equals(selected)) selectedPosition = i;
         }
+        current.setText(labels[selectedPosition]);
+
+        ArrayAdapter<String> adapter = new ArrayAdapter<>(this, R.layout.spinner_item, labels);
+        adapter.setDropDownViewResource(R.layout.spinner_dropdown_item);
+        spinner.setAdapter(adapter);
+        spinner.setPopupBackgroundResource(R.drawable.bg_popup_menu_rounded);
+        spinner.setSelection(selectedPosition);
+        spinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                if (values[position].equals(personalizationManager.getBackgroundAnimation())) return;
+                personalizationManager.setBackgroundAnimation(values[position]);
+                recreate();
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> parent) {
+            }
+        });
     }
 
     private void setupNavBarPositionRow() {
