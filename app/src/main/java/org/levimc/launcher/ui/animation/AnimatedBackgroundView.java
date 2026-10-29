@@ -179,9 +179,10 @@ public class AnimatedBackgroundView extends View implements Choreographer.FrameC
     @Override
     public void doFrame(long frameTime) {
         if (!running) return;
-        long dt = lastFrame == 0 ? FRAME_INTERVAL_MS : frameTime - lastFrame;
+        long nowMs = frameTime / 1_000_000;
+        long dt = lastFrame == 0 ? FRAME_INTERVAL_MS : nowMs - lastFrame;
         if (dt >= FRAME_INTERVAL_MS && sized) {
-            lastFrame = frameTime;
+            lastFrame = nowMs;
             step(Math.min(dt, 100f) / 1000f);
             invalidate();
         }
