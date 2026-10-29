@@ -38,6 +38,16 @@ jobs:
       - name: Validate release content
         run: python3 scripts/validate_release_content.py
 
+      - name: Guard against new inline // comments and AI markers
+        env:
+          BASE_REF: ${{ github.base_ref }}
+        run: |
+          set -euo pipefail
+          if [ -n "${BASE_REF:-}" ]; then
+            git fetch --no-tags origin "${BASE_REF}" || true
+          fi
+          python3 scripts/check_no_new_inline_comments.py
+
       - name: Prepare google-services.json
         run: |
           set -euo pipefail
