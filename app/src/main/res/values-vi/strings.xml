@@ -1164,7 +1164,6 @@
     <string name="bg_animation_grid">Synthwave</string>
     <string name="bg_animation_comet">Sao băng</string>
     <string name="bg_media_blur_unavailable">Android 12+</string>
-f07ed29 (chore(i18n): add Vietnamese labels for the new background effects)
     <string name="screenshot_saved">Ảnh chụp màn hình đã được lưu</string>
     <string name="backup_select_downloads">Chọn thư mục Tải xuống để lưu bản sao lưu trong Downloads/LeviLauncher Modder/Backups.</string>
     <!-- Dịch thủ công các string chưa được Weblate đồng bộ -->
