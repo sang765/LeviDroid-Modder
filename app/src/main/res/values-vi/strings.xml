@@ -462,7 +462,6 @@
     <string name="xbox_friends_auth_error">Phiên Xbox Live đã hết hạn. Thử lại hoặc đăng nhập lại từ mục Tài khoản.</string>
     <string name="xbox_friends_rate_limited">Xbox Live đang bận. Thử lại sau ít phút.</string>
     <string name="xbox_friends_failed">Không kết nối được Xbox Live. Thử lại sau.</string>
-
     <string name="xbox_profile_bio">Tiểu sử</string>
     <string name="xbox_profile_no_bio">Chưa có tiểu sử</string>
     <string name="xbox_profile_location">Vị trí: %1$s</string>
@@ -1211,4 +1210,5 @@
     <string name="github_import_hint">github.com/user/repo, user/repo hoặc user repo</string>
     <string name="app_level_logging">App-Level Logging</string>
     <string name="app_level_logging_desc">Bắt log launcher và game ngay trong tiến trình — hoạt động khi vào game, hook chỉ cài sau khi mod load xong để không treo lúc khởi động</string>
+    <string name="mod_config_hide_launcher_hud">Cũng ẩn HUD của trình khởi chạy và các nút lớp phủ</string>
 </resources>
