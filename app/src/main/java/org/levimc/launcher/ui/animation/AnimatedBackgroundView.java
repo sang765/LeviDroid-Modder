@@ -79,15 +79,24 @@ public class AnimatedBackgroundView extends View implements Choreographer.FrameC
         setImportantForAccessibility(IMPORTANT_FOR_ACCESSIBILITY_NO);
 
         PersonalizationManager pm = new PersonalizationManager(context);
-        Color.colorToHSV(pm.getAccentColor(), hsv);
         dark = pm.isDarkMode(context);
+        applyAccent(pm.getAccentColor());
+        maxAlpha = dark ? 0.85f : 0.6f;
+
+        paint.setTypeface(Typeface.MONOSPACE);
+    }
+
+    public void setAccentColor(int accent) {
+        applyAccent(accent);
+        invalidate();
+    }
+
+    private void applyAccent(int accent) {
+        Color.colorToHSV(accent, hsv);
         if (!dark) {
             hsv[1] = Math.min(1f, hsv[1] * 1.1f);
             hsv[2] *= 0.45f;
         }
-        maxAlpha = dark ? 0.85f : 0.6f;
-
-        paint.setTypeface(Typeface.MONOSPACE);
     }
 
     public String getType() {
