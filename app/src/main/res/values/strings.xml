@@ -1264,6 +1264,13 @@
     <string name="bg_animation_donut">Donut</string>
     <string name="bg_animation_fireworks">Fireworks</string>
     <string name="bg_animation_wave">Wave</string>
+    <string name="bg_animation_warp">Warp</string>
+    <string name="bg_animation_ripple">Ripple</string>
+    <string name="bg_animation_bubbles">Bubbles</string>
+    <string name="bg_animation_fireflies">Fireflies</string>
+    <string name="bg_animation_aurora">Aurora</string>
+    <string name="bg_animation_grid">Synthwave</string>
+    <string name="bg_animation_comet">Comet</string>
     <string name="screenshot_saved">Screenshot saved</string>
     <string name="backup_select_downloads">Select the Downloads folder to save backups in Downloads/LeviLauncher Modder/Backups.</string>
     <string name="game_crash_title">Uh oh!</string>

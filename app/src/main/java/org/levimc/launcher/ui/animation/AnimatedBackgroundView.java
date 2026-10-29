@@ -20,9 +20,23 @@ public class AnimatedBackgroundView extends View implements Choreographer.FrameC
     private static final String TYPE_DONUT = "donut";
     private static final String TYPE_FIREWORKS = "fireworks";
     private static final String TYPE_WAVE = "wave";
+    private static final String TYPE_WARP = "warp";
+    private static final String TYPE_RIPPLE = "ripple";
+    private static final String TYPE_BUBBLES = "bubbles";
+    private static final String TYPE_FIREFLIES = "fireflies";
+    private static final String TYPE_AURORA = "aurora";
+    private static final String TYPE_GRID = "grid";
+    private static final String TYPE_COMET = "comet";
     private static final char[] GLYPHS = "01<>/*+-=アイウエオカキクケコサシスセソ".toCharArray();
     private static final int MATRIX_TRAIL = 14;
     private static final int WAVE_LAYERS = 4;
+    private static final int WARP_STARS = 90;
+    private static final int RIPPLE_SLOTS = 6;
+    private static final int BUBBLE_COUNT = 26;
+    private static final int FLY_COUNT = 22;
+    private static final int AURORA_LAYERS = 3;
+    private static final int STAR_COUNT = 70;
+    private static final int COMET_SLOTS = 2;
     private static final int MAX_PARTICLES = 320;
 
     private final String type;
@@ -54,6 +68,38 @@ public class AnimatedBackgroundView extends View implements Choreographer.FrameC
 
     private final Path wavePath = new Path();
     private float time;
+
+    private final float[] warpX = new float[WARP_STARS];
+    private final float[] warpY = new float[WARP_STARS];
+    private final float[] warpVx = new float[WARP_STARS];
+    private final float[] warpVy = new float[WARP_STARS];
+    private final float[] rippleX = new float[RIPPLE_SLOTS];
+    private final float[] rippleY = new float[RIPPLE_SLOTS];
+    private final float[] rippleLife = new float[RIPPLE_SLOTS];
+    private final float[] rippleDuration = new float[RIPPLE_SLOTS];
+    private float rippleTimer;
+    private final float[] bubbleBaseX = new float[BUBBLE_COUNT];
+    private final float[] bubbleY = new float[BUBBLE_COUNT];
+    private final float[] bubbleR = new float[BUBBLE_COUNT];
+    private final float[] bubbleSpeed = new float[BUBBLE_COUNT];
+    private final float[] bubbleAmp = new float[BUBBLE_COUNT];
+    private final float[] bubbleFreq = new float[BUBBLE_COUNT];
+    private final float[] bubblePhase = new float[BUBBLE_COUNT];
+    private final float[] bubbleAlpha = new float[BUBBLE_COUNT];
+    private final float[] flyX = new float[FLY_COUNT];
+    private final float[] flyY = new float[FLY_COUNT];
+    private final float[] flyAngle = new float[FLY_COUNT];
+    private final float[] flySpeed = new float[FLY_COUNT];
+    private final float[] flyPhase = new float[FLY_COUNT];
+    private final float[] starX = new float[STAR_COUNT];
+    private final float[] starY = new float[STAR_COUNT];
+    private final float[] starPhase = new float[STAR_COUNT];
+    private final float[] cometX = new float[COMET_SLOTS];
+    private final float[] cometY = new float[COMET_SLOTS];
+    private final float[] cometVx = new float[COMET_SLOTS];
+    private final float[] cometVy = new float[COMET_SLOTS];
+    private final boolean[] cometActive = new boolean[COMET_SLOTS];
+    private float cometTimer;
 
     private final float[] px = new float[MAX_PARTICLES];
     private final float[] py = new float[MAX_PARTICLES];
@@ -139,6 +185,33 @@ public class AnimatedBackgroundView extends View implements Choreographer.FrameC
                     torus[idx++] = z;
                 }
             }
+        } else if (TYPE_WARP.equals(type)) {
+            for (int i = 0; i < WARP_STARS; i++) respawnWarp(i, w, h);
+        } else if (TYPE_BUBBLES.equals(type)) {
+            for (int i = 0; i < BUBBLE_COUNT; i++) {
+                bubbleBaseX[i] = random.nextFloat() * w;
+                bubbleY[i] = random.nextFloat() * h;
+                bubbleR[i] = (2f + random.nextFloat() * 5f) * density;
+                bubbleSpeed[i] = (18f + random.nextFloat() * 30f) * density;
+                bubbleAmp[i] = (8f + random.nextFloat() * 22f) * density;
+                bubbleFreq[i] = 0.5f + random.nextFloat() * 0.9f;
+                bubblePhase[i] = random.nextFloat() * (float) Math.PI * 2f;
+                bubbleAlpha[i] = 0.25f + random.nextFloat() * 0.3f;
+            }
+        } else if (TYPE_FIREFLIES.equals(type)) {
+            for (int i = 0; i < FLY_COUNT; i++) {
+                flyX[i] = random.nextFloat() * w;
+                flyY[i] = random.nextFloat() * h;
+                flyAngle[i] = random.nextFloat() * (float) Math.PI * 2f;
+                flySpeed[i] = (20f + random.nextFloat() * 35f) * density;
+                flyPhase[i] = random.nextFloat() * (float) Math.PI * 2f;
+            }
+        } else if (TYPE_COMET.equals(type)) {
+            for (int i = 0; i < STAR_COUNT; i++) {
+                starX[i] = random.nextFloat() * w;
+                starY[i] = random.nextFloat() * h;
+                starPhase[i] = random.nextFloat();
+            }
         }
         sized = true;
         launchTimer = 0.3f;
@@ -191,6 +264,7 @@ public class AnimatedBackgroundView extends View implements Choreographer.FrameC
 
     private void step(float dt) {
         frameCount++;
+        time += dt;
         if (TYPE_MATRIX.equals(type)) {
             int rows = (int) (getHeight() / rowHeight) + 1;
             for (int i = 0; i < columns; i++) {
@@ -203,10 +277,18 @@ public class AnimatedBackgroundView extends View implements Choreographer.FrameC
         } else if (TYPE_DONUT.equals(type)) {
             angleX += 0.7f * dt;
             angleZ += 0.45f * dt;
-        } else if (TYPE_WAVE.equals(type)) {
-            time += dt;
         } else if (TYPE_FIREWORKS.equals(type)) {
             stepFireworks(dt);
+        } else if (TYPE_WARP.equals(type)) {
+            stepWarp(dt);
+        } else if (TYPE_RIPPLE.equals(type)) {
+            stepRipple(dt);
+        } else if (TYPE_BUBBLES.equals(type)) {
+            stepBubbles(dt);
+        } else if (TYPE_FIREFLIES.equals(type)) {
+            stepFlies(dt);
+        } else if (TYPE_COMET.equals(type)) {
+            stepComet(dt);
         }
     }
 
@@ -252,6 +334,106 @@ public class AnimatedBackgroundView extends View implements Choreographer.FrameC
         }
     }
 
+    private void stepWarp(float dt) {
+        int w = getWidth();
+        int h = getHeight();
+        for (int i = 0; i < WARP_STARS; i++) {
+            warpX[i] += warpVx[i] * dt;
+            warpY[i] += warpVy[i] * dt;
+            warpVx[i] *= 1f + 0.35f * dt;
+            warpVy[i] *= 1f + 0.35f * dt;
+            if (warpX[i] < -80f * density || warpX[i] > w + 80f * density
+                    || warpY[i] < -80f * density || warpY[i] > h + 80f * density) {
+                respawnWarp(i, w, h);
+            }
+        }
+    }
+
+    private void respawnWarp(int i, int w, int h) {
+        double angle = random.nextDouble() * Math.PI * 2;
+        float r = random.nextFloat() * random.nextFloat() * Math.min(w, h) * 0.35f + 4f * density;
+        float speed = (60f + random.nextFloat() * 130f) * density;
+        warpX[i] = w / 2f + (float) Math.cos(angle) * r;
+        warpY[i] = h / 2f + (float) Math.sin(angle) * r;
+        warpVx[i] = (float) Math.cos(angle) * speed;
+        warpVy[i] = (float) Math.sin(angle) * speed;
+    }
+
+    private void stepRipple(float dt) {
+        rippleTimer -= dt;
+        if (rippleTimer <= 0) {
+            rippleTimer = 0.9f + random.nextFloat() * 1.2f;
+            for (int i = 0; i < RIPPLE_SLOTS; i++) {
+                if (rippleLife[i] <= 0) {
+                    rippleX[i] = getWidth() * (0.15f + random.nextFloat() * 0.7f);
+                    rippleY[i] = getHeight() * (0.15f + random.nextFloat() * 0.7f);
+                    rippleLife[i] = 1f;
+                    rippleDuration[i] = 2.4f + random.nextFloat() * 1.4f;
+                    break;
+                }
+            }
+        }
+        for (int i = 0; i < RIPPLE_SLOTS; i++) {
+            if (rippleLife[i] > 0) rippleLife[i] -= dt / rippleDuration[i];
+        }
+    }
+
+    private void stepBubbles(float dt) {
+        int h = getHeight();
+        for (int i = 0; i < BUBBLE_COUNT; i++) {
+            bubbleY[i] -= bubbleSpeed[i] * dt;
+            if (bubbleY[i] < -8f * density) {
+                bubbleY[i] = h + 8f * density;
+                bubbleBaseX[i] = random.nextFloat() * getWidth();
+                bubbleSpeed[i] = (18f + random.nextFloat() * 30f) * density;
+            }
+        }
+    }
+
+    private void stepFlies(float dt) {
+        int w = getWidth();
+        int h = getHeight();
+        for (int i = 0; i < FLY_COUNT; i++) {
+            flyAngle[i] += 1.2f * (float) Math.sin(time * 0.9f + flyPhase[i]) * dt;
+            flyX[i] += (float) Math.cos(flyAngle[i]) * flySpeed[i] * dt;
+            flyY[i] += (float) Math.sin(flyAngle[i]) * flySpeed[i] * dt;
+            if (flyX[i] < 0) flyX[i] += w; else if (flyX[i] > w) flyX[i] -= w;
+            if (flyY[i] < 0) flyY[i] += h; else if (flyY[i] > h) flyY[i] -= h;
+        }
+    }
+
+    private void stepComet(float dt) {
+        cometTimer -= dt;
+        if (cometTimer <= 0) {
+            cometTimer = 2.5f + random.nextFloat() * 3f;
+            for (int i = 0; i < COMET_SLOTS; i++) {
+                if (!cometActive[i]) {
+                    boolean fromLeft = random.nextBoolean();
+                    float margin = 60f * density;
+                    cometX[i] = fromLeft ? -margin : getWidth() + margin;
+                    cometY[i] = getHeight() * random.nextFloat() * 0.45f;
+                    float speed = (520f + random.nextFloat() * 260f) * density;
+                    double angle = fromLeft
+                            ? Math.PI / 9 + random.nextDouble() * Math.PI / 9
+                            : Math.PI - Math.PI / 9 - random.nextDouble() * Math.PI / 9;
+                    cometVx[i] = (float) Math.cos(angle) * speed;
+                    cometVy[i] = (float) Math.abs(Math.sin(angle)) * speed;
+                    cometActive[i] = true;
+                    break;
+                }
+            }
+        }
+        for (int i = 0; i < COMET_SLOTS; i++) {
+            if (!cometActive[i]) continue;
+            cometX[i] += cometVx[i] * dt;
+            cometY[i] += cometVy[i] * dt;
+            if (cometX[i] < -150f * density || cometX[i] > getWidth() + 150f * density
+                    || cometY[i] > getHeight() + 150f * density) {
+                cometActive[i] = false;
+            }
+        }
+    }
+
     private void burst(float x, float y) {
         int count = 42 + random.nextInt(20);
         float hueShift = random.nextInt(100) - 50;
@@ -276,6 +458,13 @@ public class AnimatedBackgroundView extends View implements Choreographer.FrameC
         else if (TYPE_DONUT.equals(type)) drawDonut(canvas);
         else if (TYPE_WAVE.equals(type)) drawWave(canvas);
         else if (TYPE_FIREWORKS.equals(type)) drawFireworks(canvas);
+        else if (TYPE_WARP.equals(type)) drawWarp(canvas);
+        else if (TYPE_RIPPLE.equals(type)) drawRipple(canvas);
+        else if (TYPE_BUBBLES.equals(type)) drawBubbles(canvas);
+        else if (TYPE_FIREFLIES.equals(type)) drawFlies(canvas);
+        else if (TYPE_AURORA.equals(type)) drawAurora(canvas);
+        else if (TYPE_GRID.equals(type)) drawGrid(canvas);
+        else if (TYPE_COMET.equals(type)) drawComet(canvas);
     }
 
     private void drawMatrix(Canvas canvas) {
@@ -367,6 +556,134 @@ public class AnimatedBackgroundView extends View implements Choreographer.FrameC
             wavePath.close();
             paint.setColor(shade(alphas[i], valueMul[i], 0f));
             canvas.drawPath(wavePath, paint);
+        }
+    }
+
+    private void drawWarp(Canvas canvas) {
+        paint.setStrokeWidth(1.5f * density);
+        for (int i = 0; i < WARP_STARS; i++) {
+            float speed = (float) Math.hypot(warpVx[i], warpVy[i]);
+            float nx = warpVx[i] / speed;
+            float ny = warpVy[i] / speed;
+            float trail = Math.min(90f * density, speed * 0.35f);
+            paint.setColor(shade(0.25f + 0.45f * speed / (260f * density), 1f, 0f));
+            canvas.drawLine(warpX[i], warpY[i], warpX[i] - nx * trail, warpY[i] - ny * trail, paint);
+        }
+    }
+
+    private void drawRipple(Canvas canvas) {
+        paint.setStyle(Paint.Style.STROKE);
+        paint.setStrokeWidth(2f * density);
+        float maxR = Math.min(getWidth(), getHeight()) * 0.42f;
+        for (int i = 0; i < RIPPLE_SLOTS; i++) {
+            if (rippleLife[i] <= 0) continue;
+            float progress = 1f - rippleLife[i];
+            float r = maxR * (0.08f + 0.92f * progress);
+            float fade = (1f - progress) * (1f - progress);
+            paint.setColor(shade(0.55f * fade, 1f, 0f));
+            canvas.drawCircle(rippleX[i], rippleY[i], r, paint);
+            paint.setColor(shade(0.3f * fade, 1f, 0f));
+            canvas.drawCircle(rippleX[i], rippleY[i], r * 0.72f, paint);
+        }
+        paint.setStyle(Paint.Style.FILL);
+    }
+
+    private void drawBubbles(Canvas canvas) {
+        paint.setStyle(Paint.Style.STROKE);
+        for (int i = 0; i < BUBBLE_COUNT; i++) {
+            float x = bubbleBaseX[i] + bubbleAmp[i] * (float) Math.sin(time * bubbleFreq[i] + bubblePhase[i]);
+            paint.setStrokeWidth(Math.max(1f, bubbleR[i] * 0.28f));
+            paint.setColor(shade(bubbleAlpha[i], 1f, 0f));
+            canvas.drawCircle(x, bubbleY[i], bubbleR[i], paint);
+        }
+        paint.setStyle(Paint.Style.FILL);
+    }
+
+    private void drawFlies(Canvas canvas) {
+        for (int i = 0; i < FLY_COUNT; i++) {
+            float blink = 0.3f + 0.7f * (0.5f + 0.5f * (float) Math.sin(time * (1.5f + flyPhase[i] % 1f) + flyPhase[i] * 7f));
+            paint.setColor(shade(0.12f * blink, 1f, 0f));
+            canvas.drawCircle(flyX[i], flyY[i], 4.5f * density, paint);
+            paint.setColor(shade(0.9f * blink, 1f, 0f));
+            canvas.drawCircle(flyX[i], flyY[i], 1.6f * density, paint);
+        }
+    }
+
+    private void drawAurora(Canvas canvas) {
+        int w = getWidth();
+        int h = getHeight();
+        float sample = 24f * density;
+        float[] alphas = {0.16f, 0.12f, 0.09f};
+        float[] hueOffsets = {0f, 18f, -22f};
+        float[] tops = {0.02f, 0.08f, 0.13f};
+        float[] lengths = {0.52f, 0.44f, 0.36f};
+        for (int i = 0; i < AURORA_LAYERS; i++) {
+            float anchor = h * tops[i];
+            float amp = (30f + i * 10f) * density;
+            float wavelength = w / (1.1f + i * 0.35f);
+            float phase = time * (0.18f + i * 0.07f) + i * 2.4f;
+            float bottom = anchor + h * lengths[i];
+            wavePath.reset();
+            boolean first = true;
+            for (float x = 0; x <= w + sample; x += sample) {
+                float y = anchor + amp * (float) Math.sin(x / wavelength * (float) Math.PI * 2 + phase);
+                if (first) {
+                    wavePath.moveTo(x, y);
+                    first = false;
+                } else {
+                    wavePath.lineTo(x, y);
+                }
+            }
+            for (float x = w; x >= -sample; x -= sample) {
+                float y = bottom + amp * 0.6f
+                        * (float) Math.sin(x / (wavelength * 1.4f) * (float) Math.PI * 2 - phase * 0.8f);
+                wavePath.lineTo(x, y);
+            }
+            wavePath.close();
+            paint.setColor(shade(alphas[i], 1f, hueOffsets[i]));
+            canvas.drawPath(wavePath, paint);
+        }
+    }
+
+    private void drawGrid(Canvas canvas) {
+        int w = getWidth();
+        int h = getHeight();
+        float horizon = h * 0.42f;
+        float cx = w / 2f;
+        paint.setStrokeWidth(1.5f * density);
+        for (int j = -9; j <= 9; j++) {
+            float bottomX = cx + j * (w / 9f) * 0.9f;
+            paint.setColor(shade(j == 0 ? 0.5f : 0.3f, 1f, 0f));
+            canvas.drawLine(cx, horizon, bottomX, h, paint);
+        }
+        float scroll = time * 0.6f;
+        for (int i = 0; i < 14; i++) {
+            float z = i + 1f - (scroll % 1f);
+            float y = horizon + (h - horizon) / z;
+            if (y > h) continue;
+            float fade = 1f / (1f + z * 0.35f);
+            paint.setColor(shade(0.15f + 0.45f * fade, 1f, 0f));
+            canvas.drawLine(0, y, w, y, paint);
+        }
+    }
+
+    private void drawComet(Canvas canvas) {
+        for (int i = 0; i < STAR_COUNT; i++) {
+            float twinkle = 0.5f + 0.5f * (float) Math.sin(time * 0.8f + starPhase[i] * 9f);
+            paint.setColor(shade(0.12f + 0.3f * twinkle, 1f, 0f));
+            canvas.drawCircle(starX[i], starY[i], (i % 3 == 0 ? 1.6f : 1.1f) * density, paint);
+        }
+        for (int i = 0; i < COMET_SLOTS; i++) {
+            if (!cometActive[i]) continue;
+            float speed = (float) Math.hypot(cometVx[i], cometVy[i]);
+            float nx = cometVx[i] / speed;
+            float ny = cometVy[i] / speed;
+            float tail = 130f * density;
+            paint.setStrokeWidth(2f * density);
+            paint.setColor(shade(0.28f, 1f, 0f));
+            canvas.drawLine(cometX[i], cometY[i], cometX[i] - nx * tail, cometY[i] - ny * tail, paint);
+            paint.setColor(shade(0.95f, 1f, 0f));
+            canvas.drawCircle(cometX[i], cometY[i], 2.2f * density, paint);
         }
     }
 
