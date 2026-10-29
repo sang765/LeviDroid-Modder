@@ -710,6 +710,10 @@ public class PersonalizationManager {
     }
 
     public void applyAccentColorRecursive(View view, int accentColor, Context ctx) {
+        if (view instanceof org.levimc.launcher.ui.animation.AnimatedBackgroundView) {
+            ((org.levimc.launcher.ui.animation.AnimatedBackgroundView) view).setAccentColor(accentColor);
+        }
+
         int defaultPrimary = ContextCompat.getColor(ctx, R.color.primary);
         int defaultSecondary = ContextCompat.getColor(ctx, R.color.secondary);
         int defaultTertiary = ContextCompat.getColor(ctx, R.color.tertiary);

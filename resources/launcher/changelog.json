@@ -1,14 +1,31 @@
 {
   "schemaVersion": 1,
-  "headline": "LeviLauncher Modder v1.6.0-modder.5",
-  "summary": "The version transfer dialog now uses two direct action buttons, so it no longer pushes its confirm button off-screen.",
+  "headline": "LeviLauncher Modder v1.6.0-modder.6",
+  "summary": "The launcher can now draw procedural animated backgrounds behind the UI — Matrix rain, a spinning donut, fireworks, and layered water waves — styled with your accent color and shaded for dark, light, and AMOLED themes.",
   "sections": [
+    {
+      "title": "Features",
+      "items": [
+        {
+          "text": "Added an Animated background picker in Settings → Personalize with None, Matrix, Donut, Fireworks, and Wave effects.",
+          "url": "https://github.com/sang765/LeviDroid-Modder/commit/475b740b0b56271d2a80e994d9b618e14491953d"
+        },
+        {
+          "text": "Effects follow the active accent color — including wallpaper-derived colors — and adapt their shading to dark, light, and AMOLED themes.",
+          "url": "https://github.com/sang765/LeviDroid-Modder/commit/475b740b0b56271d2a80e994d9b618e14491953d"
+        },
+        {
+          "text": "An active effect replaces the imported background image until set back to None, while glass surfaces and the nav bar stay translucent so the animation shows through.",
+          "url": "https://github.com/sang765/LeviDroid-Modder/commit/475b740b0b56271d2a80e994d9b618e14491953d"
+        }
+      ]
+    },
     {
       "title": "Fixes",
       "items": [
         {
-          "text": "Version transfer dialog: the Copy and Move choices are now two accent action buttons that start the transfer immediately. The separate confirm row below the dialog is gone, which stops the button from being pushed off-screen in landscape.",
-          "url": "https://github.com/sang765/LeviDroid-Modder"
+          "text": "Fixed animation timing so effects advance at the intended pace instead of running several times too fast.",
+          "url": "https://github.com/sang765/LeviDroid-Modder/commit/475b740b0b56271d2a80e994d9b618e14491953d"
         }
       ]
     }
