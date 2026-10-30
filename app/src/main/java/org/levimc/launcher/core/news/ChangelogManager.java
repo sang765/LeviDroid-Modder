@@ -15,17 +15,20 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.LinearLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.google.gson.Gson;
 
 import org.levimc.launcher.BuildConfig;
 import org.levimc.launcher.R;
 import org.levimc.launcher.ui.dialogs.CustomAlertDialog;
+import org.levimc.launcher.util.TextTranslator;
 
 import java.io.InputStream;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
 
 public final class ChangelogManager {
     private static final String PREFS = "launcher_changelog";
@@ -43,8 +46,8 @@ public final class ChangelogManager {
         }
 
         Changelog changelog = load(activity);
-        markSeen(activity, currentVersionCode);
         if (changelog == null || changelog.sections == null || changelog.sections.isEmpty()) {
+            markSeen(activity, currentVersionCode);
             run(onComplete);
             return;
         }
@@ -54,16 +57,19 @@ public final class ChangelogManager {
         TextView headline = content.findViewById(R.id.changelog_headline);
         TextView summary = content.findViewById(R.id.changelog_summary);
         LinearLayout sections = content.findViewById(R.id.changelog_sections);
+        List<TextView> translatable = new ArrayList<>();
 
         version.setText(activity.getString(R.string.changelog_version, BuildConfig.VERSION_NAME));
         headline.setText(changelog.headline);
         headline.setVisibility(TextUtils.isEmpty(changelog.headline) ? View.GONE : View.VISIBLE);
         summary.setText(changelog.summary);
         summary.setVisibility(TextUtils.isEmpty(changelog.summary) ? View.GONE : View.VISIBLE);
+        translatable.add(headline);
+        translatable.add(summary);
 
         for (Section section : changelog.sections) {
             if (section == null || section.items == null || section.items.isEmpty()) continue;
-            addSection(activity, sections, section);
+            addSection(activity, sections, section, translatable);
         }
 
         CustomAlertDialog dialog = new CustomAlertDialog(activity)
@@ -71,11 +77,49 @@ public final class ChangelogManager {
                 .setCustomView(content)
                 .setBlurBackground(true)
                 .setPositiveButton(activity.getString(R.string.changelog_continue), null)
-                .setOnDismissAnimationEndListener(onComplete);
+                .setOnDismissAnimationEndListener(() -> {
+                    markSeen(activity, currentVersionCode);
+                    run(onComplete);
+                });
         dialog.setCancelable(false);
         dialog.setCanceledOnTouchOutside(false);
         dialog.show();
+        setupTranslateButton(activity, content, translatable);
         prepareContinueButton(activity, dialog);
+    }
+
+    private static void setupTranslateButton(Activity activity, View content, List<TextView> translatable) {
+        Button button = content.findViewById(R.id.changelog_translate);
+        if ("en".equals(Locale.getDefault().getLanguage())) return;
+        button.setVisibility(View.VISIBLE);
+        button.setOnClickListener(v -> {
+            button.setEnabled(false);
+            button.setText(R.string.changelog_translating);
+            List<String> texts = new ArrayList<>(translatable.size());
+            for (TextView view : translatable) texts.add(view.getText().toString());
+            TextTranslator.translate(texts, new TextTranslator.Callback() {
+                @Override
+                public void onDone(List<String> translated) {
+                    if (activity.isFinishing() || activity.isDestroyed()) return;
+                    if (translated.size() != translatable.size()) {
+                        onError();
+                        return;
+                    }
+                    for (int i = 0; i < translated.size(); i++) {
+                        translatable.get(i).setText(translated.get(i));
+                    }
+                    button.setText(R.string.changelog_translated);
+                }
+
+                @Override
+                public void onError() {
+                    if (activity.isFinishing() || activity.isDestroyed()) return;
+                    button.setEnabled(true);
+                    button.setText(R.string.changelog_translate);
+                    Toast.makeText(activity, R.string.changelog_translate_failed, Toast.LENGTH_SHORT).show();
+                }
+            });
+        });
     }
 
     private static void prepareContinueButton(Context context, CustomAlertDialog dialog) {
@@ -107,7 +151,7 @@ public final class ChangelogManager {
         return Math.round(value * context.getResources().getDisplayMetrics().density);
     }
 
-    private static void addSection(Context context, LinearLayout parent, Section section) {
+    private static void addSection(Context context, LinearLayout parent, Section section, List<TextView> translatable) {
         float density = context.getResources().getDisplayMetrics().density;
         TextView title = new TextView(context);
         title.setText(section.title);
@@ -121,6 +165,7 @@ public final class ChangelogManager {
         titleParams.topMargin = (int) (14 * density);
         title.setLayoutParams(titleParams);
         parent.addView(title);
+        translatable.add(title);
 
         for (Item item : section.items) {
             if (item == null || TextUtils.isEmpty(item.text)) continue;
@@ -149,6 +194,7 @@ public final class ChangelogManager {
                 text.setPaintFlags(text.getPaintFlags() | android.graphics.Paint.UNDERLINE_TEXT_FLAG);
                 text.setOnClickListener(view -> openUrl(context, item.url));
             }
+            translatable.add(text);
 
             row.addView(bullet);
             row.addView(text);

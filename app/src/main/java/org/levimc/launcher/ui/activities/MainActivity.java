@@ -666,10 +666,8 @@ import okhttp3.OkHttpClient;
             return;
         }
         postEulaFlowRunning = true;
-        ChangelogManager.showIfNeeded(this, () -> {
-            postEulaFlowRunning = false;
-            initializeLauncher();
-        });
+        initializeLauncher();
+        ChangelogManager.showIfNeeded(this, () -> postEulaFlowRunning = false);
     }
 
     private boolean isInstanceShortcutIntent() {

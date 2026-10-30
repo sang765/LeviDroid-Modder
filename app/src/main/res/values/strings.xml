@@ -1221,6 +1221,10 @@
     <string name="mod_config_hotbar_slot_opacity">Hotbar slot %1$d opacity</string>
     <!-- Changelog & News -->
     <string name="changelog_title">What’s new</string>
+    <string name="changelog_translate">Translate</string>
+    <string name="changelog_translating">Translating…</string>
+    <string name="changelog_translated">Translated</string>
+    <string name="changelog_translate_failed">Translation failed</string>
     <string name="changelog_version">LeviLauncher Modder %1$s</string>
     <string name="changelog_continue">Continue</string>
     <string name="news_title">Launcher news</string>
