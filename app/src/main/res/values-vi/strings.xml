@@ -1085,6 +1085,10 @@
     <string name="mod_config_hotbar_slot_opacity">Độ mờ ô thanh nhanh %1$d</string>
     <!-- Changelog & News -->
     <string name="changelog_title">Có gì mới</string>
+    <string name="changelog_translate">Dịch</string>
+    <string name="changelog_translating">Đang dịch…</string>
+    <string name="changelog_show_original">Xem bản gốc</string>
+    <string name="changelog_translate_failed">Dịch không được rồi, thử lại nha</string>
     <string name="changelog_version">LeviLauncher Modder %1$s</string>
     <string name="changelog_continue">Tiếp tục</string>
     <string name="news_title">Tin tức launcher</string>

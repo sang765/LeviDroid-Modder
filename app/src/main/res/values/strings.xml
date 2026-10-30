@@ -1223,7 +1223,7 @@
     <string name="changelog_title">What’s new</string>
     <string name="changelog_translate">Translate</string>
     <string name="changelog_translating">Translating…</string>
-    <string name="changelog_translated">Translated</string>
+    <string name="changelog_show_original">Show original</string>
     <string name="changelog_translate_failed">Translation failed</string>
     <string name="changelog_version">LeviLauncher Modder %1$s</string>
     <string name="changelog_continue">Continue</string>

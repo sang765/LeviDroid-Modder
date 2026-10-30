@@ -29,6 +29,7 @@ import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
+import java.util.concurrent.atomic.AtomicBoolean;
 
 public final class ChangelogManager {
     private static final String PREFS = "launcher_changelog";
@@ -92,33 +93,56 @@ public final class ChangelogManager {
         Button button = content.findViewById(R.id.changelog_translate);
         if ("en".equals(Locale.getDefault().getLanguage())) return;
         button.setVisibility(View.VISIBLE);
+        List<String> originalTexts = new ArrayList<>(translatable.size());
+        for (TextView view : translatable) originalTexts.add(view.getText().toString());
+        AtomicBoolean translated = new AtomicBoolean(false);
+        AtomicBoolean inFlight = new AtomicBoolean(false);
         button.setOnClickListener(v -> {
-            button.setEnabled(false);
-            button.setText(R.string.changelog_translating);
-            List<String> texts = new ArrayList<>(translatable.size());
-            for (TextView view : translatable) texts.add(view.getText().toString());
-            TextTranslator.translate(texts, new TextTranslator.Callback() {
-                @Override
-                public void onDone(List<String> translated) {
-                    if (activity.isFinishing() || activity.isDestroyed()) return;
-                    if (translated.size() != translatable.size()) {
-                        onError();
-                        return;
+            if (!inFlight.compareAndSet(false, true)) return;
+            if (!translated.get()) {
+                button.setEnabled(false);
+                button.setText(R.string.changelog_translating);
+                List<String> texts = new ArrayList<>(translatable.size());
+                for (TextView view : translatable) texts.add(view.getText().toString());
+                TextTranslator.translate(texts, new TextTranslator.Callback() {
+                    @Override
+                    public void onDone(List<String> translatedLines) {
+                        if (activity.isFinishing() || activity.isDestroyed()) return;
+                        inFlight.set(false);
+                        if (translatedLines.size() != translatable.size()) {
+                            fail();
+                            return;
+                        }
+                        for (int i = 0; i < translatedLines.size(); i++) {
+                            translatable.get(i).setText(translatedLines.get(i));
+                        }
+                        translated.set(true);
+                        button.setEnabled(true);
+                        button.setText(R.string.changelog_show_original);
                     }
-                    for (int i = 0; i < translated.size(); i++) {
-                        translatable.get(i).setText(translated.get(i));
-                    }
-                    button.setText(R.string.changelog_translated);
-                }
 
-                @Override
-                public void onError() {
-                    if (activity.isFinishing() || activity.isDestroyed()) return;
-                    button.setEnabled(true);
-                    button.setText(R.string.changelog_translate);
-                    Toast.makeText(activity, R.string.changelog_translate_failed, Toast.LENGTH_SHORT).show();
+                    @Override
+                    public void onError() {
+                        if (activity.isFinishing() || activity.isDestroyed()) return;
+                        fail();
+                    }
+
+                    private void fail() {
+                        inFlight.set(false);
+                        button.setEnabled(true);
+                        button.setText(R.string.changelog_translate);
+                        Toast.makeText(activity, R.string.changelog_translate_failed, Toast.LENGTH_SHORT).show();
+                    }
+                });
+            } else {
+                for (int i = 0; i < translatable.size(); i++) {
+                    translatable.get(i).setText(originalTexts.get(i));
                 }
-            });
+                translated.set(false);
+                inFlight.set(false);
+                button.setEnabled(true);
+                button.setText(R.string.changelog_translate);
+            }
         });
     }
 
