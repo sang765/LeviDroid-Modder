@@ -34,6 +34,8 @@
   </tr>
 </table>
 
+**[Documentation](https://docs.levimc.org/LeviLauncher/guide/quick-start?platform=android)** · **[Native mod development](https://docs.levimc.org/LeviLamina/developer_guides/android/)**
+
 </div>
 
 ---
@@ -123,6 +125,7 @@ If you want to build LeviLauncher Modder from source or contribute to developmen
 - Android Studio (latest version recommended)
 - Java Development Kit (JDK) 21 or higher
 - Android SDK with API level 28 or higher
+- Android NDK and CMake (install them through Android Studio's SDK Manager) when native code is built
 
 ### Setup Instructions
 
@@ -145,6 +148,14 @@ If you want to build LeviLauncher Modder from source or contribute to developmen
 7. The app will launch automatically on successful build completion
 
 > **Build Tip:** For faster builds during development, use `Build > Make Project` to compile incrementally instead of full rebuilds.
+
+The project root is named `levilauncher` in the Gradle settings, while the repository is `LeviDroid-Modder`. To build from the command line:
+
+```bash
+./gradlew assembleDebug
+```
+
+On Windows, run `.\gradlew.bat assembleDebug`. Install the official Minecraft app on the test device before testing launcher flows.
 
 ---
 
@@ -234,6 +245,8 @@ LeviLauncher Modder would not be possible without the contributions and support 
 **Project Repository:** [https://github.com/sang765/LeviDroid-Modder](https://github.com/sang765/LeviDroid-Modder)
 
 **Original Repository:** [https://github.com/LiteLDev/LeviLaunchroid](https://github.com/LiteLDev/LeviLaunchroid)
+
+**Documentation:** [docs.levimc.org/LeviLauncher](https://docs.levimc.org/LeviLauncher/guide/quick-start?platform=android) · native mods: [docs.levimc.org/LeviLamina](https://docs.levimc.org/LeviLamina/developer_guides/android/)
 
 **Report Issues:** [GitHub Issues Page](https://github.com/sang765/LeviDroid-Modder/issues)
 
