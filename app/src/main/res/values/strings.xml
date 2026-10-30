@@ -245,6 +245,12 @@
     <string name="instance_delete_warning">This action cannot be undone.</string>
     <string name="instance_delete_confirm_title">Delete Instance</string>
     <string name="instance_delete_confirm_msg">Are you sure you want to delete this instance? All data including worlds will be permanently removed.</string>
+    <string name="instance_clear_cache_title">Clear Instance Cache</string>
+    <string name="instance_clear_cache_desc">Deletes the game cache for this instance to fix cache-related issues, such as \"You need to authenticate to Microsoft services\". The cache is rebuilt on the next launch.</string>
+    <string name="instance_clear_cache_button">Clear Cache</string>
+    <string name="instance_clear_cache_confirm_title">Clear Cache</string>
+    <string name="instance_clear_cache_confirm_msg">Clear the game cache for this instance? Worlds, settings, and installed content are not affected. Exit Minecraft first if it is running.</string>
+    <string name="toast_instance_cache_cleared">Instance cache cleared</string>
     <string name="instance_backup_title">Backup Instance</string>
     <string name="instance_backup_desc">Create a full backup of this instance in Download/LeviLauncher Modder/Backups.</string>
     <string name="instance_backup_button">Backup Instance</string>

@@ -177,6 +177,7 @@ public class InstanceSettingsActivity extends BaseActivity {
         } else {
             btnDelete.setOnClickListener(v -> confirmDelete());
         }
+        findViewById(R.id.btn_clear_instance_cache).setOnClickListener(v -> confirmClearCache());
     }
 
     private void populateData() {
@@ -309,6 +310,29 @@ public class InstanceSettingsActivity extends BaseActivity {
                                 setResult(RESULT_OK);
                                 finish();
                             });
+                        }
+
+                        @Override
+                        public void onDeleteFailed(Exception e) {
+                            runOnUiThread(() -> Toast.makeText(InstanceSettingsActivity.this,
+                                    getString(R.string.toast_delete_failed, e.getMessage()), Toast.LENGTH_SHORT).show());
+                        }
+                    });
+                })
+                .setNegativeButton(getString(R.string.cancel), null)
+                .show();
+    }
+
+    private void confirmClearCache() {
+        new CustomAlertDialog(this)
+                .setTitleText(getString(R.string.instance_clear_cache_confirm_title))
+                .setMessage(getString(R.string.instance_clear_cache_confirm_msg))
+                .setPositiveButton(getString(R.string.instance_clear_cache_button), v -> {
+                    versionManager.clearVersionCache(version, new VersionManager.OnDeleteVersionCallback() {
+                        @Override
+                        public void onDeleteCompleted(boolean success) {
+                            runOnUiThread(() -> Toast.makeText(InstanceSettingsActivity.this,
+                                    R.string.toast_instance_cache_cleared, Toast.LENGTH_SHORT).show());
                         }
 
                         @Override

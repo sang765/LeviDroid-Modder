@@ -874,6 +874,19 @@ public class VersionManager {
         }).start();
     }
 
+    public void clearVersionCache(GameVersion version, OnDeleteVersionCallback callback) {
+        new Thread(() -> {
+            try {
+                deleteDir(LauncherStorage.getProfileCacheRoot(context, MinecraftLauncher.getStorageProfileId(version)));
+                if (callback != null)
+                    callback.onDeleteCompleted(true);
+            } catch (Exception e) {
+                if (callback != null)
+                    callback.onDeleteFailed(e);
+            }
+        }).start();
+    }
+
     private void copyDirectory(File sourceDir, File targetDir) throws IOException {
         if (sourceDir.isDirectory()) {
             if (!targetDir.exists())

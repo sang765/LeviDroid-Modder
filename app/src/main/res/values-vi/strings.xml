@@ -214,6 +214,12 @@
     <string name="instance_delete_warning">Hành động này không thể đảo ngược.</string>
     <string name="instance_delete_confirm_title">Xóa phiên bản</string>
     <string name="instance_delete_confirm_msg">Bạn có chắc chắn muốn xóa phiên bản này không? Tất cả dữ liệu, bao gồm cả thế giới, sẽ bị xóa vĩnh viễn.</string>
+    <string name="instance_clear_cache_title">Xóa cache phiên bản</string>
+    <string name="instance_clear_cache_desc">Xóa cache game của phiên bản này để sửa các lỗi liên quan đến cache, ví dụ như “Bạn cần xác thực với dịch vụ của Microsoft”. Cache sẽ được tạo lại ở lần chạy game tiếp theo.</string>
+    <string name="instance_clear_cache_button">Xóa cache</string>
+    <string name="instance_clear_cache_confirm_title">Xóa cache</string>
+    <string name="instance_clear_cache_confirm_msg">Xóa cache game của phiên bản này? Thế giới, cài đặt và nội dung đã cài sẽ không bị ảnh hưởng. Nếu Minecraft đang chạy thì thoát ra trước nha.</string>
+    <string name="toast_instance_cache_cleared">Đã xóa cache phiên bản</string>
     <string name="instance_backup_title">Sao lưu phiên bản</string>
     <string name="instance_backup_desc">Tạo bản sao lưu đầy đủ của phiên bản này trong Download/LeviLauncher Modder/Backups.</string>
     <string name="instance_backup_button">Sao lưu phiên bản</string>
