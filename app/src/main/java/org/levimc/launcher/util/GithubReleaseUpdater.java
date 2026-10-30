@@ -1,19 +1,12 @@
 package org.levimc.launcher.util;
 
 import android.app.Activity;
-import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
-import android.content.ServiceConnection;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.net.Uri;
 import android.os.Build;
-import android.os.Handler;
-import android.os.IBinder;
-import android.os.Looper;
-import android.os.ParcelFileDescriptor;
-import android.provider.Settings;
 import android.util.Log;
 import android.view.View;
 import android.widget.ProgressBar;
@@ -26,6 +19,7 @@ import androidx.core.content.FileProvider;
 import org.json.JSONArray;
 import org.json.JSONObject;
 import org.levimc.launcher.R;
+import org.levimc.launcher.ui.activities.UpdateInstallActivity;
 import org.levimc.launcher.ui.dialogs.CustomAlertDialog;
 
 import rikka.shizuku.Shizuku;
@@ -49,6 +43,7 @@ public class GithubReleaseUpdater {
     private static final String GITHUB_LATEST_API = "https://api.github.com/repos/%s/%s/releases/latest";
     private static final String APK_ASSET_KEYWORD = ".apk";
     private static final String PREF_IGNORED_VERSION = "update_ignored_version";
+    private static final AtomicBoolean UPDATE_FLOW_ACTIVE = new AtomicBoolean(false);
     private final Activity activity;
     private final String owner;
     private final String repo;
@@ -86,12 +81,18 @@ public class GithubReleaseUpdater {
     }
 
     public void checkUpdate() {
+        if (!UPDATE_FLOW_ACTIVE.compareAndSet(false, true)) {
+            activity.runOnUiThread(() ->
+                    Toast.makeText(activity, R.string.update_check_in_progress, Toast.LENGTH_SHORT).show());
+            return;
+        }
         String url = String.format(GITHUB_LATEST_API, owner, repo);
         Request request = new Request.Builder().url(url).build();
         client.newCall(request).enqueue(new Callback() {
             @Override
             public void onFailure(Call call, IOException e) {
                 Log.e(TAG, "Request failed: " + e.getMessage());
+                releaseUpdateFlow();
                 activity.runOnUiThread(() ->
                         Toast.makeText(activity, activity.getString(R.string.update_check_failed, e.getMessage()), Toast.LENGTH_LONG).show());
             }
@@ -106,17 +107,20 @@ public class GithubReleaseUpdater {
                     String downloadUrl = pickApkUrl(assets);
                     if (downloadUrl == null) {
                         Log.e(TAG, "No APK asset found in release.");
+                        releaseUpdateFlow();
                         return;
                     }
                     String localVersion = activity.getPackageManager().getPackageInfo(activity.getPackageName(), 0).versionName;
                     if (compareVersion(latestVersion, localVersion) > 0) {
                         showUpdateDialog(latestVersion, downloadUrl);
                     } else {
+                        releaseUpdateFlow();
                         activity.runOnUiThread(() ->
                                 Toast.makeText(activity, activity.getString(R.string.already_latest_version, localVersion), Toast.LENGTH_SHORT).show());
                     }
                 } catch (Exception e) {
                     Log.e(TAG, "Parse error: " + e.getMessage());
+                    releaseUpdateFlow();
                     activity.runOnUiThread(() ->
                             Toast.makeText(activity, activity.getString(R.string.update_check_failed, e.getMessage()), Toast.LENGTH_LONG).show());
                 }
@@ -125,12 +129,14 @@ public class GithubReleaseUpdater {
     }
 
     public void checkUpdateOnLaunch() {
+        if (!UPDATE_FLOW_ACTIVE.compareAndSet(false, true)) return;
         String url = String.format(GITHUB_LATEST_API, owner, repo);
         Request request = new Request.Builder().url(url).build();
         client.newCall(request).enqueue(new Callback() {
             @Override
             public void onFailure(Call call, IOException e) {
                 Log.e(TAG, "Request failed: " + e.getMessage());
+                releaseUpdateFlow();
             }
 
             @Override
@@ -143,6 +149,7 @@ public class GithubReleaseUpdater {
                     String downloadUrl = pickApkUrl(assets);
                     if (downloadUrl == null) {
                         Log.e(TAG, "No APK asset found in release.");
+                        releaseUpdateFlow();
                         return;
                     }
                     String localVersion = activity.getPackageManager().getPackageInfo(activity.getPackageName(), 0).versionName;
@@ -152,12 +159,19 @@ public class GithubReleaseUpdater {
                     if (compareVersion(latestVersion, localVersion) > 0
                             && !ignoredVersion.equals(latestVersion)) {
                         showUpdateDialogWithIgnore(latestVersion, downloadUrl);
+                    } else {
+                        releaseUpdateFlow();
                     }
                 } catch (Exception e) {
                     Log.e(TAG, "Parse error: " + e.getMessage());
+                    releaseUpdateFlow();
                 }
             }
         });
+    }
+
+    private void releaseUpdateFlow() {
+        UPDATE_FLOW_ACTIVE.set(false);
     }
 
     // Releases carry per-ABI APKs plus a universal one; pick the one matching
@@ -185,23 +199,37 @@ public class GithubReleaseUpdater {
 
     private void showUpdateDialog(String version, String url) {
         activity.runOnUiThread(() -> {
+            AtomicBoolean downloadClicked = new AtomicBoolean(false);
             CustomAlertDialog dialog = new CustomAlertDialog(activity);
             dialog.setTitleText(activity.getString(R.string.new_version_found, version));
             dialog.setMessage(activity.getString(R.string.update_question));
-            dialog.setPositiveButton(activity.getString(R.string.download_update), (d) -> downloadApk(url));
+            dialog.setPositiveButton(activity.getString(R.string.download_update), (d) -> {
+                downloadClicked.set(true);
+                downloadApk(url);
+            });
             dialog.setNegativeButton(activity.getString(R.string.cancel), null);
+            dialog.setOnDismissAnimationEndListener(() -> {
+                if (!downloadClicked.get()) releaseUpdateFlow();
+            });
             dialog.show();
         });
     }
 
     private void showUpdateDialogWithIgnore(String version, String url) {
         activity.runOnUiThread(() -> {
+            AtomicBoolean downloadClicked = new AtomicBoolean(false);
             CustomAlertDialog dialog = new CustomAlertDialog(activity);
             dialog.setTitleText(activity.getString(R.string.new_version_found, version));
             dialog.setMessage(activity.getString(R.string.update_question));
-            dialog.setPositiveButton(activity.getString(R.string.download_update), (d) -> downloadApk(url));
+            dialog.setPositiveButton(activity.getString(R.string.download_update), (d) -> {
+                downloadClicked.set(true);
+                downloadApk(url);
+            });
             dialog.setNegativeButton(activity.getString(R.string.cancel), null);
             dialog.setNeutralButton(activity.getString(R.string.ignore_this_version), (d) -> ignoreThisVersion(version));
+            dialog.setOnDismissAnimationEndListener(() -> {
+                if (!downloadClicked.get()) releaseUpdateFlow();
+            });
             dialog.show();
         });
     }
@@ -287,15 +315,16 @@ public class GithubReleaseUpdater {
                         }
                     }
                     fos.flush();
-                    if (cancelled.get() || call.isCanceled()) return;
+                    if (cancelled.get() || call.isCanceled()) {
+                        releaseUpdateFlow();
+                        return;
+                    }
                     finished.set(true);
                     dismissProgressDialog(dialogRef);
+                    releaseUpdateFlow();
                     try {
-                        installApk(apkFile);
+                        installApk(apkFile, !backgrounded.get());
                     } catch (Exception installError) {
-                        // Install failures must not surface as a download error, and
-                        // the "installing" dialog must not be left hanging.
-                        dismissInstallingDialog();
                         activity.runOnUiThread(() -> {
                             if (activity.isFinishing() || activity.isDestroyed()) return;
                             Toast.makeText(activity, activity.getString(R.string.install_failed, installError.getMessage()), Toast.LENGTH_LONG).show();
@@ -304,6 +333,7 @@ public class GithubReleaseUpdater {
                 } catch (Exception e) {
                     if (call.isCanceled() || cancelled.get()) return;
                     dismissProgressDialog(dialogRef);
+                    releaseUpdateFlow();
                     activity.runOnUiThread(() -> {
                         if (activity.isFinishing() || activity.isDestroyed()) return;
                         Toast.makeText(activity, activity.getString(R.string.update_failed, e.getMessage()), Toast.LENGTH_LONG).show();
@@ -364,12 +394,6 @@ public class GithubReleaseUpdater {
     public static final String METHOD_ROOT = "root";
 
     private static final int REQ_SHIZUKU_PERMISSION = 1001;
-    // shortcut: bindUserService has no failure callback — a dead or wedged
-    // Shizuku server would leave the "installing" dialog up forever, so give
-    // the bind a deadline and fail into the help dialog (pattern from
-    // InstallerX Revived, which instead relies on the user backing out).
-    private static final long SHIZUKU_BIND_TIMEOUT_MS = 15_000L;
-    private final AtomicReference<CustomAlertDialog> installingDialogRef = new AtomicReference<>();
 
     public static String getInstallMethod(Context context) {
         return prefs(context).getString("install_method", METHOD_SYSTEM);
@@ -403,173 +427,36 @@ public class GithubReleaseUpdater {
         return context.getSharedPreferences("update_prefs", Context.MODE_PRIVATE);
     }
 
-    private void installApk(File apkFile) {
+    private void installApk(File apkFile, boolean interactive) {
         String method = getInstallMethod(activity);
-        if (METHOD_SHIZUKU.equals(method)) {
-            shizukuInstallApk(apkFile);
-        } else if (METHOD_ROOT.equals(method)) {
-            rootInstallApk(apkFile);
-        } else {
+        if (METHOD_SYSTEM.equals(method)) {
             systemInstallApk(apkFile);
+        } else if (interactive) {
+            activity.runOnUiThread(() -> UpdateInstallActivity.start(activity, apkFile, method));
+        } else {
+            installInBackground(apkFile, method);
         }
     }
 
-    private void shizukuInstallApk(File apkFile) {
-        if (!Shizuku.pingBinder()) {
-            showShizukuHelpDialog(R.string.shizuku_not_running);
-            return;
-        }
-        if (Shizuku.checkSelfPermission() != PackageManager.PERMISSION_GRANTED) {
-            Shizuku.OnRequestPermissionResultListener listener =
-                    new Shizuku.OnRequestPermissionResultListener() {
-                        @Override
-                        public void onRequestPermissionResult(int requestCode, int grantResult) {
-                            Shizuku.removeRequestPermissionResultListener(this);
-                            if (grantResult == PackageManager.PERMISSION_GRANTED) {
-                                shizukuBindAndInstall(apkFile);
-                            } else {
-                                showShizukuHelpDialog(R.string.shizuku_failed);
-                            }
-                        }
-                    };
-            Shizuku.addRequestPermissionResultListener(listener);
-            Shizuku.requestPermission(REQ_SHIZUKU_PERMISSION);
-            return;
-        }
-        shizukuBindAndInstall(apkFile);
-    }
-
-    private void shizukuBindAndInstall(File apkFile) {
-        showInstallingDialog();
-        ComponentName componentName = new ComponentName(
-                activity.getPackageName(), UpdateInstallerService.class.getName());
-        // processNameSuffix is mandatory in Shizuku 13.x — forAdd() rejects a null
-        // suffix with an NPE, so bindUserService would throw before connecting.
-        Shizuku.UserServiceArgs args = new Shizuku.UserServiceArgs(componentName)
-                .daemon(false)
-                .version(1)
-                .tag("update-installer")
-                .processNameSuffix("update_installer");
-        // Guards against a connect that arrives after the bind timeout fired.
-        AtomicBoolean connected = new AtomicBoolean(false);
-        Handler mainHandler = new Handler(Looper.getMainLooper());
-        ServiceConnection connection = new ServiceConnection() {
+    private void installInBackground(File apkFile, String method) {
+        UpdateApkInstaller.Callback callback = new UpdateApkInstaller.Callback() {
             @Override
-            public void onServiceConnected(ComponentName name, IBinder binder) {
-                if (!connected.compareAndSet(false, true)) {
-                    try {
-                        Shizuku.unbindUserService(args, this, true);
-                    } catch (Throwable ignored) {
-                    }
-                    return;
-                }
-                mainHandler.removeCallbacksAndMessages(null);
-                IUpdateInstallerService service = IUpdateInstallerService.Stub.asInterface(binder);
-                new Thread(() -> {
-                    int exit = -1;
-                    String output = "";
-                    try (ParcelFileDescriptor apk = ParcelFileDescriptor.open(
-                            apkFile, ParcelFileDescriptor.MODE_READ_ONLY)) {
-                        exit = service.install(apk, apkFile.length());
-                        output = service.getOutput();
-                    } catch (Throwable t) {
-                        output = String.valueOf(t.getMessage());
-                    } finally {
-                        try {
-                            Shizuku.unbindUserService(args, this, true);
-                        } catch (Throwable ignored) {
-                        }
-                    }
-                    Log.e("GithubReleaseUpdater", "shizuku install exit=" + exit + " out=" + output);
-                    int code = exit;
-                    activity.runOnUiThread(() -> {
-                        if (code == 0) {
-                            Toast.makeText(activity, R.string.update_installed_restart, Toast.LENGTH_LONG).show();
-                        } else {
-                            showShizukuHelpDialog(R.string.shizuku_failed);
-                        }
-                    });
-                }).start();
+            public void onSuccess() {
+                activity.runOnUiThread(() ->
+                        Toast.makeText(activity, R.string.update_installed_restart, Toast.LENGTH_LONG).show());
             }
 
             @Override
-            public void onServiceDisconnected(ComponentName name) {
+            public void onFailure(int messageRes) {
+                activity.runOnUiThread(() ->
+                        Toast.makeText(activity, activity.getString(R.string.install_failed, activity.getString(messageRes)), Toast.LENGTH_LONG).show());
             }
         };
-        Shizuku.bindUserService(args, connection);
-        mainHandler.postDelayed(() -> {
-            if (connected.compareAndSet(false, true)) {
-                try {
-                    Shizuku.unbindUserService(args, connection, true);
-                } catch (Throwable ignored) {
-                }
-                dismissInstallingDialog();
-                showShizukuHelpDialog(R.string.shizuku_not_running);
-            }
-        }, SHIZUKU_BIND_TIMEOUT_MS);
-    }
-
-    private void rootInstallApk(File apkFile) {
-        showInstallingDialog();
-        new Thread(() -> {
-            int exit = -1;
-            String output = "";
-            try {
-                Process process = Runtime.getRuntime().exec(new String[]{
-                        "su", "-c", "pm install -r '" + apkFile.getAbsolutePath() + "' 2>&1"});
-                output = UpdateInstallerService.readAll(process);
-                exit = process.waitFor();
-            } catch (Exception e) {
-                output = String.valueOf(e.getMessage());
-            }
-            Log.e("GithubReleaseUpdater", "root install exit=" + exit + " out=" + output);
-            int code = exit;
-            activity.runOnUiThread(() -> {
-                if (code == 0) {
-                    Toast.makeText(activity, R.string.update_installed_restart, Toast.LENGTH_LONG).show();
-                } else {
-                    showRootFailedDialog();
-                }
-            });
-        }).start();
-    }
-
-    private void showInstallingDialog() {
-        activity.runOnUiThread(() -> {
-            CustomAlertDialog dialog = new CustomAlertDialog(activity)
-                    .setMessage(activity.getString(R.string.update_installing_message))
-                    .setPositiveButton(activity.getString(R.string.close), null);
-            installingDialogRef.set(dialog);
-            dialog.show();
-        });
-    }
-
-    private void dismissInstallingDialog() {
-        activity.runOnUiThread(() -> {
-            CustomAlertDialog dialog = installingDialogRef.getAndSet(null);
-            if (dialog != null && dialog.isShowing()) {
-                dialog.dismissImmediately();
-            }
-        });
-    }
-
-    private void showShizukuHelpDialog(int messageRes) {
-        activity.runOnUiThread(() -> new CustomAlertDialog(activity)
-                .setTitleText(activity.getString(R.string.shizuku_failed_title))
-                .setMessage(activity.getString(messageRes))
-                .setPositiveButton(activity.getString(R.string.enable_usb_install),
-                        v -> activity.startActivity(
-                                new Intent(Settings.ACTION_APPLICATION_DEVELOPMENT_SETTINGS)))
-                .setNegativeButton(activity.getString(R.string.cancel), null)
-                .show());
-    }
-
-    private void showRootFailedDialog() {
-        activity.runOnUiThread(() -> new CustomAlertDialog(activity)
-                .setTitleText(activity.getString(R.string.root_failed_title))
-                .setMessage(activity.getString(R.string.root_failed_message))
-                .setPositiveButton(activity.getString(R.string.close), null)
-                .show());
+        if (METHOD_ROOT.equals(method)) {
+            UpdateApkInstaller.installWithRoot(apkFile, callback);
+        } else {
+            UpdateApkInstaller.installWithShizuku(activity, apkFile, callback);
+        }
     }
 
     private void systemInstallApk(File apkFile) {
