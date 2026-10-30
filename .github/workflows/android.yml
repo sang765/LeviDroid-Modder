@@ -26,11 +26,11 @@ jobs:
 
       # Runs before the build so the generated changelog is bundled into the APK
       # and the "What's new" dialog shows this release's notes after an update.
-      - name: Generate release notes with Gemini
+      - name: Generate release notes with Beam (Ollama Cloud)
         if: startsWith(github.ref, 'refs/tags/')
         env:
-          GOOGLE_API_KEY: ${{ secrets.GOOGLE_API_KEY }}
-          RELEASE_NOTES_MODEL: gemini-flash-latest
+          RELEASE_NOTES_API_KEY: ${{ secrets.RELEASE_NOTES_API_KEY }}
+          RELEASE_NOTES_MODEL: beam
         run: |
           git fetch --tags --force
           python3 scripts/generate_release_notes.py

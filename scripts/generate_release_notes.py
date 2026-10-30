@@ -3,10 +3,10 @@
 
 The notes go to resources/launcher/changelog.json — bundled into the APK and
 shown by the in-app "What's new" dialog after an update — and to
-RELEASE_NOTES.md, the GitHub Release description. Gemini writes them from the
-commits since the previous tag; if the API is unavailable or the answer misses
-the schema, the committed changelog is kept and rendered instead, so a release
-can never fail on note generation.
+RELEASE_NOTES.md, the GitHub Release description. Ollama Cloud (Beam) writes
+them from the commits since the previous tag; if the API is unavailable or the
+answer misses the schema, the committed changelog is kept and rendered instead,
+so a release can never fail on note generation.
 """
 import json
 import os
@@ -24,7 +24,7 @@ from validate_release_content import validate_changelog  # noqa: E402
 
 CHANGELOG = ROOT / "resources" / "launcher" / "changelog.json"
 NOTES = ROOT / "RELEASE_NOTES.md"
-MODEL = os.environ.get("RELEASE_NOTES_MODEL", "gemini-flash-latest")
+MODEL = os.environ.get("RELEASE_NOTES_MODEL", "beam")
 REPO = os.environ.get("GITHUB_REPOSITORY", "sang765/LeviDroid-Modder")
 
 
@@ -51,7 +51,7 @@ def commits(tag):
     return lines, previous
 
 
-def ask_gemini(key, tag, changes, previous):
+def ask_model(key, tag, changes, previous):
     changelog = json.loads(CHANGELOG.read_text(encoding="utf-8"))
     prompt = f"""Write the player-facing release notes for {REPO} version {tag}.
 
@@ -78,15 +78,16 @@ Commits since {previous}:
 {chr(10).join(changes)}
 """
     payload = {
-        "contents": [{"parts": [{"text": prompt}]}],
-        "generationConfig": {"temperature": 0.3, "responseMimeType": "application/json"},
+        "model": MODEL,
+        "messages": [{"role": "user", "content": prompt}],
+        "temperature": 0.3,
     }
     request = urllib.request.Request(
-        f"https://generativelanguage.googleapis.com/v1beta/models/{MODEL}:generateContent",
+        "https://ollama.com/v1/chat/completions",
         data=json.dumps(payload).encode("utf-8"),
-        headers={"Content-Type": "application/json", "x-goog-api-key": key},
+        headers={"Content-Type": "application/json", "Authorization": f"Bearer {key}"},
     )
-    # Gemini has transient 5xx outages; retry before falling back to the
+    # Ollama Cloud has transient 5xx outages; retry before falling back to the
     # committed changelog, which may lag several releases behind.
     for attempt in range(3):
         try:
@@ -97,7 +98,7 @@ Commits since {previous}:
             if error.code < 500 or attempt == 2:
                 raise
             time.sleep(2 * (attempt + 1))
-    text = body["candidates"][0]["content"]["parts"][0].get("text", "").strip()
+    text = body["choices"][0]["message"]["content"].strip()
     if text.startswith("```"):
         text = text.split("\n", 1)[1].rsplit("```", 1)[0].strip()
     data = json.loads(text)
@@ -115,16 +116,16 @@ def render():
 
 def main():
     tag = os.environ.get("GITHUB_REF_NAME", "")
-    key = os.environ.get("GOOGLE_API_KEY", "")
+    key = os.environ.get("RELEASE_NOTES_API_KEY", "")
     if not key or not tag:
-        print("release notes: no GOOGLE_API_KEY or tag; keeping the committed changelog")
+        print("release notes: no RELEASE_NOTES_API_KEY or tag; keeping the committed changelog")
         render()
         return 0
 
     backup = CHANGELOG.read_bytes()
     try:
         changes, previous = commits(tag)
-        data = ask_gemini(key, tag, changes, previous)
+        data = ask_model(key, tag, changes, previous)
         CHANGELOG.write_text(json.dumps(data, indent=2, ensure_ascii=False) + "\n",
                              encoding="utf-8")
         validate_changelog(CHANGELOG)
