@@ -63,7 +63,13 @@ def collect(diff_range):
             continue
         if raw.startswith("+"):
             text = raw[1:]
-            if text.strip().startswith("//"):
+            stripped_line = text.strip()
+            if (
+                stripped_line.startswith("//")
+                or stripped_line.startswith("/*")
+                or stripped_line.startswith("*/")
+                or stripped_line.startswith("*")
+            ):
                 findings.append((current_file or "?", new_line_no, text.rstrip()))
             new_line_no += 1
         elif raw.startswith("-"):
@@ -97,7 +103,7 @@ def main():
     bad_markers = check_messages(diff_range)
 
     if findings:
-        print("FAIL: new inline `//` comments introduced:")
+        print("FAIL: new comments (any form) introduced:")
         for f, ln, text in findings:
             print(f"  {f}:{ln}: {text}")
     if bad_markers:
@@ -105,7 +111,7 @@ def main():
 
     if findings or bad_markers:
         return 1
-    print("OK: no new inline `//` comments or AI authorship markers.")
+    print("OK: no new comments (any form) or AI authorship markers.")
     return 0
 
 
