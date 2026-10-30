@@ -1,31 +1,38 @@
 {
   "schemaVersion": 1,
-  "headline": "LeviLauncher Modder v1.6.0-modder.7",
-  "summary": "The animated background lineup grows to eleven effects with a dropdown picker, and effects now follow accent color changes instantly.",
+  "headline": "LeviLauncher Modder v1.6.0-modder.8",
+  "summary": "This release adds an account session check and a clear instance cache option, while documentation now points to LeviLauncher and LeviLamina guides.",
   "sections": [
     {
-      "title": "Features",
+      "title": "Improvements",
       "items": [
         {
-          "text": "Seven new animated background effects — Warp, Ripple, Bubbles, Fireflies, Aurora, Synthwave, and Comet — join Matrix, Donut, Fireworks, and Wave.",
-          "url": "https://github.com/sang765/LeviDroid-Modder/commit/d3c0df264afecac5f89f4203520ca2b010050c07"
+          "text": "Add an account session check to the accounts screen.",
+          "url": "https://github.com/sang765/LeviDroid-Modder/commit/38444ea47b95fa235da5c6d152d314ec7ec68b67"
         },
         {
-          "text": "The Animated background picker is now a dropdown, so all eleven effects fit on narrow screens.",
-          "url": "https://github.com/sang765/LeviDroid-Modder/commit/d3c0df264afecac5f89f4203520ca2b010050c07"
+          "text": "Add a clear instance cache option to instance settings.",
+          "url": "https://github.com/sang765/LeviDroid-Modder/commit/339497a813b54c2dc7f001b8906f199be2eba8a4"
         },
         {
-          "text": "Vietnamese labels for every background effect.",
-          "url": "https://github.com/sang765/LeviDroid-Modder/commit/d3c0df264afecac5f89f4203520ca2b010050c07"
+          "text": "Point guides to LeviLauncher's documentation.",
+          "url": "https://github.com/sang765/LeviDroid-Modder/commit/cc5c7bc6eac48f1e82adf705b8b5f63ba0883247"
         }
       ]
     },
     {
-      "title": "Fixes",
+      "title": "Under the hood",
       "items": [
         {
-          "text": "Accent color changes now update the running background effect immediately instead of waiting for the next screen recreate.",
-          "url": "https://github.com/sang765/LeviDroid-Modder/commit/587cb2b804fbc8836237c5d3742e1d42bac9c654"
+          "text": "Point native mod documentation to LeviLamina's docs.",
+          "url": "https://github.com/sang765/LeviDroid-Modder/commit/cc5c7bc6eac48f1e82adf705b8b5f63ba0883247"
+        },
+        {
+          "text": "Remove the bundled docs site; documentation now lives in LeviLauncher's docs.",
+          "url": "https://github.com/sang765/LeviDroid-Modder/commit/14a608dc904a2134d2a93ee9eb7b609d33e51a87"
+        },
+        {
+          "text": "Align documentation setup with upstream LeviLauncher."
         }
       ]
     }
