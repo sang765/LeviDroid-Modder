@@ -57,8 +57,9 @@ public final class TextTranslator {
         AtomicInteger pending = new AtomicInteger(0);
         AtomicInteger failed = new AtomicInteger(0);
         AtomicBoolean notified = new AtomicBoolean(false);
-        int total = 0;
-        for (String url : urls) if (url != null) total++;
+        int urlCount = 0;
+        for (String url : urls) if (url != null) urlCount++;
+        final int total = urlCount;
 
         if (total == 0) {
             main.post(() -> callback.onDone(results));
