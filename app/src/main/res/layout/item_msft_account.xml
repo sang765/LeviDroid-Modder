@@ -68,6 +68,22 @@
         android:layout_marginStart="8dp">
 
         <Button
+            android:id="@+id/btn_test"
+            style="@style/Widget.MaterialComponents.Button.TextButton"
+            android:layout_width="wrap_content"
+            android:layout_height="36dp"
+            android:layout_marginStart="4dp"
+            android:text="@string/ms_test_account"
+            android:textSize="12sp"
+            android:insetTop="0dp"
+            android:insetBottom="0dp"
+            android:minWidth="0dp"
+            android:minHeight="0dp"
+            android:paddingStart="8dp"
+            android:paddingEnd="8dp"
+            android:fontFamily="@font/misans"/>
+
+        <Button
             android:id="@+id/btn_use"
             android:layout_width="wrap_content"
             android:layout_height="36dp"

@@ -124,6 +124,52 @@ public class AccountsActivity extends BaseActivity {
             }
 
             @Override
+            public void onTestAccount(MsftAccountStore.MsftAccount account) {
+                loadingDialog = org.levimc.launcher.util.DialogUtils.ensure(AccountsActivity.this, loadingDialog);
+                org.levimc.launcher.util.DialogUtils.showWithMessage(loadingDialog, getString(R.string.ms_test_account_running));
+
+                executor.execute(() -> {
+                    String error = null;
+                    MsftAccountStore.MsftAccount refreshed = null;
+                    try {
+                        refreshed = MsftAuthManager.checkAccount(AccountsActivity.this, account.id);
+                    } catch (Exception e) {
+                        error = MsftAuthManager.describeError(e);
+                    }
+                    final String failure = error;
+                    final MsftAccountStore.MsftAccount result = refreshed;
+                    runOnUiThread(() -> {
+                        org.levimc.launcher.util.DialogUtils.dismissQuietly(loadingDialog);
+                        StringBuilder message = new StringBuilder();
+                        if (failure != null) {
+                            message.append(failure);
+                            for (String line : MsftAuthManager.summarizeStoredTokens(AccountsActivity.this, account.serializedAuthManager)) {
+                                message.append('\n').append(line);
+                            }
+                            message.append("\n\n").append(getString(R.string.ms_test_account_fix_hint));
+                            new org.levimc.launcher.ui.dialogs.CustomAlertDialog(AccountsActivity.this)
+                                    .setTitleText(getString(R.string.ms_test_account_failed_title))
+                                    .setMessage(message.toString())
+                                    .setPositiveButton(getString(R.string.confirm), null)
+                                    .show();
+                        } else {
+                            message.append(getString(R.string.ms_test_account_ok_msg,
+                                    AccountTextUtils.displayNameOrNotSigned(AccountsActivity.this, result)));
+                            for (String line : MsftAuthManager.summarizeStoredTokens(AccountsActivity.this, result.serializedAuthManager)) {
+                                message.append('\n').append(line);
+                            }
+                            new org.levimc.launcher.ui.dialogs.CustomAlertDialog(AccountsActivity.this)
+                                    .setTitleText(getString(R.string.ms_test_account_ok_title))
+                                    .setMessage(message.toString())
+                                    .setPositiveButton(getString(R.string.confirm), null)
+                                    .show();
+                        }
+                        refreshUI();
+                    });
+                });
+            }
+
+            @Override
             public void onDelete(MsftAccountStore.MsftAccount account) {
                 new org.levimc.launcher.ui.dialogs.CustomAlertDialog(AccountsActivity.this)
                         .setTitleText(getString(R.string.delete_account_title))

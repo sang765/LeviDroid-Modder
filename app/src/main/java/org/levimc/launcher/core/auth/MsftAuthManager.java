@@ -32,6 +32,7 @@ import net.raphimc.minecraftauth.xbl.exception.XblRequestException;
 import net.raphimc.minecraftauth.xbl.model.XblUserProfile;
 
 import org.levimc.launcher.BuildConfig;
+import org.levimc.launcher.R;
 import org.levimc.launcher.core.auth.storage.XalExporter;
 
 import java.io.IOException;
@@ -40,6 +41,10 @@ import java.net.NoRouteToHostException;
 import java.net.SocketException;
 import java.net.SocketTimeoutException;
 import java.net.UnknownHostException;
+import java.text.DateFormat;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
 import java.util.Locale;
 import java.util.concurrent.CancellationException;
 import java.util.concurrent.TimeoutException;
@@ -225,7 +230,7 @@ public final class MsftAuthManager {
             throw new IllegalStateException("No Microsoft account is selected. Sign in from Accounts.");
         }
         return executeWithNetworkRetry(
-                () -> refreshSavedAccount(context, active.id, false),
+                () -> refreshSavedAccount(context, active.id, false, true),
                 null,
                 null,
                 ACCOUNT_NETWORK_RETRY_COUNT
@@ -234,14 +239,23 @@ public final class MsftAuthManager {
 
     public static synchronized MsftAccountStore.MsftAccount refreshAccountAndActivate(Context context, String id) throws Exception {
         return executeWithNetworkRetry(
-                () -> refreshSavedAccount(context, id, true),
+                () -> refreshSavedAccount(context, id, true, false),
                 null,
                 null,
                 ACCOUNT_NETWORK_RETRY_COUNT
         );
     }
 
-    private static MsftAccountStore.MsftAccount refreshSavedAccount(Context context, String id, boolean activate) throws Exception {
+    public static synchronized MsftAccountStore.MsftAccount checkAccount(Context context, String id) throws Exception {
+        return executeWithNetworkRetry(
+                () -> refreshSavedAccount(context, id, false, false),
+                null,
+                null,
+                ACCOUNT_NETWORK_RETRY_COUNT
+        );
+    }
+
+    private static MsftAccountStore.MsftAccount refreshSavedAccount(Context context, String id, boolean activate, boolean export) throws Exception {
         MsftAccountStore.MsftAccount account = MsftAccountStore.find(context, id);
         if (account == null || TextUtils.isEmpty(account.serializedAuthManager)) {
             throw new IllegalArgumentException("Account data is missing or damaged.");
@@ -269,7 +283,7 @@ public final class MsftAuthManager {
         if (activate) {
             MsftAccountStore.setActive(context, id);
             refreshed = MsftAccountStore.find(context, id);
-        } else {
+        } else if (export) {
             MsftAccountStore.exportActiveAccount(context, id);
         }
         return refreshed;
@@ -386,6 +400,35 @@ public final class MsftAuthManager {
             saveAccountOrThrow(context, authManager);
         } catch (Exception e) {
             Log.e(TAG, "Failed to save account", e);
+        }
+    }
+
+    public static List<String> summarizeStoredTokens(Context context, String serializedAuthManager) {
+        List<String> lines = new ArrayList<>();
+        if (context == null || TextUtils.isEmpty(serializedAuthManager)) return lines;
+        JsonObject json;
+        try {
+            json = JsonParser.parseString(serializedAuthManager).getAsJsonObject();
+        } catch (Exception e) {
+            return lines;
+        }
+        addTokenSummaryLine(lines, context, json, "msaToken", R.string.ms_token_summary_msa);
+        addTokenSummaryLine(lines, context, json, "xboxLiveXstsToken", R.string.ms_token_summary_xbox_live);
+        addTokenSummaryLine(lines, context, json, "bedrockXstsToken", R.string.ms_token_summary_bedrock);
+        return lines;
+    }
+
+    private static void addTokenSummaryLine(List<String> lines, Context context, JsonObject json, String key, int labelRes) {
+        if (!json.has(key) || !json.get(key).isJsonObject()) return;
+        JsonObject token = json.getAsJsonObject(key);
+        if (!token.has("expireTimeMs")) return;
+        long expireTimeMs = token.get("expireTimeMs").getAsLong();
+        String expiry = DateFormat.getDateTimeInstance(DateFormat.SHORT, DateFormat.SHORT, Locale.getDefault())
+                .format(new Date(expireTimeMs));
+        if (expireTimeMs <= System.currentTimeMillis()) {
+            lines.add(context.getString(R.string.ms_token_summary_expired, context.getString(labelRes), expiry));
+        } else {
+            lines.add(context.getString(R.string.ms_token_summary_valid, context.getString(labelRes), expiry));
         }
     }
 

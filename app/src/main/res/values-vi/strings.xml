@@ -636,6 +636,17 @@
     <string name="ms_feature_disabled_title">Tính năng bị tắt</string>
     <string name="ms_feature_disabled_desc">Hãy bật “Đăng nhập Minecraft bằng LeviLauncher Modder” trong Cài đặt để quản lý tài khoản Microsoft.</string>
     <string name="ms_activated">Đã kích hoạt</string>
+    <string name="ms_test_account">Kiểm tra</string>
+    <string name="ms_test_account_running">Đang kiểm tra phiên đăng nhập…</string>
+    <string name="ms_test_account_ok_title">Tài khoản vẫn ổn</string>
+    <string name="ms_test_account_ok_msg">Tài khoản %1$s đang hoạt động bình thường.</string>
+    <string name="ms_test_account_failed_title">Kiểm tra không thành công</string>
+    <string name="ms_test_account_fix_hint">Xóa tài khoản này rồi đăng nhập lại để sửa nhé.</string>
+    <string name="ms_token_summary_msa">Tài khoản Microsoft</string>
+    <string name="ms_token_summary_xbox_live">Xbox Live</string>
+    <string name="ms_token_summary_bedrock">Minecraft (Bedrock)</string>
+    <string name="ms_token_summary_valid">Token %1$s còn hiệu lực đến %2$s</string>
+    <string name="ms_token_summary_expired">Token %1$s đã hết hạn (từ %2$s)</string>
     <!-- Popup labels -->
     <string name="label_current_account">Tài khoản hiện tại</string>
     <string name="label_other_accounts">Các tài khoản khác</string>

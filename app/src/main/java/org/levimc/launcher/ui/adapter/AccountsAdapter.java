@@ -27,6 +27,7 @@ public class AccountsAdapter extends RecyclerView.Adapter<AccountsAdapter.Accoun
     public interface OnAccountActionListener {
         void onSetActive(MsftAccountStore.MsftAccount account);
         void onDelete(MsftAccountStore.MsftAccount account);
+        void onTestAccount(MsftAccountStore.MsftAccount account);
     }
 
     private final List<MsftAccountStore.MsftAccount> accounts = new ArrayList<>();
@@ -73,6 +74,9 @@ public class AccountsAdapter extends RecyclerView.Adapter<AccountsAdapter.Accoun
         holder.btnUse.setOnClickListener(v -> {
             if (listener != null) listener.onSetActive(a);
         });
+        holder.btnTest.setOnClickListener(v -> {
+            if (listener != null) listener.onTestAccount(a);
+        });
         holder.btnDelete.setOnClickListener(v -> {
             if (listener != null) listener.onDelete(a);
         });
@@ -103,6 +107,7 @@ public class AccountsAdapter extends RecyclerView.Adapter<AccountsAdapter.Accoun
         TextView subtitle;
         TextView activeBadge;
         Button btnUse;
+        Button btnTest;
         ImageButton btnDelete;
 
         public AccountViewHolder(@NonNull View itemView) {
@@ -111,6 +116,7 @@ public class AccountsAdapter extends RecyclerView.Adapter<AccountsAdapter.Accoun
             subtitle = itemView.findViewById(R.id.account_subtitle);
             activeBadge = itemView.findViewById(R.id.active_badge);
             btnUse = itemView.findViewById(R.id.btn_use);
+            btnTest = itemView.findViewById(R.id.btn_test);
             btnDelete = itemView.findViewById(R.id.btn_delete);
         }
     }

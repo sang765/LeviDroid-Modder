@@ -738,6 +738,17 @@
     <string name="ms_feature_disabled_title">Feature Disabled</string>
     <string name="ms_feature_disabled_desc">Please enable \'Sign in to Minecraft with LeviLauncher Modder\' in Settings to manage Microsoft accounts.</string>
     <string name="ms_activated">Activated</string>
+    <string name="ms_test_account">Check</string>
+    <string name="ms_test_account_running">Checking account session…</string>
+    <string name="ms_test_account_ok_title">Session Active</string>
+    <string name="ms_test_account_ok_msg">The account %1$s is working normally.</string>
+    <string name="ms_test_account_failed_title">Account Check Failed</string>
+    <string name="ms_test_account_fix_hint">Remove and sign in again with this account to fix it.</string>
+    <string name="ms_token_summary_msa">Microsoft account</string>
+    <string name="ms_token_summary_xbox_live">Xbox Live</string>
+    <string name="ms_token_summary_bedrock">Minecraft (Bedrock)</string>
+    <string name="ms_token_summary_valid">%1$s token valid until %2$s</string>
+    <string name="ms_token_summary_expired">%1$s token expired (since %2$s)</string>
 
     <!-- Popup labels -->
     <string name="label_current_account">Current Account</string>
