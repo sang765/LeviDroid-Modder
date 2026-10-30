@@ -1,22 +1,61 @@
 {
   "schemaVersion": 1,
-  "headline": "LeviLauncher Modder v1.6.0-modder.8",
-  "summary": "This release adds an account session check and a clear instance cache option, while documentation now points to LeviLauncher and LeviLamina guides.",
+  "headline": "LeviLauncher Modder v1.6.0-modder.9",
+  "summary": "This release improves launcher updates, accounts, instance management, backgrounds, and logging, with several stability fixes.",
   "sections": [
     {
       "title": "Improvements",
       "items": [
         {
-          "text": "Add an account session check to the accounts screen.",
-          "url": "https://github.com/sang765/LeviDroid-Modder/commit/38444ea47b95fa235da5c6d152d314ec7ec68b67"
+          "text": "Delay the changelog dialog until the launcher loads and add a translate button.",
+          "url": "https://github.com/sang765/LeviDroid-Modder/commit/17893afbfcf978da903a7ad0d5e2a02fe0cc068a"
         },
         {
-          "text": "Add a clear instance cache option to instance settings.",
-          "url": "https://github.com/sang765/LeviDroid-Modder/commit/339497a813b54c2dc7f001b8906f199be2eba8a4"
+          "text": "Add a full-screen update install screen for Shizuku and Root.",
+          "url": "https://github.com/sang765/LeviDroid-Modder/commit/9028dfb233a561ca2ab9cbdebcdda5a55d96e824"
         },
         {
-          "text": "Point guides to LeviLauncher's documentation.",
-          "url": "https://github.com/sang765/LeviDroid-Modder/commit/cc5c7bc6eac48f1e82adf705b8b5f63ba0883247"
+          "text": "Add an account session check and a clear instance cache option."
+        },
+        {
+          "text": "Add procedural and additional animated background effects."
+        },
+        {
+          "text": "Add an option to hide the launcher HUD and overlay buttons.",
+          "url": "https://github.com/sang765/LeviDroid-Modder/commit/5bf4c980b927809628e20b0a6683a90b49d9b6af"
+        },
+        {
+          "text": "Add support for Minecraft 26.60.",
+          "url": "https://github.com/sang765/LeviDroid-Modder/commit/97cb7d3d3b26dda044450a9cb0ea1e5dc133edd4"
+        }
+      ]
+    },
+    {
+      "title": "Fixes",
+      "items": [
+        {
+          "text": "Refresh animated background colors when the accent changes.",
+          "url": "https://github.com/sang765/LeviDroid-Modder/commit/587cb2b804fbc8836237c5e3d3742b2d4bac9c654"
+        },
+        {
+          "text": "Replace transfer mode radios with direct action buttons.",
+          "url": "https://github.com/sang765/LeviDroid-Modder/commit/1f83ab574f52ed68826b7bb3b814ba89b7b26e64"
+        },
+        {
+          "text": "Cap the log overlay ring replay shown at game resume.",
+          "url": "https://github.com/sang765/LeviDroid-Modder/commit/2f02dd38c47c46bcc5bb5989db8eb166ba0192e0"
+        },
+        {
+          "text": "Restore 26.5x menu signatures for the 1.26.50+ rules entry.",
+          "url": "https://github.com/sang765/LeviDroid-Modder/commit/d0a6976412f2a75513fa66c0e292b1e41cb4d075"
+        },
+        {
+          "text": "Ship both inbuilt-mods libraries and select by game version.",
+          "url": "https://github.com/sang765/LeviDroid-Modder/commit/c449ef27fa4e08828e3f3fc2a244fa3f39a2b010"
+        },
+        {
+          "text": "Gate ClientModBridge overlay attach behind mods or mod menu.",
+          "url": "https://github.com/sang765/LeviDroid-Modder/commit/11663c4a539269dc456d725c83b43ddb67bbbc6e"
         }
       ]
     },
@@ -24,15 +63,41 @@
       "title": "Under the hood",
       "items": [
         {
-          "text": "Point native mod documentation to LeviLamina's docs.",
+          "text": "Clear image caches and hint GC before game loads.",
+          "url": "https://github.com/sang765/LeviDroid-Modder/commit/25f47a465d8442b41e94fad3a78537179acca3e5"
+        },
+        {
+          "text": "Use nanosecond freeze sampling with page-fault tracking.",
+          "url": "https://github.com/sang765/LeviDroid-Modder/commit/4567b40d5c2a5be5d650332031026b0f7f42236e"
+        },
+        {
+          "text": "Add a thread freeze sampler for app-level logging sessions.",
+          "url": "https://github.com/sang765/LeviDroid-Modder/commit/74ed815adc177e30c457af18249d9bfe5cea1040"
+        },
+        {
+          "text": "Raise the app-level log ring to 10000 lines.",
+          "url": "https://github.com/sang765/LeviDroid-Modder/commit/5c1aa8af63a94e86b8660a2233d301a2b2e6da28"
+        },
+        {
+          "text": "Update the Vietnamese translation.",
+          "url": "https://github.com/sang765/LeviDroid-Modder/commit/dfc9fb0786a150f08f5675e7c8ffb8277f0e31e0"
+        }
+      ]
+    },
+    {
+      "title": "Documentation",
+      "items": [
+        {
+          "text": "Point documentation to LeviLauncher's guide and LeviLamina's native mod docs.",
           "url": "https://github.com/sang765/LeviDroid-Modder/commit/cc5c7bc6eac48f1e82adf705b8b5f63ba0883247"
         },
         {
-          "text": "Remove the bundled docs site; documentation now lives in LeviLauncher's docs.",
+          "text": "Remove the bundled docs site, now part of LeviLauncher's docs.",
           "url": "https://github.com/sang765/LeviDroid-Modder/commit/14a608dc904a2134d2a93ee9eb7b609d33e51a87"
         },
         {
-          "text": "Align documentation setup with upstream LeviLauncher."
+          "text": "Improve README important note formatting.",
+          "url": "https://github.com/sang765/LeviDroid-Modder/commit/759949a93b09c8b6f1e8bd1d4d834909fdbb8efd"
         }
       ]
     }
