@@ -111,7 +111,8 @@ Before proceeding with LeviLauncher Modder installation, ensure that you have yo
 5. Grant the necessary permissions when prompted during installation
 6. Once installed, open LeviLauncher Modder from your application drawer
 
-> **Important:** LeviLauncher Modder requires a legitimate, licensed copy of Minecraft Bedrock Edition. Do not use this launcher with pirated or unauthorized versions of the game. Ensure your Minecraft license is valid and properly linked to your Microsoft account.
+> [!IMPORTANT]  
+> LeviLauncher Modder requires a legitimate, licensed copy of Minecraft Bedrock Edition. Do not use this launcher with pirated or unauthorized versions of the game. Ensure your Minecraft license is valid and properly linked to your Microsoft account.
 
 ---
 
