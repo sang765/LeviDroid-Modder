@@ -10,6 +10,8 @@ import android.os.Looper;
 import android.os.ParcelFileDescriptor;
 import android.util.Log;
 
+import org.levimc.launcher.R;
+
 import java.io.File;
 import java.util.concurrent.atomic.AtomicBoolean;
 

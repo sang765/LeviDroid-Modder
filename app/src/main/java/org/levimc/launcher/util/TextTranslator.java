@@ -16,7 +16,6 @@ import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicInteger;
 
 import okhttp3.Call;
-import okhttp3.Callback;
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
 import okhttp3.Response;
@@ -70,7 +69,7 @@ public final class TextTranslator {
             if (url == null) continue;
             int index = i;
             Request request = new Request.Builder().url(url).build();
-            CLIENT.newCall(request).enqueue(new Callback() {
+            CLIENT.newCall(request).enqueue(new okhttp3.Callback() {
                 @Override
                 public void onFailure(Call call, IOException e) {
                     Log.w(TAG, "Translate request failed: " + e.getMessage());
