@@ -1,39 +1,26 @@
 {
   "schemaVersion": 1,
-  "headline": "LeviLauncher Modder v1.6.0-modder.11",
-  "summary": "This release fixes a crash when opening the update install screen and improves changelog translation controls and translator stability.",
+  "headline": "LeviLauncher Modder v1.6.0-modder.12",
+  "summary": "Every animated background now has its own advanced options, and a new Rain effect brings wind, clouds, and lightning to the lineup.",
   "sections": [
     {
-      "title": "Improvements",
+      "title": "Features",
       "items": [
         {
-          "text": "Delay changelog dialog until the launcher finishes loading.",
-          "url": "https://github.com/sang765/LeviDroid-Modder/commit/17893afbfcf978da903a7ad0d5e2a02fe0cc068a"
+          "text": "Added per-effect advanced options — speed, density, layer and ring counts, pool usage — edited with sliders under the effect picker and applied to the running background instantly.",
+          "url": "https://github.com/sang765/LeviDroid-Modder/commit/477e62018068d498ff7e45bd3c408bdd71a4f047"
         },
         {
-          "text": "Add a translate button to the changelog dialog.",
-          "url": "https://github.com/sang765/LeviDroid-Modder/commit/17893afbfcf978da903a7ad0d5e2a02fe0cc068a"
+          "text": "New Rain effect: adjustable wind strength and direction, swaying or wind-blown clouds, drop density, and lightning strikes with an adjustable chance (lower means rarer).",
+          "url": "https://github.com/sang765/LeviDroid-Modder/commit/477e62018068d498ff7e45bd3c408bdd71a4f047"
         },
         {
-          "text": "Toggle changelog translation back to the original language.",
-          "url": "https://github.com/sang765/LeviDroid-Modder/commit/beffeae10e33e990a80db6ea34709517481da9dc"
-        }
-      ]
-    },
-    {
-      "title": "Fixes",
-      "items": [
-        {
-          "text": "Resolve NPE when opening the update install screen.",
-          "url": "https://github.com/sang765/LeviDroid-Modder/commit/8fda28404a1d746ee57e5ad647649d6ee8b8adaf"
+          "text": "The options system now supports toggles and dropdown choices alongside percent sliders.",
+          "url": "https://github.com/sang765/LeviDroid-Modder/commit/477e62018068d498ff7e45bd3c408bdd71a4f047"
         },
         {
-          "text": "Resolve compile errors in update installer and translator.",
-          "url": "https://github.com/sang765/LeviDroid-Modder/commit/4b84a3887f8fecdb4c8c536ae8f4b72ea8604b0d"
-        },
-        {
-          "text": "Capture only effectively final locals in translator.",
-          "url": "https://github.com/sang765/LeviDroid-Modder/commit/a327473b4e1cbc7684f7ecf83b78b015492d54c5"
+          "text": "Vietnamese labels for the advanced options and the Rain effect.",
+          "url": "https://github.com/sang765/LeviDroid-Modder/commit/477e62018068d498ff7e45bd3c408bdd71a4f047"
         }
       ]
     }
