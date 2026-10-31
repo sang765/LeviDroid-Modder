@@ -1,33 +1,22 @@
 {
   "schemaVersion": 1,
-  "headline": "LeviLauncher Modder v1.6.0-modder.10",
-  "summary": "This release adds Minecraft 26.60 support, full-screen update installs, account and instance improvements, animated backgrounds, and logging tools, plus many stability fixes.",
+  "headline": "LeviLauncher Modder v1.6.0-modder.11",
+  "summary": "This release fixes a crash when opening the update install screen and improves changelog translation controls and translator stability.",
   "sections": [
     {
       "title": "Improvements",
       "items": [
         {
-          "text": "Add support for Minecraft 26.60.",
-          "url": "https://github.com/sang765/LeviDroid-Modder/commit/97cb7d3d3b26dda044450a9cb0ea1e5dc133edd4"
+          "text": "Delay changelog dialog until the launcher finishes loading.",
+          "url": "https://github.com/sang765/LeviDroid-Modder/commit/17893afbfcf978da903a7ad0d5e2a02fe0cc068a"
         },
         {
-          "text": "Add a full-screen update install screen for Shizuku and Root installs.",
-          "url": "https://github.com/sang765/LeviDroid-Modder/commit/9028dfb233a561ca2ab9cbdebcdda5a55d96e824"
+          "text": "Add a translate button to the changelog dialog.",
+          "url": "https://github.com/sang765/LeviDroid-Modder/commit/17893afbfcf978da903a7ad0d5e2a02fe0cc068a"
         },
         {
-          "text": "Add an account session check to the accounts screen.",
-          "url": "https://github.com/sang765/LeviDroid-Modder/commit/38444ea47b95fa235da5c6d152d314ec7ec68b67"
-        },
-        {
-          "text": "Add a clear instance cache option in instance settings.",
-          "url": "https://github.com/sang765/LeviDroid-Modder/commit/339497a813b54c2dc7f001b8906f199be2eba8a4"
-        },
-        {
-          "text": "Add an option to hide the launcher HUD and overlay buttons.",
-          "url": "https://github.com/sang765/LeviDroid-Modder/commit/5bf4c980b927809628e20b0a6683a90b49d9b6af"
-        },
-        {
-          "text": "Add procedural and additional animated background effects."
+          "text": "Toggle changelog translation back to the original language.",
+          "url": "https://github.com/sang765/LeviDroid-Modder/commit/beffeae10e33e990a80db6ea34709517481da9dc"
         }
       ]
     },
@@ -35,86 +24,16 @@
       "title": "Fixes",
       "items": [
         {
-          "text": "Refresh animated background colors when the accent color changes.",
-          "url": "https://github.com/sang765/LeviDroid-Modder/commit/587cb2b804fbc8836237c5d3742e1d42bac9c654"
+          "text": "Resolve NPE when opening the update install screen.",
+          "url": "https://github.com/sang765/LeviDroid-Modder/commit/8fda28404a1d746ee57e5ad647649d6ee8b8adaf"
         },
         {
-          "text": "Replace transfer mode radios with direct action buttons.",
-          "url": "https://github.com/sang765/LeviDroid-Modder/commit/1f83ab574f52ed68826b7bb3b814ba89b7f26e64"
-        },
-        {
-          "text": "Restore 26.5x menu signatures for the 1.26.50+ rules entry.",
-          "url": "https://github.com/sang765/LeviDroid-Modder/commit/d0a6976412f2a75513fa66c0e292b1e41cb4d075"
-        },
-        {
-          "text": "Ship both inbuilt-mods libraries and select by game version.",
-          "url": "https://github.com/sang765/LeviDroid-Modder/commit/c449ef27fa4e08828e3f3fc2a244fa3f39a2b010"
-        },
-        {
-          "text": "Gate ClientModBridge overlay attach behind mods or mod menu.",
-          "url": "https://github.com/sang765/LeviDroid-Modder/commit/11663c4a539269dc456d725c83b43ddb67bbbc6e"
-        },
-        {
-          "text": "Collapse pending overlay visibility on return to applied state.",
-          "url": "https://github.com/sang765/LeviDroid-Modder/commit/e42cd35845917707b021e35daf87c431aa702a61"
-        }
-      ]
-    },
-    {
-      "title": "Under the hood",
-      "items": [
-        {
-          "text": "Toggle changelog translation back to the original language.",
-          "url": "https://github.com/sang765/LeviDroid-Modder/commit/beffeae10e33e990a80db6ea34709517481da9dc"
-        },
-        {
-          "text": "Capture only effectively final locals in the translator.",
-          "url": "https://github.com/sang765/LeviDroid-Modder/commit/a327473b4e1cbc7684f7ecf83b78b015492d54c5"
-        },
-        {
-          "text": "Resolve compile errors in the update installer and translator.",
+          "text": "Resolve compile errors in update installer and translator.",
           "url": "https://github.com/sang765/LeviDroid-Modder/commit/4b84a3887f8fecdb4c8c536ae8f4b72ea8604b0d"
         },
         {
-          "text": "Delay the changelog dialog until the launcher loads and add a translate button.",
-          "url": "https://github.com/sang765/LeviDroid-Modder/commit/17893afbfcf978da903a7ad0d5e2a02fe0cc068a"
-        },
-        {
-          "text": "Update the Vietnamese translation.",
-          "url": "https://github.com/sang765/LeviDroid-Modder/commit/dfc9fb0786a150f08f5675e7c8ffb8277f0e31e0"
-        },
-        {
-          "text": "Skip preloader menu-state hooks when nothing needs them.",
-          "url": "https://github.com/sang765/LeviDroid-Modder/commit/6c89c962bfe921ce7b295ac53b51749954ad881b"
-        }
-      ]
-    },
-    {
-      "title": "Logging and performance",
-      "items": [
-        {
-          "text": "Cap the log overlay ring replay shown at game resume.",
-          "url": "https://github.com/sang765/LeviDroid-Modder/commit/2f02dd38c47c46bcc5bb5989db8eb166ba0192e0"
-        },
-        {
-          "text": "Use nanosecond freeze sampling with page-fault tracking.",
-          "url": "https://github.com/sang765/LeviDroid-Modder/commit/4567b40d5c2a5be5d650332031026b0f7f42236e"
-        },
-        {
-          "text": "Add a thread freeze sampler for app-level logging sessions.",
-          "url": "https://github.com/sang765/LeviDroid-Modder/commit/74ed815adc177e30c457af18249d9bfe5cea1040"
-        },
-        {
-          "text": "Raise the app-level log ring to 10000 lines.",
-          "url": "https://github.com/sang765/LeviDroid-Modder/commit/5c1aa8af63a94e86b8660a2233d301a2b2e6da28"
-        },
-        {
-          "text": "Clear image caches and hint GC before game loads.",
-          "url": "https://github.com/sang765/LeviDroid-Modder/commit/25f47a465d8442b41e94fad3a78537179acca3e5"
-        },
-        {
-          "text": "Read the loaded-mod flag within the preparation scope.",
-          "url": "https://github.com/sang765/LeviDroid-Modder/commit/afcc703a58cac028c16bb1b34da93b256367532b"
+          "text": "Capture only effectively final locals in translator.",
+          "url": "https://github.com/sang765/LeviDroid-Modder/commit/a327473b4e1cbc7684f7ecf83b78b015492d54c5"
         }
       ]
     }
