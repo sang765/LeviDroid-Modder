@@ -326,7 +326,18 @@ public class CustomAlertDialog extends Dialog {
         }
 
         // Give the scroll container exactly the space left after title and buttons.
-        int otherHeight = measuredHeight - customViewContainer.getHeight();
+        ViewGroup root = (ViewGroup) customViewContainer.getParent();
+        int otherHeight = root.getPaddingTop() + root.getPaddingBottom();
+        for (int i = 0; i < root.getChildCount(); i++) {
+            View sibling = root.getChildAt(i);
+            if (sibling.getVisibility() == View.GONE) continue;
+            ViewGroup.LayoutParams params = sibling.getLayoutParams();
+            if (params instanceof ViewGroup.MarginLayoutParams) {
+                ViewGroup.MarginLayoutParams margins = (ViewGroup.MarginLayoutParams) params;
+                otherHeight += margins.topMargin + margins.bottomMargin;
+            }
+            if (sibling != customViewContainer) otherHeight += sibling.getHeight();
+        }
         ViewGroup.LayoutParams containerParams = customViewContainer.getLayoutParams();
         containerParams.height = Math.max(0, maxDialogHeight - otherHeight);
         customViewContainer.setLayoutParams(containerParams);
