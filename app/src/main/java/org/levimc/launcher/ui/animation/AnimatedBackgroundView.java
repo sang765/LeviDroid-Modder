@@ -657,7 +657,7 @@ public class AnimatedBackgroundView extends View implements Choreographer.FrameC
     private void drawMatrix(Canvas canvas) {
         paint.setTextSize(textSize);
         int bucket = frameCount / 6;
-        int drawn = Math.max(1, Math.round(columns * amountMul));
+        int drawn = Math.min(columns, Math.max(1, Math.round(columns * amountMul)));
         for (int c = 0; c < drawn; c++) {
             float x = (c + 0.5f) * columnWidth;
             int headRow = (int) columnY[c];
