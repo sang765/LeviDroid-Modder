@@ -46,6 +46,9 @@ public class AnimatedBackgroundView extends View implements Choreographer.FrameC
     private final float[] scratchHsv = new float[3];
     private final boolean dark;
     private final float maxAlpha;
+    private float speedMul = 1f;
+    private float amountMul = 1f;
+    private int layersOverride;
     private boolean running;
     private boolean sized;
     private long lastFrame;
@@ -127,6 +130,9 @@ public class AnimatedBackgroundView extends View implements Choreographer.FrameC
         PersonalizationManager pm = new PersonalizationManager(context);
         dark = pm.isDarkMode(context);
         applyAccent(pm.getAccentColor());
+        speedMul = pm.getAnimOption(type, "speed", 100) / 100f;
+        amountMul = pm.getAnimOption(type, "amount", 100) / 100f;
+        layersOverride = pm.getAnimOption(type, "layers", 0);
         maxAlpha = dark ? 0.85f : 0.6f;
 
         paint.setTypeface(Typeface.MONOSPACE);
@@ -143,6 +149,19 @@ public class AnimatedBackgroundView extends View implements Choreographer.FrameC
             hsv[1] = Math.min(1f, hsv[1] * 1.1f);
             hsv[2] *= 0.45f;
         }
+    }
+
+    public void setOption(String key, int value) {
+        if ("speed".equals(key)) {
+            speedMul = value / 100f;
+        } else if ("layers".equals(key)) {
+            layersOverride = value;
+        } else if ("rings".equals(key)) {
+            buildTorus(value);
+        } else {
+            amountMul = value / 100f;
+        }
+        invalidate();
     }
 
     public String getType() {
@@ -174,26 +193,7 @@ public class AnimatedBackgroundView extends View implements Choreographer.FrameC
                 columnSpeed[i] = 4f + random.nextFloat() * 8f;
             }
         } else if (TYPE_DONUT.equals(type)) {
-            final int steps = 28;
-            final int rings = 14;
-            int points = steps * rings;
-            torus = new float[points * 3];
-            projectedX = new float[points];
-            projectedY = new float[points];
-            projectedZ = new float[points];
-            drawOrder = new long[points];
-            int idx = 0;
-            for (int i = 0; i < steps; i++) {
-                float theta = (float) (Math.PI * 2 * i / steps);
-                float ringRadius = 1f + 0.45f * (float) Math.cos(theta);
-                float z = 0.45f * (float) Math.sin(theta);
-                for (int j = 0; j < rings; j++) {
-                    float phi = (float) (Math.PI * 2 * j / rings);
-                    torus[idx++] = ringRadius * (float) Math.cos(phi);
-                    torus[idx++] = ringRadius * (float) Math.sin(phi);
-                    torus[idx++] = z;
-                }
-            }
+            buildTorus(new PersonalizationManager(getContext()).getAnimOption(TYPE_DONUT, "rings", 14));
         } else if (TYPE_WARP.equals(type)) {
             for (int i = 0; i < WARP_STARS; i++) respawnWarp(i, w, h);
         } else if (TYPE_BUBBLES.equals(type)) {
@@ -224,6 +224,29 @@ public class AnimatedBackgroundView extends View implements Choreographer.FrameC
         }
         sized = true;
         launchTimer = 0.3f;
+    }
+
+    private void buildTorus(int rings) {
+        final int steps = 28;
+        rings = Math.max(6, Math.min(24, rings));
+        int points = steps * rings;
+        torus = new float[points * 3];
+        projectedX = new float[points];
+        projectedY = new float[points];
+        projectedZ = new float[points];
+        drawOrder = new long[points];
+        int idx = 0;
+        for (int i = 0; i < steps; i++) {
+            float theta = (float) (Math.PI * 2 * i / steps);
+            float ringRadius = 1f + 0.45f * (float) Math.cos(theta);
+            float z = 0.45f * (float) Math.sin(theta);
+            for (int j = 0; j < rings; j++) {
+                float phi = (float) (Math.PI * 2 * j / rings);
+                torus[idx++] = ringRadius * (float) Math.cos(phi);
+                torus[idx++] = ringRadius * (float) Math.sin(phi);
+                torus[idx++] = z;
+            }
+        }
     }
 
     private void start() {
@@ -273,6 +296,7 @@ public class AnimatedBackgroundView extends View implements Choreographer.FrameC
 
     private void step(float dt) {
         frameCount++;
+        dt *= speedMul;
         time += dt;
         if (TYPE_MATRIX.equals(type)) {
             int rows = (int) (getHeight() / rowHeight) + 1;
@@ -414,7 +438,7 @@ public class AnimatedBackgroundView extends View implements Choreographer.FrameC
     private void stepComet(float dt) {
         cometTimer -= dt;
         if (cometTimer <= 0) {
-            cometTimer = 2.5f + random.nextFloat() * 3f;
+            cometTimer = (2.5f + random.nextFloat() * 3f) / Math.max(0.2f, amountMul);
             for (int i = 0; i < COMET_SLOTS; i++) {
                 if (!cometActive[i]) {
                     boolean fromLeft = random.nextBoolean();
@@ -444,7 +468,7 @@ public class AnimatedBackgroundView extends View implements Choreographer.FrameC
     }
 
     private void burst(float x, float y) {
-        int count = 42 + random.nextInt(20);
+        int count = Math.round((42 + random.nextInt(20)) * amountMul);
         float hueShift = random.nextInt(100) - 50;
         for (int i = 0; i < count && particleCount < MAX_PARTICLES; i++) {
             double angle = Math.PI * 2 * i / count + random.nextDouble() * 0.2;
@@ -479,7 +503,8 @@ public class AnimatedBackgroundView extends View implements Choreographer.FrameC
     private void drawMatrix(Canvas canvas) {
         paint.setTextSize(textSize);
         int bucket = frameCount / 6;
-        for (int c = 0; c < columns; c++) {
+        int drawn = Math.max(1, Math.round(columns * amountMul));
+        for (int c = 0; c < drawn; c++) {
             float x = (c + 0.5f) * columnWidth;
             int headRow = (int) columnY[c];
             for (int k = 0; k < MATRIX_TRAIL; k++) {
@@ -540,9 +565,9 @@ public class AnimatedBackgroundView extends View implements Choreographer.FrameC
         int w = getWidth();
         int h = getHeight();
         float sampleStep = 16f * density;
-        float[] alphas = {0.14f, 0.24f, 0.36f, 0.52f};
-        float[] valueMul = {0.8f, 0.88f, 0.94f, 1f};
-        for (int i = 0; i < WAVE_LAYERS; i++) {
+        float[] alphas = {0.14f, 0.24f, 0.36f, 0.52f, 0.62f};
+        int layers = layersOverride > 0 ? Math.min(layersOverride, alphas.length) : WAVE_LAYERS;
+        for (int i = 0; i < layers; i++) {
             float baseY = h * (0.32f + i * 0.14f)
                     + 10f * density * (float) Math.sin(time * (0.5f + i * 0.11f) + i * 2f);
             float amplitude = (14f + i * 8f) * density;
@@ -563,14 +588,15 @@ public class AnimatedBackgroundView extends View implements Choreographer.FrameC
             wavePath.lineTo(w, h);
             wavePath.lineTo(0, h);
             wavePath.close();
-            paint.setColor(shade(alphas[i], valueMul[i], 0f));
+            paint.setColor(shade(alphas[i], 1f, 0f));
             canvas.drawPath(wavePath, paint);
         }
     }
 
     private void drawWarp(Canvas canvas) {
         paint.setStrokeWidth(1.5f * density);
-        for (int i = 0; i < WARP_STARS; i++) {
+        int drawn = Math.max(1, Math.round(WARP_STARS * Math.min(1f, amountMul)));
+        for (int i = 0; i < drawn; i++) {
             float speed = (float) Math.hypot(warpVx[i], warpVy[i]);
             float nx = warpVx[i] / speed;
             float ny = warpVy[i] / speed;
@@ -583,7 +609,7 @@ public class AnimatedBackgroundView extends View implements Choreographer.FrameC
     private void drawRipple(Canvas canvas) {
         paint.setStyle(Paint.Style.STROKE);
         paint.setStrokeWidth(2f * density);
-        float maxR = Math.min(getWidth(), getHeight()) * 0.42f;
+        float maxR = Math.min(getWidth(), getHeight()) * 0.42f * amountMul;
         for (int i = 0; i < RIPPLE_SLOTS; i++) {
             if (rippleLife[i] <= 0) continue;
             float progress = 1f - rippleLife[i];
@@ -599,7 +625,8 @@ public class AnimatedBackgroundView extends View implements Choreographer.FrameC
 
     private void drawBubbles(Canvas canvas) {
         paint.setStyle(Paint.Style.STROKE);
-        for (int i = 0; i < BUBBLE_COUNT; i++) {
+        int drawn = Math.max(1, Math.round(BUBBLE_COUNT * Math.min(1f, amountMul)));
+        for (int i = 0; i < drawn; i++) {
             float x = bubbleBaseX[i] + bubbleAmp[i] * (float) Math.sin(time * bubbleFreq[i] + bubblePhase[i]);
             paint.setStrokeWidth(Math.max(1f, bubbleR[i] * 0.28f));
             paint.setColor(shade(bubbleAlpha[i], 1f, 0f));
@@ -609,7 +636,8 @@ public class AnimatedBackgroundView extends View implements Choreographer.FrameC
     }
 
     private void drawFlies(Canvas canvas) {
-        for (int i = 0; i < FLY_COUNT; i++) {
+        int drawn = Math.max(1, Math.round(FLY_COUNT * Math.min(1f, amountMul)));
+        for (int i = 0; i < drawn; i++) {
             float blink = 0.3f + 0.7f * (0.5f + 0.5f * (float) Math.sin(time * (1.5f + flyPhase[i] % 1f) + flyPhase[i] * 7f));
             paint.setColor(shade(0.12f * blink, 1f, 0f));
             canvas.drawCircle(flyX[i], flyY[i], 4.5f * density, paint);
@@ -622,11 +650,12 @@ public class AnimatedBackgroundView extends View implements Choreographer.FrameC
         int w = getWidth();
         int h = getHeight();
         float sample = 24f * density;
-        float[] alphas = {0.16f, 0.12f, 0.09f};
-        float[] hueOffsets = {0f, 18f, -22f};
-        float[] tops = {0.02f, 0.08f, 0.13f};
-        float[] lengths = {0.52f, 0.44f, 0.36f};
-        for (int i = 0; i < AURORA_LAYERS; i++) {
+        float[] alphas = {0.16f, 0.12f, 0.09f, 0.07f, 0.05f};
+        float[] hueOffsets = {0f, 18f, -22f, 30f, -35f};
+        float[] tops = {0.02f, 0.08f, 0.13f, 0.18f, 0.23f};
+        float[] lengths = {0.52f, 0.44f, 0.36f, 0.3f, 0.26f};
+        int layers = layersOverride > 0 ? Math.min(layersOverride, alphas.length) : AURORA_LAYERS;
+        for (int i = 0; i < layers; i++) {
             float anchor = h * tops[i];
             float amp = (30f + i * 10f) * density;
             float wavelength = w / (1.1f + i * 0.35f);
@@ -660,13 +689,15 @@ public class AnimatedBackgroundView extends View implements Choreographer.FrameC
         float horizon = h * 0.42f;
         float cx = w / 2f;
         paint.setStrokeWidth(1.5f * density);
-        for (int j = -9; j <= 9; j++) {
+        int spokes = Math.max(3, Math.round(9 * amountMul));
+        for (int j = -spokes; j <= spokes; j++) {
             float bottomX = cx + j * (w / 9f) * 0.9f;
             paint.setColor(shade(j == 0 ? 0.5f : 0.3f, 1f, 0f));
             canvas.drawLine(cx, horizon, bottomX, h, paint);
         }
         float scroll = time * 0.6f;
-        for (int i = 0; i < 14; i++) {
+        int rows = Math.max(4, Math.round(14 * amountMul));
+        for (int i = 0; i < rows; i++) {
             float z = i + 1f - (scroll % 1f);
             float y = horizon + (h - horizon) / z;
             if (y > h) continue;

@@ -1298,6 +1298,12 @@
     <string name="bg_animation_aurora">Aurora</string>
     <string name="bg_animation_grid">Synthwave</string>
     <string name="bg_animation_comet">Comet</string>
+    <string name="anim_option_speed">Speed</string>
+    <string name="anim_option_density">Density</string>
+    <string name="anim_option_size">Size</string>
+    <string name="anim_option_layers">Layers</string>
+    <string name="anim_option_rings">Rings</string>
+    <string name="anim_option_amount">Amount</string>
     <string name="screenshot_saved">Screenshot saved</string>
     <string name="backup_select_downloads">Select the Downloads folder to save backups in Downloads/LeviLauncher Modder/Backups.</string>
     <string name="game_crash_title">Uh oh!</string>

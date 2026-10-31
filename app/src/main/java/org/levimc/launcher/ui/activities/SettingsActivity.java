@@ -389,6 +389,8 @@ public class SettingsActivity extends BaseActivity {
         }
         current.setText(labels[selectedPosition]);
 
+        showAnimationOptions(values[selectedPosition]);
+
         ArrayAdapter<String> adapter = new ArrayAdapter<>(this, R.layout.spinner_item, labels);
         adapter.setDropDownViewResource(R.layout.spinner_dropdown_item);
         spinner.setAdapter(adapter);
@@ -397,6 +399,7 @@ public class SettingsActivity extends BaseActivity {
         spinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                showAnimationOptions(values[position]);
                 if (values[position].equals(personalizationManager.getBackgroundAnimation())) return;
                 personalizationManager.setBackgroundAnimation(values[position]);
                 recreate();
@@ -406,6 +409,135 @@ public class SettingsActivity extends BaseActivity {
             public void onNothingSelected(AdapterView<?> parent) {
             }
         });
+    }
+
+    private void showAnimationOptions(String effect) {
+        LinearLayout box = findViewById(R.id.bg_animation_options);
+        if (box == null) return;
+        box.removeAllViews();
+        Object[][] options = animationOptions(effect);
+        if (options == null) {
+            box.setVisibility(View.GONE);
+            return;
+        }
+        box.setVisibility(View.VISIBLE);
+        for (Object[] option : options) {
+            String key = (String) option[0];
+            int min = (Integer) option[2];
+            int max = (Integer) option[3];
+            int def = (Integer) option[4];
+            box.addView(buildOptionRow(effect, key, getString((Integer) option[1]), min, max,
+                    personalizationManager.getAnimOption(effect, key, def)));
+        }
+    }
+
+    private View buildOptionRow(String effect, String key, String label, int min, int max, int value) {
+        int pad = Math.round(6 * getResources().getDisplayMetrics().density);
+        LinearLayout row = new LinearLayout(this);
+        row.setOrientation(LinearLayout.VERTICAL);
+        row.setPadding(0, pad, 0, 0);
+
+        LinearLayout header = new LinearLayout(this);
+        header.setOrientation(LinearLayout.HORIZONTAL);
+        header.setGravity(Gravity.CENTER_VERTICAL);
+        TextView name = new TextView(this);
+        name.setText(label);
+        name.setTextColor(getColor(R.color.on_surface));
+        name.setTextSize(12f);
+        name.setLayoutParams(new LinearLayout.LayoutParams(0, LinearLayout.LayoutParams.WRAP_CONTENT, 1f));
+        TextView amountLabel = new TextView(this);
+        amountLabel.setText(optionValueText(key, value));
+        amountLabel.setTextColor(getColor(R.color.text_secondary));
+        amountLabel.setTextSize(12f);
+        header.addView(name);
+        header.addView(amountLabel);
+        row.addView(header);
+
+        SeekBar seek = new SeekBar(this);
+        seek.setMax(max - min);
+        seek.setProgress(value - min);
+        seek.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
+            @Override
+            public void onProgressChanged(SeekBar bar, int progress, boolean fromUser) {
+                if (!fromUser) return;
+                int v = progress + min;
+                amountLabel.setText(optionValueText(key, v));
+                personalizationManager.setAnimOption(effect, key, v);
+                View background = getWindow().getDecorView().findViewWithTag("personalization_bg");
+                if (background instanceof org.levimc.launcher.ui.animation.AnimatedBackgroundView) {
+                    ((org.levimc.launcher.ui.animation.AnimatedBackgroundView) background).setOption(key, v);
+                }
+            }
+
+            @Override
+            public void onStartTrackingTouch(SeekBar bar) {
+            }
+
+            @Override
+            public void onStopTrackingTouch(SeekBar bar) {
+            }
+        });
+        row.addView(seek);
+        return row;
+    }
+
+    private String optionValueText(String key, int value) {
+        return "rings".equals(key) || "layers".equals(key)
+                ? String.valueOf(value)
+                : value + "%";
+    }
+
+    private Object[][] animationOptions(String effect) {
+        switch (effect) {
+            case "wave":
+                return optionSet(
+                        option("speed", R.string.anim_option_speed, 20, 300, 100),
+                        option("layers", R.string.anim_option_layers, 1, 5, 4));
+            case "aurora":
+                return optionSet(
+                        option("speed", R.string.anim_option_speed, 20, 300, 100),
+                        option("layers", R.string.anim_option_layers, 1, 5, 3));
+            case "donut":
+                return optionSet(
+                        option("speed", R.string.anim_option_speed, 10, 300, 100),
+                        option("rings", R.string.anim_option_rings, 6, 24, 14));
+            case "matrix":
+                return optionSet(
+                        option("speed", R.string.anim_option_speed, 20, 300, 100),
+                        option("density", R.string.anim_option_density, 30, 150, 100));
+            case "fireworks":
+                return optionSet(
+                        option("speed", R.string.anim_option_speed, 20, 300, 100),
+                        option("amount", R.string.anim_option_amount, 50, 200, 100));
+            case "ripple":
+                return optionSet(
+                        option("speed", R.string.anim_option_speed, 20, 300, 100),
+                        option("size", R.string.anim_option_size, 50, 150, 100));
+            case "grid":
+                return optionSet(
+                        option("speed", R.string.anim_option_speed, 20, 300, 100),
+                        option("density", R.string.anim_option_density, 50, 150, 100));
+            case "comet":
+                return optionSet(
+                        option("speed", R.string.anim_option_speed, 20, 300, 100),
+                        option("amount", R.string.anim_option_amount, 20, 300, 100));
+            case "bubbles":
+            case "fireflies":
+            case "warp":
+                return optionSet(
+                        option("speed", R.string.anim_option_speed, 20, 300, 100),
+                        option("amount", R.string.anim_option_amount, 20, 100, 100));
+            default:
+                return null;
+        }
+    }
+
+    private Object[] option(String key, int labelRes, int min, int max, int def) {
+        return new Object[]{key, labelRes, min, max, def};
+    }
+
+    private Object[][] optionSet(Object[]... options) {
+        return options;
     }
 
     private void setupNavBarPositionRow() {
