@@ -61,12 +61,12 @@ public class UpdateInstallActivity extends BaseActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_update_install);
-        applyImmersiveUi();
 
         progressBar = findViewById(R.id.install_progress);
         statusText = findViewById(R.id.install_status);
         closeButton = findViewById(R.id.btn_install_close);
         closeButton.setOnClickListener(v -> finish());
+        applyImmersiveUi();
 
         String path = getIntent() == null ? null : getIntent().getStringExtra(EXTRA_APK_PATH);
         String method = getIntent() == null ? null : getIntent().getStringExtra(EXTRA_INSTALL_METHOD);
