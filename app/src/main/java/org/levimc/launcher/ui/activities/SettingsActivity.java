@@ -564,7 +564,7 @@ public class SettingsActivity extends BaseActivity {
             case "matrix":
                 return optionSet(
                         option("speed", R.string.anim_option_speed, 20, 300, 100),
-                        option("amount", R.string.anim_option_density, 30, 150, 100));
+                        option("amount", R.string.anim_option_density, 30, 100, 100));
             case "fireworks":
                 return optionSet(
                         option("speed", R.string.anim_option_speed, 20, 300, 100),
