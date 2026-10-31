@@ -1191,6 +1191,12 @@
     <string name="bg_animation_donut">Donut</string>
     <string name="bg_animation_fireworks">Pháo hoa</string>
     <string name="bg_animation_wave">Sóng nước</string>
+    <string name="anim_option_speed">Tốc độ</string>
+    <string name="anim_option_density">Mật độ</string>
+    <string name="anim_option_size">Kích thước</string>
+    <string name="anim_option_layers">Số lớp</string>
+    <string name="anim_option_rings">Số vòng</string>
+    <string name="anim_option_amount">Số lượng</string>
     <string name="screenshot_saved">Ảnh chụp màn hình đã được lưu</string>
     <string name="backup_select_downloads">Chọn thư mục Tải xuống để lưu bản sao lưu trong Downloads/LeviLauncher Modder/Backups.</string>
     <!-- Dịch thủ công các string chưa được Weblate đồng bộ -->
