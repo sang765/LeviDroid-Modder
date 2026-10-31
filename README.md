@@ -92,7 +92,8 @@ Before installing LeviLauncher Modder, ensure your device meets the following mi
 - **Storage:** At least 2 GB of available storage for Minecraft and game data
 - **License Requirement:** You must own a licensed copy of Minecraft Bedrock Edition purchased from Google Play
 
-> **Note:** For optimal performance and stability, we recommend Android 9.0 or higher with at least 3 GB of available RAM and 5 GB of free storage.
+> [!NOTE]  
+> For optimal performance and stability, we recommend Android 9.0 or higher with at least 3 GB of available RAM and 5 GB of free storage.
 
 ---
 
