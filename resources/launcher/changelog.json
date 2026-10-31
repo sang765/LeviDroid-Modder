@@ -1,26 +1,27 @@
 {
   "schemaVersion": 1,
-  "headline": "LeviLauncher Modder v1.6.0-modder.12",
-  "summary": "Every animated background now has its own advanced options, and a new Rain effect brings wind, clouds, and lightning to the lineup.",
+  "headline": "LeviLauncher Modder v1.6.0-modder.13",
+  "summary": "The What's new dialog no longer overflows off-screen with no way to close it, and a crash loop from the animated background density slider is fixed.",
   "sections": [
     {
-      "title": "Features",
+      "title": "Fixes",
       "items": [
         {
-          "text": "Added per-effect advanced options — speed, density, layer and ring counts, pool usage — edited with sliders under the effect picker and applied to the running background instantly.",
-          "url": "https://github.com/sang765/LeviDroid-Modder/commit/477e62018068d498ff7e45bd3c408bdd71a4f047"
+          "text": "The What's new dialog no longer grows past the screen — content scrolls inside the capped area and Continue stays visible.",
+          "url": "https://github.com/sang765/LeviDroid-Modder/commit/c984006649434f665da4ddeea6ca2ae66fd0f7dd"
         },
         {
-          "text": "New Rain effect: adjustable wind strength and direction, swaying or wind-blown clouds, drop density, and lightning strikes with an adjustable chance (lower means rarer).",
-          "url": "https://github.com/sang765/LeviDroid-Modder/commit/477e62018068d498ff7e45bd3c408bdd71a4f047"
-        },
+          "text": "Animated background density above 100% drew past the glyph pool and crashed the app; the slider now caps at 100%.",
+          "url": "https://github.com/sang765/LeviDroid-Modder/commit/9d00ef5e6f21d06d41c69411788d7eb1d58a40ae"
+        }
+      ]
+    },
+    {
+      "title": "Language",
+      "items": [
         {
-          "text": "The options system now supports toggles and dropdown choices alongside percent sliders.",
-          "url": "https://github.com/sang765/LeviDroid-Modder/commit/477e62018068d498ff7e45bd3c408bdd71a4f047"
-        },
-        {
-          "text": "Vietnamese labels for the advanced options and the Rain effect.",
-          "url": "https://github.com/sang765/LeviDroid-Modder/commit/477e62018068d498ff7e45bd3c408bdd71a4f047"
+          "text": "Vietnamese translation refreshed to 100% via Weblate.",
+          "url": "https://github.com/sang765/LeviDroid-Modder/commit/cd7187434e5efd457236d680de4d3362394efea6"
         }
       ]
     }
