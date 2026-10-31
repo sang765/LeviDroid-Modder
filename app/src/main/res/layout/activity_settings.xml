@@ -690,6 +690,14 @@
                             android:minWidth="140dp"
                             android:background="@drawable/bg_spinner_outline" />
                     </LinearLayout>
+
+                    <LinearLayout
+                        android:id="@+id/bg_animation_options"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="8dp"
+                        android:orientation="vertical"
+                        android:visibility="gone" />
                     </LinearLayout>
 
                     <LinearLayout

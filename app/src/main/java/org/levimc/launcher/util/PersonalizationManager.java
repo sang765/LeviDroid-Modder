@@ -165,6 +165,15 @@ public class PersonalizationManager {
         sChangeGeneration.incrementAndGet();
     }
 
+    public int getAnimOption(String effect, String param, int def) {
+        return prefs.getInt("bgopt_" + effect + "_" + param, def);
+    }
+
+    public void setAnimOption(String effect, String param, int value) {
+        prefs.edit().putInt("bgopt_" + effect + "_" + param, value).apply();
+        sChangeGeneration.incrementAndGet();
+    }
+
     public String getBackgroundImagePath() {
         return prefs.getString(KEY_BG_IMAGE_PATH, null);
     }
