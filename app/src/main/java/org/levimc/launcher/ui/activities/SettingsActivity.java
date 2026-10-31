@@ -552,19 +552,19 @@ public class SettingsActivity extends BaseActivity {
             case "wave":
                 return optionSet(
                         option("speed", R.string.anim_option_speed, 20, 300, 100),
-                        option("layers", R.string.anim_option_layers, 1, 5, 4));
+                        optionPlain("layers", R.string.anim_option_layers, 1, 5, 4));
             case "aurora":
                 return optionSet(
                         option("speed", R.string.anim_option_speed, 20, 300, 100),
-                        option("layers", R.string.anim_option_layers, 1, 5, 3));
+                        optionPlain("layers", R.string.anim_option_layers, 1, 5, 3));
             case "donut":
                 return optionSet(
                         option("speed", R.string.anim_option_speed, 10, 300, 100),
-                        option("rings", R.string.anim_option_rings, 6, 24, 14));
+                        optionPlain("rings", R.string.anim_option_rings, 6, 24, 14));
             case "matrix":
                 return optionSet(
                         option("speed", R.string.anim_option_speed, 20, 300, 100),
-                        option("density", R.string.anim_option_density, 30, 150, 100));
+                        option("amount", R.string.anim_option_density, 30, 150, 100));
             case "fireworks":
                 return optionSet(
                         option("speed", R.string.anim_option_speed, 20, 300, 100),
@@ -572,11 +572,11 @@ public class SettingsActivity extends BaseActivity {
             case "ripple":
                 return optionSet(
                         option("speed", R.string.anim_option_speed, 20, 300, 100),
-                        option("size", R.string.anim_option_size, 50, 150, 100));
+                        option("amount", R.string.anim_option_size, 50, 150, 100));
             case "grid":
                 return optionSet(
                         option("speed", R.string.anim_option_speed, 20, 300, 100),
-                        option("density", R.string.anim_option_density, 50, 150, 100));
+                        option("amount", R.string.anim_option_density, 50, 150, 100));
             case "comet":
                 return optionSet(
                         option("speed", R.string.anim_option_speed, 20, 300, 100),
@@ -589,7 +589,7 @@ public class SettingsActivity extends BaseActivity {
                         optionPlain("wind", R.string.anim_rain_wind, 0, 100, 30),
                         optionChoice("windDir", R.string.anim_rain_wind_dir, 1,
                                 new int[]{R.string.anim_rain_dir_left, R.string.anim_rain_dir_right}),
-                        option("density", R.string.anim_rain_density, 20, 150, 100),
+                        option("amount", R.string.anim_rain_density, 20, 150, 100),
                         optionToggle("lightning", R.string.anim_rain_lightning, 0),
                         optionPlain("lightningRate", R.string.anim_rain_rate, 1, 100, 30));
             case "bubbles":
