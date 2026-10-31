@@ -1197,6 +1197,18 @@
     <string name="anim_option_layers">Số lớp</string>
     <string name="anim_option_rings">Số vòng</string>
     <string name="anim_option_amount">Số lượng</string>
+    <string name="bg_animation_rain">Mưa</string>
+    <string name="anim_rain_clouds">Hiện mây</string>
+    <string name="anim_rain_cloud_type">Loại mây</string>
+    <string name="anim_rain_cloud_sway">Đung đưa</string>
+    <string name="anim_rain_cloud_blow">Gió thổi</string>
+    <string name="anim_rain_wind">Độ mạnh của gió</string>
+    <string name="anim_rain_wind_dir">Hướng gió thổi</string>
+    <string name="anim_rain_dir_left">Trái</string>
+    <string name="anim_rain_dir_right">Phải</string>
+    <string name="anim_rain_density">Mật độ hạt mưa</string>
+    <string name="anim_rain_lightning">Sấm sét</string>
+    <string name="anim_rain_rate">Tỉ lệ xuất hiện sấm sét</string>
     <string name="screenshot_saved">Ảnh chụp màn hình đã được lưu</string>
     <string name="backup_select_downloads">Chọn thư mục Tải xuống để lưu bản sao lưu trong Downloads/LeviLauncher Modder/Backups.</string>
     <!-- Dịch thủ công các string chưa được Weblate đồng bộ -->

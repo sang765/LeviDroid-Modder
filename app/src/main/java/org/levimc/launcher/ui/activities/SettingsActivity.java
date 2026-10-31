@@ -361,7 +361,7 @@ public class SettingsActivity extends BaseActivity {
     private void setupAnimatedBackgroundPicker() {
         String[] values = {
                 "none", "matrix", "donut", "fireworks", "wave",
-                "warp", "ripple", "bubbles", "fireflies", "aurora", "grid", "comet"
+                "warp", "ripple", "bubbles", "fireflies", "aurora", "grid", "comet", "rain"
         };
         String[] labels = {
                 getString(R.string.bg_animation_none),
@@ -375,7 +375,8 @@ public class SettingsActivity extends BaseActivity {
                 getString(R.string.bg_animation_fireflies),
                 getString(R.string.bg_animation_aurora),
                 getString(R.string.bg_animation_grid),
-                getString(R.string.bg_animation_comet)
+                getString(R.string.bg_animation_comet),
+                getString(R.string.bg_animation_rain)
         };
 
         TextView current = findViewById(R.id.bg_animation_current);
@@ -423,19 +424,84 @@ public class SettingsActivity extends BaseActivity {
         box.setVisibility(View.VISIBLE);
         for (Object[] option : options) {
             String key = (String) option[0];
-            int min = (Integer) option[2];
-            int max = (Integer) option[3];
-            int def = (Integer) option[4];
-            box.addView(buildOptionRow(effect, key, getString((Integer) option[1]), min, max,
-                    personalizationManager.getAnimOption(effect, key, def)));
+            int type = (Integer) option[1];
+            int min = (Integer) option[3];
+            int max = (Integer) option[4];
+            int def = (Integer) option[5];
+            if ("lightningRate".equals(key)
+                    && personalizationManager.getAnimOption(effect, "lightning", 0) != 1) continue;
+            box.addView(buildOptionRow(effect, key, type, getString((Integer) option[2]),
+                    min, max, personalizationManager.getAnimOption(effect, key, def), option[6]));
         }
     }
 
-    private View buildOptionRow(String effect, String key, String label, int min, int max, int value) {
+    private void applyAnimationOption(String effect, String key, int value) {
+        personalizationManager.setAnimOption(effect, key, value);
+        View background = getWindow().getDecorView().findViewWithTag("personalization_bg");
+        if (background instanceof org.levimc.launcher.ui.animation.AnimatedBackgroundView) {
+            ((org.levimc.launcher.ui.animation.AnimatedBackgroundView) background).setOption(key, value);
+        }
+        if ("lightning".equals(key)) showAnimationOptions(effect);
+    }
+
+    private View buildOptionRow(String effect, String key, int type, String label,
+                                int min, int max, int value, Object extra) {
         int pad = Math.round(6 * getResources().getDisplayMetrics().density);
         LinearLayout row = new LinearLayout(this);
         row.setOrientation(LinearLayout.VERTICAL);
         row.setPadding(0, pad, 0, 0);
+
+        if (type == 2) {
+            row.setGravity(Gravity.CENTER_VERTICAL);
+            row.setOrientation(LinearLayout.HORIZONTAL);
+            TextView name = new TextView(this);
+            name.setText(label);
+            name.setTextColor(getColor(R.color.on_surface));
+            name.setTextSize(12f);
+            name.setLayoutParams(new LinearLayout.LayoutParams(0, LinearLayout.LayoutParams.WRAP_CONTENT, 1f));
+            row.addView(name);
+            SwitchMaterial toggle = new SwitchMaterial(this);
+            toggle.setChecked(value == 1);
+            toggle.setOnCheckedChangeListener((button, checked) ->
+                    applyAnimationOption(effect, key, checked ? 1 : 0));
+            row.addView(toggle);
+            return row;
+        }
+
+        if (type == 3) {
+            row.setGravity(Gravity.CENTER_VERTICAL);
+            row.setOrientation(LinearLayout.HORIZONTAL);
+            TextView name = new TextView(this);
+            name.setText(label);
+            name.setTextColor(getColor(R.color.on_surface));
+            name.setTextSize(12f);
+            name.setLayoutParams(new LinearLayout.LayoutParams(0, LinearLayout.LayoutParams.WRAP_CONTENT, 1f));
+            row.addView(name);
+            int[] choices = (int[]) extra;
+            String[] labels = new String[choices.length];
+            for (int i = 0; i < choices.length; i++) labels[i] = getString(choices[i]);
+            Spinner picker = new Spinner(this);
+            picker.setLayoutParams(new LinearLayout.LayoutParams(
+                    ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT));
+            ArrayAdapter<String> choiceAdapter = new ArrayAdapter<>(this, R.layout.spinner_item, labels);
+            choiceAdapter.setDropDownViewResource(R.layout.spinner_dropdown_item);
+            picker.setAdapter(choiceAdapter);
+            picker.setPopupBackgroundResource(R.drawable.bg_popup_menu_rounded);
+            picker.setSelection(value);
+            picker.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+                @Override
+                public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                    if (position == value) return;
+                    applyAnimationOption(effect, key, position);
+                }
+
+                @Override
+                public void onNothingSelected(AdapterView<?> parent) {
+                }
+            });
+            row.addView(picker);
+            return row;
+        }
 
         LinearLayout header = new LinearLayout(this);
         header.setOrientation(LinearLayout.HORIZONTAL);
@@ -446,7 +512,7 @@ public class SettingsActivity extends BaseActivity {
         name.setTextSize(12f);
         name.setLayoutParams(new LinearLayout.LayoutParams(0, LinearLayout.LayoutParams.WRAP_CONTENT, 1f));
         TextView amountLabel = new TextView(this);
-        amountLabel.setText(optionValueText(key, value));
+        amountLabel.setText(optionValueText(type, value));
         amountLabel.setTextColor(getColor(R.color.text_secondary));
         amountLabel.setTextSize(12f);
         header.addView(name);
@@ -461,12 +527,8 @@ public class SettingsActivity extends BaseActivity {
             public void onProgressChanged(SeekBar bar, int progress, boolean fromUser) {
                 if (!fromUser) return;
                 int v = progress + min;
-                amountLabel.setText(optionValueText(key, v));
-                personalizationManager.setAnimOption(effect, key, v);
-                View background = getWindow().getDecorView().findViewWithTag("personalization_bg");
-                if (background instanceof org.levimc.launcher.ui.animation.AnimatedBackgroundView) {
-                    ((org.levimc.launcher.ui.animation.AnimatedBackgroundView) background).setOption(key, v);
-                }
+                amountLabel.setText(optionValueText(type, v));
+                applyAnimationOption(effect, key, v);
             }
 
             @Override
@@ -481,10 +543,8 @@ public class SettingsActivity extends BaseActivity {
         return row;
     }
 
-    private String optionValueText(String key, int value) {
-        return "rings".equals(key) || "layers".equals(key)
-                ? String.valueOf(value)
-                : value + "%";
+    private String optionValueText(int type, int value) {
+        return type == 0 ? value + "%" : String.valueOf(value);
     }
 
     private Object[][] animationOptions(String effect) {
@@ -521,6 +581,17 @@ public class SettingsActivity extends BaseActivity {
                 return optionSet(
                         option("speed", R.string.anim_option_speed, 20, 300, 100),
                         option("amount", R.string.anim_option_amount, 20, 300, 100));
+            case "rain":
+                return optionSet(
+                        optionToggle("clouds", R.string.anim_rain_clouds, 1),
+                        optionChoice("cloudType", R.string.anim_rain_cloud_type, 0,
+                                new int[]{R.string.anim_rain_cloud_sway, R.string.anim_rain_cloud_blow}),
+                        optionPlain("wind", R.string.anim_rain_wind, 0, 100, 30),
+                        optionChoice("windDir", R.string.anim_rain_wind_dir, 1,
+                                new int[]{R.string.anim_rain_dir_left, R.string.anim_rain_dir_right}),
+                        option("density", R.string.anim_rain_density, 20, 150, 100),
+                        optionToggle("lightning", R.string.anim_rain_lightning, 0),
+                        optionPlain("lightningRate", R.string.anim_rain_rate, 1, 100, 30));
             case "bubbles":
             case "fireflies":
             case "warp":
@@ -533,7 +604,19 @@ public class SettingsActivity extends BaseActivity {
     }
 
     private Object[] option(String key, int labelRes, int min, int max, int def) {
-        return new Object[]{key, labelRes, min, max, def};
+        return new Object[]{key, 0, labelRes, min, max, def, null};
+    }
+
+    private Object[] optionPlain(String key, int labelRes, int min, int max, int def) {
+        return new Object[]{key, 1, labelRes, min, max, def, null};
+    }
+
+    private Object[] optionToggle(String key, int labelRes, int def) {
+        return new Object[]{key, 2, labelRes, 0, 0, def, null};
+    }
+
+    private Object[] optionChoice(String key, int labelRes, int def, int[] choices) {
+        return new Object[]{key, 3, labelRes, 0, 0, def, choices};
     }
 
     private Object[][] optionSet(Object[]... options) {
