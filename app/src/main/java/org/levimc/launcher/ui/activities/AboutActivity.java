@@ -5,11 +5,20 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.os.Bundle;
+import android.view.LayoutInflater;
+import android.view.View;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
+import org.json.JSONArray;
+import org.json.JSONObject;
 import org.levimc.launcher.R;
 import org.levimc.launcher.ui.animation.DynamicAnim;
 
+import java.util.ArrayList;
+import java.util.LinkedHashMap;
+import java.util.List;
+import java.util.Map;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
@@ -28,6 +37,7 @@ public class AboutActivity extends BaseActivity {
     private static final String MAINTAINER_AVATAR_URL = "https://yt3.googleusercontent.com/ft4khqXZ_fQn-DbSLg91kQy3_JUQ_73rbg18nOcmMtunX5bq25jzrThWQAk9YsFkTKFesUL7sg8=s160-c-k-c0x00ffffff-no-rj";
     private static final String MODDER_AVATAR_URL = "https://avatars.githubusercontent.com/sang765";
     private static final String URL_YOUTUBE = "https://www.youtube.com/c/mrpokeg";
+    private static final String URL_CONTRIBUTORS = "https://api.github.com/repos/sang765/LeviDroid-Modder/contributors";
 
     private final ExecutorService executor = Executors.newSingleThreadExecutor();
     private final OkHttpClient client = new OkHttpClient();
@@ -39,6 +49,7 @@ public class AboutActivity extends BaseActivity {
         setupNavBar();
 
         loadAvatars();
+        loadContributors();
         setupLinks();
         styleBadges();
 
@@ -119,6 +130,61 @@ public class AboutActivity extends BaseActivity {
                 }
             } catch (Exception ignored) {}
         });
+    }
+
+    private void loadContributors() {
+        executor.execute(() -> {
+            try {
+                Response resp = client.newCall(new Request.Builder().url(URL_CONTRIBUTORS).build()).execute();
+                if (!resp.isSuccessful() || resp.body() == null) return;
+                JSONArray arr = new JSONArray(resp.body().string());
+                List<JSONObject> items = new ArrayList<>();
+                for (int i = 0; i < arr.length(); i++) {
+                    JSONObject item = arr.getJSONObject(i);
+                    String login = item.optString("login", "");
+                    if (login.endsWith("[bot]") || login.equals("ImgBotApp")) continue;
+                    items.add(item);
+                }
+                if (items.isEmpty()) return;
+                Map<JSONObject, Bitmap> avatars = new LinkedHashMap<>();
+                for (JSONObject item : items) {
+                    String avatarUrl = item.optString("avatar_url", "");
+                    if (avatarUrl.isEmpty()) continue;
+                    try {
+                        Response avatarResp = client.newCall(new Request.Builder().url(avatarUrl).build()).execute();
+                        if (avatarResp.isSuccessful() && avatarResp.body() != null) {
+                            Bitmap bmp = BitmapFactory.decodeStream(avatarResp.body().byteStream());
+                            if (bmp != null) avatars.put(item, bmp);
+                        }
+                    } catch (Exception ignored) {}
+                }
+                runOnUiThread(() -> {
+                    findViewById(R.id.contributors_card).setVisibility(View.VISIBLE);
+                    LinearLayout list = findViewById(R.id.contributors_list);
+                    for (JSONObject item : items) addContributorRow(list, item, avatars.get(item));
+                });
+            } catch (Exception ignored) {}
+        });
+    }
+
+    private void addContributorRow(LinearLayout list, JSONObject item, Bitmap avatar) {
+        View row = LayoutInflater.from(this).inflate(R.layout.item_contributor, list, false);
+        ((TextView) row.findViewById(R.id.contributor_name)).setText(item.optString("login", ""));
+        ((TextView) row.findViewById(R.id.contributor_commits)).setText(getString(R.string.about_contributor_commits, item.optInt("contributions", 0)));
+        if (avatar != null) {
+            com.microsoft.xbox.idp.toolkit.CircleImageView avatarView = row.findViewById(R.id.contributor_avatar);
+            if (avatarView != null) avatarView.setImageBitmap(avatar);
+        }
+        String profileUrl = item.optString("html_url", "");
+        if (!profileUrl.isEmpty()) {
+            row.setOnClickListener(v -> {
+                try {
+                    startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse(profileUrl)));
+                } catch (Exception ignored) {}
+            });
+            DynamicAnim.applyPressScale(row);
+        }
+        list.addView(row);
     }
 
     private void setupLinks() {

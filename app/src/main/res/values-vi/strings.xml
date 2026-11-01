@@ -922,6 +922,8 @@
     <string name="about_modder_badge">Modder</string>
     <string name="about_modder_role">Modder Version bởi sang765</string>
     <string name="about_modder_github">sang765 Github</string>
+    <string name="about_contributors_title">👥 Cộng tác viên</string>
+    <string name="about_contributor_commits">%d commit</string>
     <string name="about_afdian">Afdian</string>
     <string name="about_patreon">Patreon</string>
     <string name="about_source_title">Mã nguồn &amp; Mã nguồn mở</string>

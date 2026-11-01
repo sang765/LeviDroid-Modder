@@ -1052,6 +1052,8 @@
     <string name="about_modder_badge">Modder</string>
     <string name="about_modder_role">Modder Version by sang765</string>
     <string name="about_modder_github">GitHub · sang765</string>
+    <string name="about_contributors_title">👥 Contributors</string>
+    <string name="about_contributor_commits">%d commits</string>
     <string name="about_afdian">Afdian</string>
     <string name="about_patreon">Patreon</string>
     <string name="about_source_title">Source Code &amp; Open Source</string>
