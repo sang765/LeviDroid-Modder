@@ -153,7 +153,7 @@ public class AboutActivity extends BaseActivity {
                     try {
                         Response avatarResp = client.newCall(new Request.Builder().url(avatarUrl).build()).execute();
                         if (avatarResp.isSuccessful() && avatarResp.body() != null) {
-                            Bitmap bmp = BitmapFactory.decodeStream(avatarResp.body().byteStream());
+                            Bitmap bmp = decodeScaled(avatarResp.body().bytes(), 128);
                             if (bmp != null) avatars.put(item, bmp);
                         }
                     } catch (Exception ignored) {}
@@ -185,6 +185,17 @@ public class AboutActivity extends BaseActivity {
             DynamicAnim.applyPressScale(row);
         }
         list.addView(row);
+    }
+
+    private Bitmap decodeScaled(byte[] raw, int targetSize) {
+        BitmapFactory.Options bounds = new BitmapFactory.Options();
+        bounds.inJustDecodeBounds = true;
+        BitmapFactory.decodeByteArray(raw, 0, raw.length, bounds);
+        int sample = 1;
+        while (bounds.outWidth / (sample * 2) >= targetSize && bounds.outHeight / (sample * 2) >= targetSize) sample *= 2;
+        BitmapFactory.Options opts = new BitmapFactory.Options();
+        opts.inSampleSize = sample;
+        return BitmapFactory.decodeByteArray(raw, 0, raw.length, opts);
     }
 
     private void setupLinks() {
