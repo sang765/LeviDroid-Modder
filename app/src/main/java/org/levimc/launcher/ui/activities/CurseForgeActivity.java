@@ -51,7 +51,7 @@ public class CurseForgeActivity extends BaseActivity {
     private static final int VISIBLE_VERSIONS = 12;
 
     private EditText searchBox;
-    private MaterialButton btnSort;
+    private TextView btnSort;
     private MaterialButton btnFilters;
     private RecyclerView recyclerView;
     private ProgressBar loadingProgress;
