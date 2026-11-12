@@ -1,23 +1,14 @@
 {
   "schemaVersion": 1,
-  "headline": "LeviLauncher Modder v1.6.1-modder.29",
-  "summary": "This release adopts upstream's redesigned content management and world tools screens — compact content pages, a new storage selector widget, import-state restoration and new import archive helpers — while the fork keeps its storage migration flow, Discord RPC reporting, resource-pack description formatting and its removal of the custom flat world screens.",
+  "headline": "LeviLauncher Modder v1.6.1-modder.30",
+  "summary": "This release fixes the crash that happened when opening the CurseForge screen — the sort control was inflated as a TextView while the activity expected a MaterialButton, so tapping the CurseForge entry killed the launcher instantly. Everything else is unchanged.",
   "sections": [
-    {
-      "title": "Redesigns",
-      "items": [
-        {
-          "text": "Content management and world tools rebuilt on the upstream redesign: compact content pages with the new storage selector widget, import state survives process death, and new import archive helpers power the world import flow. The fork keeps everything it adds on top — the storage migration flow behind the storage picker (with its confirm and progress dialogs), Discord Rich Presence reporting on the content screens, and formatted resource-pack descriptions with the hide-when-empty improvement.",
-          "url": "https://github.com/sang765/LeviDroid-Modder/commit/f9d892b334a45f1eef53fe88b2741ea3a9aba921"
-        }
-      ]
-    },
     {
       "title": "Fixes",
       "items": [
         {
-          "text": "Restored the storage type list that powers the storage picker after the redesign merge dropped it, so switching between internal, external and version-isolated storage keeps working.",
-          "url": "https://github.com/sang765/LeviDroid-Modder/commit/83029e03d8e01ad10d236688893e9affa9ae2a01"
+          "text": "Opening the CurseForge screen no longer crashes: the sort control in the toolbar is now typed as the TextView it actually is in the layout, instead of being cast to a MaterialButton and throwing a ClassCastException on every launch.",
+          "url": "https://github.com/sang765/LeviDroid-Modder/commit/be3b4656e27da9c7fc6edd1141a5250c7ba4b4f0"
         }
       ]
     }
