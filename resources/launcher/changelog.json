@@ -1,14 +1,14 @@
 {
   "schemaVersion": 1,
-  "headline": "LeviLauncher Modder v1.6.1-modder.34",
-  "summary": "The left and right nav bar stops being shifted around by the camera cutout. On a notched phone in landscape the rail used to grow horizontal padding and push its icon column inwards, clipping the icons; the bar now sits exactly where the layout puts it again.",
+  "headline": "LeviLauncher Modder v1.6.1-modder.35",
+  "summary": "The side nav bar finally looks like one column. The five page icons sat against the left edge of the rail while the back button, logo, avatar and theme toggle sat on its centre line; every icon now shares the same vertical axis.",
   "sections": [
     {
       "title": "Fixes",
       "items": [
         {
-          "text": "With the nav bar on the left or right, a camera cutout on the same edge made the launcher grow the bar's padding, which pushed the whole icon column inwards and clipped it. The nav bar no longer takes part in cutout avoidance, so side and bottom bars keep their normal layout. Page content still keeps its distance from the camera.",
-          "url": "https://github.com/sang765/LeviDroid-Modder/commit/15512c4d"
+          "text": "With the nav bar on the left or right, the five page tabs drew their icon against the tab's leading edge instead of the rail centre line, so the rail looked crooked next to the back button, leaf logo, account cluster and theme toggle. Each tab now carries a symmetric inset and the whole rail lines up on a single column, with the same full-width tap area and ripple as before.",
+          "url": "https://github.com/sang765/LeviDroid-Modder/commit/bbc32591"
         }
       ]
     }
