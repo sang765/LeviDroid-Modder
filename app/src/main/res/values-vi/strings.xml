@@ -502,8 +502,13 @@
     <string name="xbox_friends_decline">Từ chối</string>
     <string name="xbox_friends_empty_friends">Chưa có bạn bè</string>
     <string name="xbox_friends_empty_requests">Không có lời mời nào</string>
+    <string name="xbox_friends_empty_online">Chả ai trực tuyến cả, rủ rê thử xem?</string>
+    <string name="xbox_friends_empty_offline">Ai cũng đang trực tuyến hết rồi</string>
     <string name="xbox_friends_search">Tìm kiếm</string>
     <string name="xbox_friends_search_hint">Gamertag</string>
+    <string name="xbox_friends_search_prompt">Muốn kiếm bạn mới hả? Nhập vào đây nhé</string>
+    <string name="xbox_friends_search_local_hint">Tìm trong bạn bè</string>
+    <string name="xbox_friends_search_results">Kết quả tìm kiếm</string>
     <string name="xbox_friends_search_empty">Không tìm thấy gamertag phù hợp</string>
     <string name="xbox_friends_add_confirm">Gửi lời mời kết bạn tới %1$s?</string>
     <string name="xbox_friends_added">Đã gửi lời mời kết bạn tới %1$s</string>

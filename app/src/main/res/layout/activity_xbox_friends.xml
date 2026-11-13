@@ -40,23 +40,53 @@
             android:textAllCaps="false"
             android:gravity="center"
             android:fontFamily="@font/misans" />
+    </LinearLayout>
 
-        <Button
-            android:id="@+id/add_friend_button"
-            android:layout_width="wrap_content"
-            android:layout_height="40dp"
-            android:minHeight="0dp"
-            android:minWidth="90dp"
-            android:backgroundTint="@color/primary"
-            android:text="@string/xbox_friends_add"
-            android:textColor="@color/on_primary"
-            android:paddingHorizontal="12dp"
-            android:layout_marginStart="10dp"
-            android:textSize="13sp"
-            android:textStyle="bold"
-            android:textAllCaps="false"
-            android:gravity="center"
-            android:fontFamily="@font/misans" />
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="40dp"
+        android:layout_marginTop="12dp"
+        android:background="@drawable/v161_instances_bg_search"
+        android:gravity="center_vertical"
+        android:orientation="horizontal"
+        android:paddingStart="12dp"
+        android:paddingEnd="4dp">
+
+        <ImageView
+            android:layout_width="18dp"
+            android:layout_height="18dp"
+            android:contentDescription="@string/xbox_friends_search"
+            android:src="@drawable/ic_ui_search"
+            android:tint="@color/text_secondary" />
+
+        <EditText
+            android:id="@+id/xbox_search_input"
+            style="@style/Widget.Levi.Input"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_marginStart="8dp"
+            android:layout_weight="1"
+            android:background="@null"
+            android:fontFamily="@font/misans"
+            android:hint="@string/xbox_friends_search_local_hint"
+            android:imeOptions="actionSearch"
+            android:importantForAutofill="no"
+            android:inputType="text"
+            android:maxLines="1"
+            android:textColor="@color/on_surface"
+            android:textColorHint="@color/text_secondary"
+            android:textSize="13sp" />
+
+        <ImageButton
+            android:id="@+id/clear_search_button"
+            android:layout_width="32dp"
+            android:layout_height="32dp"
+            android:background="?attr/selectableItemBackgroundBorderless"
+            android:contentDescription="@string/dialog_negative_cancel"
+            android:padding="8dp"
+            android:src="@drawable/ic_close"
+            android:tint="@color/text_secondary"
+            android:visibility="gone" />
     </LinearLayout>
 
     <LinearLayout
@@ -96,47 +126,94 @@
             android:focusable="true" />
     </LinearLayout>
 
-    <FrameLayout
+    <org.levimc.launcher.ui.widget.SegmentedControl
+        android:id="@+id/friend_filter"
+        android:layout_width="wrap_content"
+        android:layout_height="32dp"
+        android:layout_marginTop="12dp" />
+
+    <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:layout_weight="1"
-        android:layout_marginTop="10dp">
+        android:layout_marginTop="10dp"
+        android:background="@drawable/bg_xbox_card"
+        android:orientation="vertical"
+        android:padding="6dp">
 
-        <androidx.recyclerview.widget.RecyclerView
-            android:id="@+id/friends_list"
+        <FrameLayout
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:clipToPadding="false"
-            android:scrollbars="none"
-            android:overScrollMode="never" />
+            android:layout_height="match_parent">
 
-        <androidx.recyclerview.widget.RecyclerView
-            android:id="@+id/requests_list"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:visibility="gone"
-            android:clipToPadding="false"
-            android:scrollbars="none"
-            android:overScrollMode="never" />
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/friends_list"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:clipToPadding="false"
+                android:padding="4dp"
+                android:scrollbars="none"
+                android:overScrollMode="never" />
 
-        <TextView
-            android:id="@+id/empty_text"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center"
-            android:fontFamily="@font/misans"
-            android:textColor="@color/text_secondary"
-            android:textSize="14sp"
-            android:visibility="gone" />
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/requests_list"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:visibility="gone"
+                android:clipToPadding="false"
+                android:padding="4dp"
+                android:scrollbars="none"
+                android:overScrollMode="never" />
 
-        <ProgressBar
-            android:id="@+id/progress"
-            style="?android:attr/progressBarStyleSmall"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center"
-            android:indeterminate="true"
-            android:visibility="gone" />
-    </FrameLayout>
+            <LinearLayout
+                android:id="@+id/search_section"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:orientation="vertical"
+                android:visibility="gone">
+
+                <TextView
+                    android:id="@+id/search_status"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:fontFamily="@font/misans"
+                    android:paddingHorizontal="12dp"
+                    android:paddingTop="8dp"
+                    android:paddingBottom="4dp"
+                    android:text="@string/xbox_friends_search_results"
+                    android:textColor="@color/text_secondary"
+                    android:textSize="12sp"
+                    android:textStyle="bold" />
+
+                <androidx.recyclerview.widget.RecyclerView
+                    android:id="@+id/search_results_list"
+                    android:layout_width="match_parent"
+                    android:layout_height="0dp"
+                    android:layout_weight="1"
+                    android:clipToPadding="false"
+                    android:padding="4dp"
+                    android:scrollbars="none"
+                    android:overScrollMode="never" />
+            </LinearLayout>
+
+            <TextView
+                android:id="@+id/empty_text"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:fontFamily="@font/misans"
+                android:textColor="@color/text_secondary"
+                android:textSize="14sp"
+                android:visibility="gone" />
+
+            <ProgressBar
+                android:id="@+id/progress"
+                style="?android:attr/progressBarStyleSmall"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:indeterminate="true"
+                android:visibility="gone" />
+        </FrameLayout>
+    </LinearLayout>
 
 </LinearLayout>
