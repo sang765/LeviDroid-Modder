@@ -196,7 +196,11 @@ public class XboxLiveClient {
         if (seen == null || TextUtils.isEmpty(seen.isoTime())) return null;
         long seenMs;
         try {
-            seenMs = Instant.parse(seen.isoTime()).toEpochMilli();
+            try {
+                seenMs = Instant.parse(seen.isoTime()).toEpochMilli();
+            } catch (RuntimeException retry) {
+                seenMs = Instant.parse(seen.isoTime() + "Z").toEpochMilli();
+            }
         } catch (RuntimeException error) {
             return null;
         }
