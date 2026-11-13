@@ -1,14 +1,14 @@
 {
   "schemaVersion": 1,
-  "headline": "LeviLauncher Modder v1.6.1-modder.35",
-  "summary": "The side nav bar finally looks like one column. The five page icons sat against the left edge of the rail while the back button, logo, avatar and theme toggle sat on its centre line; every icon now shares the same vertical axis.",
+  "headline": "LeviLauncher Modder v1.6.1-modder.36",
+  "summary": "The new-version prompt is a small centred card again instead of a full-width slab. A size cap on the wrong side of a fill modifier meant a wide screen stretched the card until the buttons ran edge to edge.",
   "sections": [
     {
       "title": "Fixes",
       "items": [
         {
-          "text": "With the nav bar on the left or right, the five page tabs drew their icon against the tab's leading edge instead of the rail centre line, so the rail looked crooked next to the back button, leaf logo, account cluster and theme toggle. Each tab now carries a symmetric inset and the whole rail lines up on a single column, with the same full-width tap area and ripple as before.",
-          "url": "https://github.com/sang765/LeviDroid-Modder/commit/bbc32591"
+          "text": "The prompt that asks whether to update asked for a full-width card before capping its width, so the cap was ignored and the dialog spread across the whole screen on tablets and in landscape. The card is now capped at 340dp, stays centred, and its buttons are inset with rounded corners, so it reads as a normal dialog on both portrait and landscape.",
+          "url": "https://github.com/sang765/LeviDroid-Modder/commit/3966dcd8"
         }
       ]
     }
