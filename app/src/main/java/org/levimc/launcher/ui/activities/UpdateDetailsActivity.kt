@@ -365,39 +365,49 @@ class UpdateDetailsActivity : ComponentActivity() {
                             scaleY = enter.value
                         }
                         .background(colorScheme.surfaceVariant, cardShape)
-                        .padding(horizontal = 18.dp, vertical = 20.dp),
-                    verticalArrangement = Arrangement.Center,
-                    horizontalAlignment = Alignment.CenterHorizontally,
+                        .padding(horizontal = 18.dp, vertical = 18.dp),
                 ) {
                     Box(
-                        modifier = Modifier
-                            .size(62.dp)
-                            .background(colorScheme.primary.copy(alpha = 0.16f), RoundedCornerShape(20.dp)),
+                        modifier = Modifier.fillMaxSize(),
                         contentAlignment = Alignment.Center,
                     ) {
-                        IconMobileArrowDown(30.dp)
-                    }
-                    Spacer(Modifier.height(18.dp))
-                    Text(
-                        text = stringResource(R.string.update_detail_title),
-                        style = TextStyle(
-                            fontSize = 20.sp,
-                            lineHeight = 26.sp,
-                            fontWeight = FontWeight.Bold,
-                            fontFamily = misans,
-                            color = colorScheme.onSurface,
-                        ),
-                        textAlign = TextAlign.Center,
-                    )
-                    Spacer(Modifier.height(12.dp))
-                    UpdateChip(stringResource(R.string.update_detail_version, releaseTitle))
-                    if (apkSize > 0) {
-                        Spacer(Modifier.height(6.dp))
-                        UpdateChip(stringResource(R.string.update_apk_size, GithubReleaseUpdater.formatBytes(apkSize)))
-                    }
-                    if (downloading.value || downloadDone.value) {
-                        Spacer(Modifier.height(18.dp))
-                        DownloadProgress()
+                        Column(
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .verticalScroll(rememberScrollState()),
+                            horizontalAlignment = Alignment.CenterHorizontally,
+                        ) {
+                            Box(
+                                modifier = Modifier
+                                    .size(62.dp)
+                                    .background(colorScheme.primary.copy(alpha = 0.16f), RoundedCornerShape(20.dp)),
+                                contentAlignment = Alignment.Center,
+                            ) {
+                                IconMobileArrowDown(30.dp)
+                            }
+                            Spacer(Modifier.height(18.dp))
+                            Text(
+                                text = stringResource(R.string.update_detail_title),
+                                style = TextStyle(
+                                    fontSize = 20.sp,
+                                    lineHeight = 26.sp,
+                                    fontWeight = FontWeight.Bold,
+                                    fontFamily = misans,
+                                    color = colorScheme.onSurface,
+                                ),
+                                textAlign = TextAlign.Center,
+                            )
+                            Spacer(Modifier.height(12.dp))
+                            UpdateChip(stringResource(R.string.update_detail_version, releaseTitle))
+                            if (apkSize > 0) {
+                                Spacer(Modifier.height(6.dp))
+                                UpdateChip(stringResource(R.string.update_apk_size, GithubReleaseUpdater.formatBytes(apkSize)))
+                            }
+                            if (downloading.value || downloadDone.value) {
+                                Spacer(Modifier.height(18.dp))
+                                DownloadProgress()
+                            }
+                        }
                     }
                 }
                 Column(
