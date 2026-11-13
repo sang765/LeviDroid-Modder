@@ -4,4 +4,5 @@
     <dimen name="levi_navbar_text_size">12sp</dimen>
     <dimen name="levi_navbar_icon_size">23dp</dimen>
     <dimen name="levi_navbar_center_offset">14dp</dimen>
+    <dimen name="levi_sidebar_icon_inset">16.5dp</dimen>
 </resources>
