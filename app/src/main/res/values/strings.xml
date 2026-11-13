@@ -609,6 +609,8 @@
     <string name="xbox_friends_decline">Decline</string>
     <string name="xbox_friends_empty_friends">No friends yet</string>
     <string name="xbox_friends_empty_requests">No pending requests</string>
+    <string name="xbox_friends_empty_online">No friends online right now</string>
+    <string name="xbox_friends_empty_offline">All your friends are online right now</string>
     <string name="xbox_friends_search">Search</string>
     <string name="xbox_friends_search_hint">Gamertag</string>
     <string name="xbox_friends_search_empty">No matching gamertags found</string>

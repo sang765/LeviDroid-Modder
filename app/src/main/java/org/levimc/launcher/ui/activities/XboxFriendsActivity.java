@@ -24,6 +24,7 @@ import org.levimc.launcher.ui.adapter.XboxFriendsAdapter;
 import org.levimc.launcher.ui.adapter.XboxRequestsAdapter;
 import org.levimc.launcher.ui.adapter.XboxSearchAdapter;
 import org.levimc.launcher.ui.animation.DynamicAnim;
+import org.levimc.launcher.ui.widget.SegmentedControl;
 import org.levimc.launcher.util.PersonalizationManager;
 import org.levimc.launcher.ui.dialogs.CustomAlertDialog;
 
@@ -35,6 +36,7 @@ public class XboxFriendsActivity extends BaseActivity {
     private XboxLiveClient client;
     private XboxFriendsAdapter friendsAdapter;
     private XboxRequestsAdapter requestsAdapter;
+    private SegmentedControl friendFilter;
     private TextView tabFriends;
     private TextView tabRequests;
     private TextView emptyText;
@@ -44,6 +46,8 @@ public class XboxFriendsActivity extends BaseActivity {
     private boolean requestsLoaded;
     private boolean incomingLoaded;
     private boolean outgoingLoaded;
+    private int friendFilterIndex;
+    private final List<XboxLiveClient.XboxFriend> allFriends = new ArrayList<>();
     private final List<XboxLiveClient.XboxFriend> incomingRequests = new ArrayList<>();
     private final List<XboxLiveClient.XboxFriend> outgoingRequests = new ArrayList<>();
     private final List<XboxLiveClient.XboxFriend> knownFriends = new ArrayList<>();
@@ -102,6 +106,16 @@ public class XboxFriendsActivity extends BaseActivity {
         tabFriends.setOnClickListener(v -> selectTab(true));
         tabRequests.setOnClickListener(v -> selectTab(false));
 
+        friendFilter = findViewById(R.id.friend_filter);
+        friendFilter.setItems(getString(R.string.filter_all),
+                getString(R.string.xbox_friends_online),
+                getString(R.string.xbox_friends_offline));
+        friendFilter.setOnSegmentSelectedListener(index -> {
+            friendFilterIndex = index;
+            applyFriendFilter();
+        });
+        friendFilter.setSelectedIndex(0, false);
+
         View addButton = findViewById(R.id.add_friend_button);
         addButton.setOnClickListener(v -> showSearchDialog());
         DynamicAnim.applyPressScale(addButton);
@@ -136,6 +150,7 @@ public class XboxFriendsActivity extends BaseActivity {
         tabRequests.setTextColor(getColor(friends ? R.color.text_secondary : R.color.on_primary));
         findViewById(R.id.friends_list).setVisibility(friends ? View.VISIBLE : View.GONE);
         findViewById(R.id.requests_list).setVisibility(friends ? View.GONE : View.VISIBLE);
+        friendFilter.setVisibility(friends ? View.VISIBLE : View.GONE);
         int accent = new PersonalizationManager(this).getAccentColor();
         android.graphics.drawable.Drawable friendsTabBg = tabFriends.getBackground();
         if (friendsTabBg instanceof android.graphics.drawable.GradientDrawable) {
@@ -167,7 +182,9 @@ public class XboxFriendsActivity extends BaseActivity {
             public void onFriends(List<XboxLiveClient.XboxFriend> friends) {
                 knownFriends.clear();
                 knownFriends.addAll(friends);
-                friendsAdapter.submit(friends);
+                allFriends.clear();
+                allFriends.addAll(friends);
+                applyFriendFilter();
                 friendsLoaded = true;
                 finishLoading();
             }
@@ -258,13 +275,33 @@ public class XboxFriendsActivity extends BaseActivity {
         updateEmpty();
     }
 
+    private void applyFriendFilter() {
+        List<XboxLiveClient.XboxFriend> filtered = new ArrayList<>();
+        if (friendFilterIndex == 0) {
+            filtered.addAll(allFriends);
+        } else {
+            boolean wantOnline = friendFilterIndex == 1;
+            for (XboxLiveClient.XboxFriend friend : allFriends) {
+                if (wantOnline == "Online".equals(friend.presenceState)) filtered.add(friend);
+            }
+        }
+        friendsAdapter.submit(filtered);
+        updateEmpty();
+    }
+
     private void updateEmpty() {
         boolean loaded = friendsVisible ? friendsLoaded : requestsLoaded;
         int count = friendsVisible ? friendsAdapter.getItemCount() : requestsAdapter.getItemCount();
         emptyText.setVisibility(loaded && count == 0 ? View.VISIBLE : View.GONE);
-        emptyText.setText(friendsVisible
-                ? R.string.xbox_friends_empty_friends
-                : R.string.xbox_friends_empty_requests);
+        if (!friendsVisible) {
+            emptyText.setText(R.string.xbox_friends_empty_requests);
+        } else if (!allFriends.isEmpty() && friendFilterIndex == 1) {
+            emptyText.setText(R.string.xbox_friends_empty_online);
+        } else if (!allFriends.isEmpty() && friendFilterIndex == 2) {
+            emptyText.setText(R.string.xbox_friends_empty_offline);
+        } else {
+            emptyText.setText(R.string.xbox_friends_empty_friends);
+        }
     }
 
     private interface ActionStarter {

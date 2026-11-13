@@ -502,6 +502,8 @@
     <string name="xbox_friends_decline">Từ chối</string>
     <string name="xbox_friends_empty_friends">Chưa có bạn bè</string>
     <string name="xbox_friends_empty_requests">Không có lời mời nào</string>
+    <string name="xbox_friends_empty_online">Chả ai trực tuyến cả, rủ rê thử xem?</string>
+    <string name="xbox_friends_empty_offline">Ai cũng đang trực tuyến hết rồi</string>
     <string name="xbox_friends_search">Tìm kiếm</string>
     <string name="xbox_friends_search_hint">Gamertag</string>
     <string name="xbox_friends_search_empty">Không tìm thấy gamertag phù hợp</string>
