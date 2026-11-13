@@ -105,6 +105,9 @@ import okhttp3.OkHttpClient;
     private ActivityMainBinding binding;
     private MinecraftLauncher minecraftLauncher;
     private LanguageManager languageManager;
+    private final android.os.Handler tipHandler = new android.os.Handler(android.os.Looper.getMainLooper());
+    private Runnable tipRotator;
+    private boolean tipsVisible;
     private PermissionsHandler permissionsHandler;
     private FileHandler fileHandler;
     private ApkImportManager apkImportManager;
@@ -704,6 +707,11 @@ import okhttp3.OkHttpClient;
     @Override
     protected void onResume() {
         super.onResume();
+        tipsVisible = true;
+        if (tipRotator != null) {
+            tipHandler.removeCallbacks(tipRotator);
+            tipHandler.postDelayed(tipRotator, 8000L);
+        }
         refreshAccountHeaderUI();
         if (!launcherInitialized) {
             showPostEulaFlow();
@@ -726,6 +734,17 @@ import okhttp3.OkHttpClient;
         }
     }
 
+    @Override
+    protected void onPause() {
+        tipsVisible = false;
+        if (tipRotator != null) tipHandler.removeCallbacks(tipRotator);
+        if (binding != null && binding.tipText != null) {
+            binding.tipText.animate().withEndAction(null).cancel();
+            binding.tipText.setAlpha(1f);
+        }
+        super.onPause();
+    }
+
     @SuppressLint({"ClickableViewAccessibility", "UnsafeIntentLaunch"})
     private void initListeners() {
         setLaunchEnabled(false);
@@ -745,20 +764,20 @@ import okhttp3.OkHttpClient;
         String[] tips = getResources().getStringArray(R.array.launcher_tips);
         if (tips.length == 0 || binding.tipText == null) return;
         binding.tipText.setText(tips[new java.util.Random().nextInt(tips.length)]);
-        android.os.Handler handler = new android.os.Handler(getMainLooper());
-        Runnable rotateTip = new Runnable() {
+        if (tipRotator != null) tipHandler.removeCallbacks(tipRotator);
+        tipRotator = new Runnable() {
             @Override
             public void run() {
-                if (binding == null || binding.tipText == null) return;
+                if (!tipsVisible || binding == null || binding.tipText == null) return;
                 binding.tipText.animate().alpha(0f).setDuration(300).withEndAction(() -> {
-                    if (binding == null || binding.tipText == null) return;
+                    if (!tipsVisible || binding == null || binding.tipText == null) return;
                     binding.tipText.setText(tips[new java.util.Random().nextInt(tips.length)]);
                     binding.tipText.animate().alpha(1f).setDuration(300).start();
                 }).start();
-                handler.postDelayed(this, 8000);
+                tipHandler.postDelayed(this, 8000L);
             }
         };
-        handler.postDelayed(rotateTip, 8000);
+        if (tipsVisible) tipHandler.postDelayed(tipRotator, 8000L);
     }
 
     private void initContentManagementSection() {
