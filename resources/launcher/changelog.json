@@ -1,27 +1,14 @@
 {
   "schemaVersion": 1,
-  "headline": "LeviLauncher Modder v1.6.1-modder.33",
-  "summary": "The whole dialog stack is rebuilt on upstream's new component: every alert, file list, loading and install dialog now shares one width, blur, button row and open/close animation instead of each one styling itself. The download flow also shows a creator notice for the APK you are about to install.",
+  "headline": "LeviLauncher Modder v1.6.1-modder.34",
+  "summary": "The left and right nav bar stops being shifted around by the camera cutout. On a notched phone in landscape the rail used to grow horizontal padding and push its icon column inwards, clipping the icons; the bar now sits exactly where the layout puts it again.",
   "sections": [
     {
-      "title": "Redesigns",
+      "title": "Fixes",
       "items": [
         {
-          "text": "Dialogs are now built through a single component (LauncherDialogs plus LauncherDialogLayout): consistent max width, backdrop blur, button sizing, divider and the subtle fade-and-rise animation. The file list, libs repair, loading, task and install dialogs all moved onto it, so they stop drifting apart visually.",
-          "url": "https://github.com/sang765/LeviDroid-Modder/commit/612ff0c0dbad6c5ed427996cf454421ded97c68e"
-        },
-        {
-          "text": "CustomAlertDialog was rewritten on top of the same component, which also gives it header icon support used by the import and replace dialogs. The fork's close button survives the rewrite: dialogs that ask for it still get the X in the header.",
-          "url": "https://github.com/sang765/LeviDroid-Modder/commit/612ff0c0dbad6c5ed427996cf454421ded97c68e"
-        }
-      ]
-    },
-    {
-      "title": "Features",
-      "items": [
-        {
-          "text": "Downloading a game version now shows a creator notice for that APK, so it is clear where the build comes from before installing.",
-          "url": "https://github.com/sang765/LeviDroid-Modder/commit/612ff0c0dbad6c5ed427996cf454421ded97c68e"
+          "text": "With the nav bar on the left or right, a camera cutout on the same edge made the launcher grow the bar's padding, which pushed the whole icon column inwards and clipped it. The nav bar no longer takes part in cutout avoidance, so side and bottom bars keep their normal layout. Page content still keeps its distance from the camera.",
+          "url": "https://github.com/sang765/LeviDroid-Modder/commit/15512c4d"
         }
       ]
     }
