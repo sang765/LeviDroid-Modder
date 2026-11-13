@@ -197,8 +197,8 @@ public class XboxLiveClient {
         try {
             long now = System.currentTimeMillis();
             long seenMs = Instant.parse(seen.isoTime()).toEpochMilli();
-            CharSequence relative = DateUtils.getRelativeTimeSpanString(context,
-                    Math.min(seenMs, now), DateUtils.MINUTE_IN_MILLIS, 0);
+            CharSequence relative = DateUtils.getRelativeTimeSpanString(
+                    Math.min(seenMs, now), now, DateUtils.MINUTE_IN_MILLIS, 0);
             return context.getString(R.string.xbox_friends_last_online, relative);
         } catch (RuntimeException error) {
             return null;
