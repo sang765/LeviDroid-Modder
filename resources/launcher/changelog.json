@@ -1,14 +1,18 @@
 {
   "schemaVersion": 1,
-  "headline": "LeviLauncher Modder v1.6.1-modder.36",
-  "summary": "The new-version prompt is a small centred card again instead of a full-width slab. A size cap on the wrong side of a fill modifier meant a wide screen stretched the card until the buttons ran edge to edge.",
+  "headline": "LeviLauncher Modder v1.6.1-modder.37",
+  "summary": "The update screen got a Material 3 Expressive pass: two tonal cards with 28dp corners, a bold headline with version and size as pill chips, notes that scroll inside their own surface, pill actions and a spring entrance.",
   "sections": [
     {
-      "title": "Fixes",
+      "title": "Changes",
       "items": [
         {
-          "text": "The prompt that asks whether to update asked for a full-width card before capping its width, so the cap was ignored and the dialog spread across the whole screen on tablets and in landscape. The card is now capped at 340dp, stays centred, and its buttons are inset with rounded corners, so it reads as a normal dialog on both portrait and landscape.",
-          "url": "https://github.com/sang765/LeviDroid-Modder/commit/3966dcd8"
+          "text": "The release notes page was a flat two-column layout: the download badge floated on the bare background, the notes ran edge to edge and the left half sat mostly empty. It is now two rounded tonal cards — a hero card with the badge, a bold headline and the version and size shown as pill chips, and a notes card that scrolls inside its own surface. The actions are pill buttons with a wider primary button, and both cards spring into place instead of popping.",
+          "url": "https://github.com/sang765/LeviDroid-Modder/commit/7f5986a2"
+        },
+        {
+          "text": "On a short landscape screen the hero card could push its content past the card edge while a download was running. The hero stack now scrolls inside the card, staying centred while it fits and scrolling when it does not.",
+          "url": "https://github.com/sang765/LeviDroid-Modder/commit/c723f721"
         }
       ]
     }
