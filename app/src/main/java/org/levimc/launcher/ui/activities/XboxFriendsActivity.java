@@ -33,6 +33,7 @@ import org.levimc.launcher.ui.dialogs.CustomAlertDialog;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
 
 public class XboxFriendsActivity extends BaseActivity {
 
@@ -166,27 +167,33 @@ public class XboxFriendsActivity extends BaseActivity {
         searchInput.setOnEditorActionListener((view, actionId, event) -> {
             if (actionId != EditorInfo.IME_ACTION_SEARCH) return false;
             String query = searchInput.getText().toString().trim();
-            if (!query.isEmpty()) runSearch(query);
+            if (query.isEmpty()) return true;
+            if (friendsVisible) applyFriendFilter();
+            else runDirectorySearch(query);
             return true;
         });
         clearSearchButton.setOnClickListener(v -> clearSearch());
     }
 
     private void scheduleSearch(String raw) {
-        if (pendingSearch != null) searchHandler.removeCallbacks(pendingSearch);
         String query = raw.trim();
         clearSearchButton.setVisibility(query.isEmpty() ? View.GONE : View.VISIBLE);
-        if (query.length() < 2) {
-            if (searchActive) clearSearch();
+        if (friendsVisible) {
+            applyFriendFilter();
             return;
         }
-        pendingSearch = () -> runSearch(query);
+        if (pendingSearch != null) searchHandler.removeCallbacks(pendingSearch);
+        if (query.length() < 2) {
+            if (searchActive) hideDirectoryResults();
+            return;
+        }
+        pendingSearch = () -> runDirectorySearch(query);
         searchHandler.postDelayed(pendingSearch, 450L);
     }
 
-    private void runSearch(String query) {
+    private void runDirectorySearch(String query) {
         final int generation = ++searchGeneration;
-        setSearchVisible(true);
+        setDirectoryResultsVisible(true);
         searchStatus.setText(R.string.xbox_friends_search_results);
         searchAdapter.submit(new ArrayList<>());
         progress.setVisibility(View.VISIBLE);
@@ -206,13 +213,13 @@ public class XboxFriendsActivity extends BaseActivity {
             public void onError(String message) {
                 if (generation != searchGeneration) return;
                 progress.setVisibility(View.GONE);
-                setSearchVisible(false);
+                setDirectoryResultsVisible(false);
                 Toast.makeText(XboxFriendsActivity.this, message, Toast.LENGTH_SHORT).show();
             }
         });
     }
 
-    private void setSearchVisible(boolean visible) {
+    private void setDirectoryResultsVisible(boolean visible) {
         searchActive = visible;
         searchSection.setVisibility(visible ? View.VISIBLE : View.GONE);
         findViewById(R.id.friends_list).setVisibility(visible || !friendsVisible ? View.GONE : View.VISIBLE);
@@ -221,14 +228,19 @@ public class XboxFriendsActivity extends BaseActivity {
         updateEmpty();
     }
 
-    private void clearSearch() {
+    private void hideDirectoryResults() {
         searchActive = false;
         searchGeneration++;
         if (pendingSearch != null) searchHandler.removeCallbacks(pendingSearch);
-        if (searchInput.getText().length() > 0) searchInput.setText("");
         searchAdapter.submit(new ArrayList<>());
+        setDirectoryResultsVisible(false);
+    }
+
+    private void clearSearch() {
+        hideDirectoryResults();
+        if (searchInput.getText().length() > 0) searchInput.setText("");
         clearSearchButton.setVisibility(View.GONE);
-        setSearchVisible(false);
+        applyFriendFilter();
         InputMethodManager keyboard = (InputMethodManager) getSystemService(INPUT_METHOD_SERVICE);
         if (keyboard != null) keyboard.hideSoftInputFromWindow(searchInput.getWindowToken(), 0);
     }
@@ -246,8 +258,11 @@ public class XboxFriendsActivity extends BaseActivity {
     }
 
     private void selectTab(boolean friends) {
-        if (searchActive) clearSearch();
         friendsVisible = friends;
+        searchInput.setHint(friends
+                ? R.string.xbox_friends_search_local_hint
+                : R.string.xbox_friends_search_prompt);
+        clearSearch();
         tabFriends.setBackgroundResource(friends
                 ? R.drawable.bg_tab_selected : R.drawable.bg_tab_unselected);
         tabFriends.setTextColor(getColor(friends ? R.color.on_primary : R.color.text_secondary));
@@ -382,14 +397,15 @@ public class XboxFriendsActivity extends BaseActivity {
     }
 
     private void applyFriendFilter() {
+        String query = searchInput.getText().toString().trim().toLowerCase(Locale.ROOT);
         List<XboxLiveClient.XboxFriend> filtered = new ArrayList<>();
-        if (friendFilterIndex == 0) {
-            filtered.addAll(allFriends);
-        } else {
-            boolean wantOnline = friendFilterIndex == 1;
-            for (XboxLiveClient.XboxFriend friend : allFriends) {
-                if (wantOnline == "Online".equals(friend.presenceState)) filtered.add(friend);
-            }
+        for (XboxLiveClient.XboxFriend friend : allFriends) {
+            boolean online = "Online".equals(friend.presenceState);
+            if (friendFilterIndex == 1 && !online) continue;
+            if (friendFilterIndex == 2 && online) continue;
+            if (!query.isEmpty()
+                    && !XboxLiveClient.displayName(friend).toLowerCase(Locale.ROOT).contains(query)) continue;
+            filtered.add(friend);
         }
         friendsAdapter.submit(filtered);
         updateEmpty();
@@ -405,6 +421,8 @@ public class XboxFriendsActivity extends BaseActivity {
         emptyText.setVisibility(loaded && count == 0 ? View.VISIBLE : View.GONE);
         if (!friendsVisible) {
             emptyText.setText(R.string.xbox_friends_empty_requests);
+        } else if (!allFriends.isEmpty() && !searchInput.getText().toString().trim().isEmpty()) {
+            emptyText.setText(R.string.xbox_friends_search_empty);
         } else if (!allFriends.isEmpty() && friendFilterIndex == 1) {
             emptyText.setText(R.string.xbox_friends_empty_online);
         } else if (!allFriends.isEmpty() && friendFilterIndex == 2) {

@@ -68,7 +68,7 @@
             android:layout_weight="1"
             android:background="@null"
             android:fontFamily="@font/misans"
-            android:hint="@string/xbox_friends_search_prompt"
+            android:hint="@string/xbox_friends_search_local_hint"
             android:imeOptions="actionSearch"
             android:importantForAutofill="no"
             android:inputType="text"

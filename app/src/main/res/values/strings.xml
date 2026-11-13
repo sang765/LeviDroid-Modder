@@ -614,6 +614,7 @@
     <string name="xbox_friends_search">Search</string>
     <string name="xbox_friends_search_hint">Gamertag</string>
     <string name="xbox_friends_search_prompt">Looking for someone new? Type a gamertag</string>
+    <string name="xbox_friends_search_local_hint">Search your friends</string>
     <string name="xbox_friends_search_results">Search results</string>
     <string name="xbox_friends_search_empty">No matching gamertags found</string>
     <string name="xbox_friends_add_confirm">Send a friend request to %1$s?</string>
