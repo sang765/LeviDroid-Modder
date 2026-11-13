@@ -168,6 +168,7 @@ public class XboxFriendsActivity extends BaseActivity {
             if (actionId != EditorInfo.IME_ACTION_SEARCH) return false;
             String query = searchInput.getText().toString().trim();
             if (query.isEmpty()) return true;
+            hideKeyboard();
             if (friendsVisible) applyFriendFilter();
             else runDirectorySearch(query);
             return true;
@@ -241,6 +242,11 @@ public class XboxFriendsActivity extends BaseActivity {
         if (searchInput.getText().length() > 0) searchInput.setText("");
         clearSearchButton.setVisibility(View.GONE);
         applyFriendFilter();
+        hideKeyboard();
+    }
+
+    private void hideKeyboard() {
+        searchInput.clearFocus();
         InputMethodManager keyboard = (InputMethodManager) getSystemService(INPUT_METHOD_SERVICE);
         if (keyboard != null) keyboard.hideSoftInputFromWindow(searchInput.getWindowToken(), 0);
     }
@@ -474,6 +480,7 @@ public class XboxFriendsActivity extends BaseActivity {
     }
 
     private void confirmAdd(XboxLiveClient.XboxFriend friend) {
+        hideKeyboard();
         new CustomAlertDialog(this)
                 .setTitleText(getString(R.string.xbox_friends_add))
                 .setMessage(getString(R.string.xbox_friends_add_confirm, XboxLiveClient.displayName(friend)))
