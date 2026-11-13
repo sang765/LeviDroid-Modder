@@ -1,18 +1,27 @@
 {
   "schemaVersion": 1,
-  "headline": "LeviLauncher Modder v1.6.1-modder.32",
-  "summary": "Two fixes for the new friend search: the press highlight now stays inside the row you tap instead of drawing a circle over it, and the keyboard closes when you submit a search or pick a result. Landscape no longer opens the fullscreen keyboard editor.",
+  "headline": "LeviLauncher Modder v1.6.1-modder.33",
+  "summary": "The whole dialog stack is rebuilt on upstream's new component: every alert, file list, loading and install dialog now shares one width, blur, button row and open/close animation instead of each one styling itself. The download flow also shows a creator notice for the APK you are about to install.",
   "sections": [
     {
-      "title": "Fixes",
+      "title": "Redesigns",
       "items": [
         {
-          "text": "Pressing a search result drew a borderless ripple centred on the row and spilling outside it. The row now uses a bounded rounded ripple, so the highlight stays inside the person you touched.",
-          "url": "https://github.com/sang765/LeviDroid-Modder/commit/e6fbf425"
+          "text": "Dialogs are now built through a single component (LauncherDialogs plus LauncherDialogLayout): consistent max width, backdrop blur, button sizing, divider and the subtle fade-and-rise animation. The file list, libs repair, loading, task and install dialogs all moved onto it, so they stop drifting apart visually.",
+          "url": "https://github.com/sang765/LeviDroid-Modder/commit/612ff0c0dbad6c5ed427996cf454421ded97c68e"
         },
         {
-          "text": "Submitting a search left the keyboard open and, in landscape, Android replaced the screen with the fullscreen keyboard editor. The search field now suppresses the extract editor and dismisses the keyboard when you press Search, tap a result or switch tabs.",
-          "url": "https://github.com/sang765/LeviDroid-Modder/commit/e6fbf425"
+          "text": "CustomAlertDialog was rewritten on top of the same component, which also gives it header icon support used by the import and replace dialogs. The fork's close button survives the rewrite: dialogs that ask for it still get the X in the header.",
+          "url": "https://github.com/sang765/LeviDroid-Modder/commit/612ff0c0dbad6c5ed427996cf454421ded97c68e"
+        }
+      ]
+    },
+    {
+      "title": "Features",
+      "items": [
+        {
+          "text": "Downloading a game version now shows a creator notice for that APK, so it is clear where the build comes from before installing.",
+          "url": "https://github.com/sang765/LeviDroid-Modder/commit/612ff0c0dbad6c5ed427996cf454421ded97c68e"
         }
       ]
     }
