@@ -194,15 +194,32 @@ public class XboxLiveClient {
 
     public static String lastSeenLabel(Context context, LastSeen seen) {
         if (seen == null || TextUtils.isEmpty(seen.isoTime())) return null;
+        long seenMs;
         try {
-            long now = System.currentTimeMillis();
-            long seenMs = Instant.parse(seen.isoTime()).toEpochMilli();
-            CharSequence relative = DateUtils.getRelativeTimeSpanString(
-                    Math.min(seenMs, now), now, DateUtils.MINUTE_IN_MILLIS, 0);
-            return context.getString(R.string.xbox_friends_last_online, relative);
+            seenMs = Instant.parse(seen.isoTime()).toEpochMilli();
         } catch (RuntimeException error) {
             return null;
         }
+        long minutes = Math.max(0, System.currentTimeMillis() - seenMs) / DateUtils.MINUTE_IN_MILLIS;
+        String duration;
+        if (minutes < 1) {
+            duration = context.getString(R.string.xbox_friends_last_online_moments);
+        } else if (minutes < 60) {
+            duration = quantity(context, R.plurals.xbox_friends_last_online_minutes, (int) minutes);
+        } else if (minutes < 60 * 24) {
+            duration = quantity(context, R.plurals.xbox_friends_last_online_hours, (int) (minutes / 60));
+        } else if (minutes < 60 * 24 * 30) {
+            duration = quantity(context, R.plurals.xbox_friends_last_online_days, (int) (minutes / (60 * 24)));
+        } else if (minutes < 60L * 24 * 365) {
+            duration = quantity(context, R.plurals.xbox_friends_last_online_months, (int) (minutes / (60L * 24 * 30)));
+        } else {
+            duration = quantity(context, R.plurals.xbox_friends_last_online_years, (int) (minutes / (60L * 24 * 365)));
+        }
+        return context.getString(R.string.xbox_friends_last_online, duration);
+    }
+
+    private static String quantity(Context context, int pluralsId, int count) {
+        return context.getResources().getQuantityString(pluralsId, count, count);
     }
 
     public static int presenceColor(Context context, XboxFriend friend) {

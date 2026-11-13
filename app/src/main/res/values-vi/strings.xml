@@ -476,7 +476,23 @@
     <string name="xbox_friends_online">Trực tuyến</string>
     <string name="xbox_friends_online_title">Trực tuyến • %1$s</string>
     <string name="xbox_friends_offline">Ngoại tuyến</string>
-    <string name="xbox_friends_last_online">Online lần cuối %1$s</string>
+    <string name="xbox_friends_last_online">Online lần cuối %1$s trước</string>
+    <string name="xbox_friends_last_online_moments">vài giây</string>
+    <plurals name="xbox_friends_last_online_minutes">
+        <item quantity="other">%d phút</item>
+    </plurals>
+    <plurals name="xbox_friends_last_online_hours">
+        <item quantity="other">%d giờ</item>
+    </plurals>
+    <plurals name="xbox_friends_last_online_days">
+        <item quantity="other">%d ngày</item>
+    </plurals>
+    <plurals name="xbox_friends_last_online_months">
+        <item quantity="other">%d tháng</item>
+    </plurals>
+    <plurals name="xbox_friends_last_online_years">
+        <item quantity="other">%d năm</item>
+    </plurals>
     <string name="xbox_friends_incoming">Đến</string>
     <string name="xbox_friends_outgoing">Đang gửi</string>
     <string name="xbox_friends_outgoing_section">Lời mời đang được gửi đi</string>
