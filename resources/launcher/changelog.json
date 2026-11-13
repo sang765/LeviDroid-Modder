@@ -1,14 +1,49 @@
 {
   "schemaVersion": 1,
-  "headline": "LeviLauncher Modder v1.6.1-modder.30",
-  "summary": "This release fixes the crash that happened when opening the CurseForge screen — the sort control was inflated as a TextView while the activity expected a MaterialButton, so tapping the CurseForge entry killed the launcher instantly. Everything else is unchanged.",
+  "headline": "LeviLauncher Modder v1.6.1-modder.31",
+  "summary": "The Xbox Friends screen gets a proper card layout, an All/Online/Offline filter and a search field that filters your friend list instead of opening a dialog, while the Requests tab searches the Xbox directory inline. This release also takes upstream's mod menu and launcher runtime overhead work, so the in-game HUD and the logcat overlay cost less per frame.",
   "sections": [
     {
-      "title": "Fixes",
+      "title": "Redesigns",
       "items": [
         {
-          "text": "Opening the CurseForge screen no longer crashes: the sort control in the toolbar is now typed as the TextView it actually is in the layout, instead of being cast to a MaterialButton and throwing a ClassCastException on every launch.",
-          "url": "https://github.com/sang765/LeviDroid-Modder/commit/be3b4656e27da9c7fc6edd1141a5250c7ba4b4f0"
+          "text": "The friends and requests lists now sit inside a rounded card with a subtle outline, which reads as a card in light, dark and AMOLED themes instead of blending into the page.",
+          "url": "https://github.com/sang765/LeviDroid-Modder/commit/ffadd1d9f2d18b07c2811556aed3b48c837dde6d"
+        },
+        {
+          "text": "A new All / Online / Offline filter above the list uses the same segmented control as the instances, mods and installed-package screens, so filtering friends behaves like filtering anywhere else in the launcher. It hides itself on the Requests tab, where the split does not apply.",
+          "url": "https://github.com/sang765/LeviDroid-Modder/commit/ffadd1d9f2d18b07c2811556aed3b48c837dde6d"
+        }
+      ]
+    },
+    {
+      "title": "Features",
+      "items": [
+        {
+          "text": "The add-friend button is now a search field. On the Friends tab it filters the list you already have as you type, and it stacks with the Online/Offline filter; on the Requests tab it searches the Xbox directory and renders the results right in the card, so adding someone new no longer needs a dialog.",
+          "url": "https://github.com/sang765/LeviDroid-Modder/commit/cda5dd4271e2204b92e34a42cdf91064924522fa"
+        },
+        {
+          "text": "Empty states now tell the three cases apart: no friends at all, nobody matching the current filter, and no gamertag matching the search.",
+          "url": "https://github.com/sang765/LeviDroid-Modder/commit/1b1653551852dfa33d2fa391654ad536807ff2a4"
+        }
+      ]
+    },
+    {
+      "title": "Performance",
+      "items": [
+        {
+          "text": "Merged upstream's runtime overhead work for the mod menu, HUD overlays and logcat overlay: overlay updates are throttled through a single handler instead of being recomputed on every tick, the logcat reader invalidates stale streams, and activity references are held weakly. The fork's three-tick visibility debounce stays, so the MIUI overlay freeze fix is untouched.",
+          "url": "https://github.com/sang765/LeviDroid-Modder/commit/225b9ca4e3c66f0ae2f3b1fcfb0ce9270f6adcbf"
+        }
+      ]
+    },
+    {
+      "title": "Language",
+      "items": [
+        {
+          "text": "Vietnamese strings for the new friend search prompt, the friend-list search hint and both new empty states.",
+          "url": "https://github.com/sang765/LeviDroid-Modder/commit/78d1089f77668dea481461bc6921963f49a940ad"
         }
       ]
     }
