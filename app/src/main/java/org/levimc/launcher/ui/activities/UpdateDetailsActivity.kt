@@ -15,9 +15,12 @@ import androidx.activity.compose.setContent
 import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.animation.Crossfade
+import androidx.compose.animation.core.Animatable
+import androidx.compose.animation.core.spring
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.interaction.MutableInteractionSource
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -44,12 +47,14 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.material3.lightColorScheme
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.mutableLongStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.graphics.toArgb
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
@@ -334,89 +339,122 @@ class UpdateDetailsActivity : ComponentActivity() {
     @Composable
     private fun DetailsContent(releaseTitle: String) {
         val colorScheme = MaterialTheme.colorScheme
+        val cardShape = RoundedCornerShape(28.dp)
+        val pill = RoundedCornerShape(50)
+        val enter = remember { Animatable(0.94f) }
+        LaunchedEffect(Unit) {
+            enter.animateTo(1f, spring(dampingRatio = 0.62f, stiffness = 420f))
+        }
         Column(
             modifier = Modifier
                 .fillMaxSize()
                 .background(colorScheme.background)
                 .systemBarsPadding()
-                .padding(horizontal = 20.dp, vertical = 14.dp),
+                .padding(horizontal = 16.dp, vertical = 14.dp),
         ) {
-            Row(Modifier.fillMaxWidth().weight(1f)) {
+            Row(
+                modifier = Modifier.fillMaxWidth().weight(1f),
+                horizontalArrangement = Arrangement.spacedBy(14.dp),
+            ) {
                 Column(
-                    modifier = Modifier.weight(0.34f).fillMaxHeight(),
-                    horizontalAlignment = Alignment.CenterHorizontally,
+                    modifier = Modifier
+                        .weight(0.36f)
+                        .fillMaxHeight()
+                        .graphicsLayer {
+                            scaleX = enter.value
+                            scaleY = enter.value
+                        }
+                        .background(colorScheme.surfaceVariant, cardShape)
+                        .padding(horizontal = 18.dp, vertical = 18.dp),
                 ) {
-                    IconMobileArrowDown(34.dp)
-                    Spacer(Modifier.height(14.dp))
-                    if (downloading.value || downloadDone.value) DownloadProgress()
-                    Spacer(Modifier.height(12.dp))
-                    Text(
-                        text = stringResource(R.string.update_detail_title),
-                        style = TextStyle(
-                            fontSize = 16.sp,
-                            lineHeight = 22.sp,
-                            fontWeight = FontWeight.SemiBold,
-                            fontFamily = misans,
-                            color = colorScheme.onSurface,
-                        ),
-                        textAlign = TextAlign.Center,
-                    )
-                    Text(
-                        text = stringResource(R.string.update_detail_version, releaseTitle),
-                        style = TextStyle(
-                            fontSize = 13.sp,
-                            fontFamily = misans,
-                            color = colorScheme.onSurface.copy(alpha = 0.6f),
-                        ),
-                        textAlign = TextAlign.Center,
-                        modifier = Modifier.padding(top = 4.dp),
-                    )
-                    if (apkSize > 0) {
-                        Text(
-                            text = stringResource(R.string.update_apk_size, GithubReleaseUpdater.formatBytes(apkSize)),
-                            style = TextStyle(
-                                fontSize = 13.sp,
-                                fontFamily = misans,
-                                color = colorScheme.onSurface.copy(alpha = 0.6f),
-                            ),
-                            textAlign = TextAlign.Center,
-                            modifier = Modifier.padding(top = 4.dp),
+                    Box(
+                        modifier = Modifier.fillMaxSize(),
+                        contentAlignment = Alignment.Center,
+                    ) {
+                        Column(
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .verticalScroll(rememberScrollState()),
+                            horizontalAlignment = Alignment.CenterHorizontally,
+                        ) {
+                            Box(
+                                modifier = Modifier
+                                    .size(62.dp)
+                                    .background(colorScheme.primary.copy(alpha = 0.16f), RoundedCornerShape(20.dp)),
+                                contentAlignment = Alignment.Center,
+                            ) {
+                                IconMobileArrowDown(30.dp)
+                            }
+                            Spacer(Modifier.height(18.dp))
+                            Text(
+                                text = stringResource(R.string.update_detail_title),
+                                style = TextStyle(
+                                    fontSize = 20.sp,
+                                    lineHeight = 26.sp,
+                                    fontWeight = FontWeight.Bold,
+                                    fontFamily = misans,
+                                    color = colorScheme.onSurface,
+                                ),
+                                textAlign = TextAlign.Center,
+                            )
+                            Spacer(Modifier.height(12.dp))
+                            UpdateChip(stringResource(R.string.update_detail_version, releaseTitle))
+                            if (apkSize > 0) {
+                                Spacer(Modifier.height(6.dp))
+                                UpdateChip(stringResource(R.string.update_apk_size, GithubReleaseUpdater.formatBytes(apkSize)))
+                            }
+                            if (downloading.value || downloadDone.value) {
+                                Spacer(Modifier.height(18.dp))
+                                DownloadProgress()
+                            }
+                        }
+                    }
+                }
+                Column(
+                    modifier = Modifier
+                        .weight(0.64f)
+                        .fillMaxHeight()
+                        .graphicsLayer {
+                            scaleX = enter.value
+                            scaleY = enter.value
+                        }
+                        .background(colorScheme.surfaceVariant, cardShape)
+                        .padding(horizontal = 20.dp, vertical = 18.dp),
+                ) {
+                    Column(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .weight(1f)
+                            .verticalScroll(rememberScrollState()),
+                    ) {
+                        AndroidView(
+                            factory = { ctx ->
+                                TextView(ctx).apply {
+                                    movementMethod = LinkMovementMethod.getInstance()
+                                    setTextIsSelectable(true)
+                                    textSize = 14f
+                                }
+                            },
+                            update = { view ->
+                                view.setTextColor(colorScheme.onSurface.copy(alpha = 0.9f).toArgb())
+                                markwon.setMarkdown(view, note.value)
+                            },
                         )
                     }
                 }
-                Spacer(Modifier.width(16.dp))
-                Column(
-                    modifier = Modifier
-                        .weight(0.66f)
-                        .verticalScroll(rememberScrollState()),
-                ) {
-                    AndroidView(
-                        factory = { ctx ->
-                            TextView(ctx).apply {
-                                movementMethod = LinkMovementMethod.getInstance()
-                                setTextIsSelectable(true)
-                                textSize = 14f
-                            }
-                        },
-                        update = { view ->
-                            view.setTextColor(colorScheme.onSurface.copy(alpha = 0.9f).toArgb())
-                            markwon.setMarkdown(view, note.value)
-                        },
-                    )
-                }
             }
-            Spacer(Modifier.height(14.dp))
             Row(
-                modifier = Modifier.fillMaxWidth(),
+                modifier = Modifier.fillMaxWidth().padding(top = 14.dp),
                 verticalAlignment = Alignment.CenterVertically,
             ) {
                 TextButton(
                     onClick = { finish() },
+                    shape = pill,
                     colors = ButtonDefaults.textButtonColors(contentColor = colorScheme.onSurface),
                 ) {
                     Text(
                         text = stringResource(R.string.cancel),
-                        style = TextStyle(fontSize = 14.sp, fontFamily = misans),
+                        style = TextStyle(fontSize = 14.sp, fontWeight = FontWeight.Medium, fontFamily = misans),
                     )
                 }
                 Spacer(Modifier.weight(1f))
@@ -424,6 +462,7 @@ class UpdateDetailsActivity : ComponentActivity() {
                     TextButton(
                         onClick = { toggleTranslate() },
                         enabled = !translating.value,
+                        shape = pill,
                         colors = ButtonDefaults.textButtonColors(contentColor = colorScheme.primary),
                     ) {
                         Text(
@@ -431,24 +470,45 @@ class UpdateDetailsActivity : ComponentActivity() {
                             style = TextStyle(fontSize = 14.sp, fontWeight = FontWeight.Medium, fontFamily = misans),
                         )
                     }
-                    Spacer(Modifier.width(6.dp))
+                    Spacer(Modifier.width(8.dp))
                 }
                 Button(
                     onClick = { startDownload() },
                     enabled = !downloading.value && !downloadDone.value,
-                    shape = RoundedCornerShape(22.dp),
+                    shape = pill,
                     colors = ButtonDefaults.buttonColors(
                         containerColor = colorScheme.primary,
                         contentColor = colorScheme.onPrimary,
                     ),
-                    modifier = Modifier.height(46.dp),
+                    modifier = Modifier.height(50.dp).widthIn(min = 148.dp),
                 ) {
                     Text(
                         text = stringResource(R.string.update_now),
-                        style = TextStyle(fontSize = 15.sp, fontWeight = FontWeight.Medium, fontFamily = misans),
+                        style = TextStyle(fontSize = 15.sp, fontWeight = FontWeight.SemiBold, fontFamily = misans),
                     )
                 }
             }
+        }
+    }
+
+    @Composable
+    private fun UpdateChip(text: String) {
+        val colorScheme = MaterialTheme.colorScheme
+        Box(
+            modifier = Modifier
+                .background(colorScheme.onSurface.copy(alpha = 0.07f), RoundedCornerShape(50))
+                .padding(horizontal = 12.dp, vertical = 6.dp),
+        ) {
+            Text(
+                text = text,
+                style = TextStyle(
+                    fontSize = 12.sp,
+                    fontWeight = FontWeight.Medium,
+                    fontFamily = misans,
+                    color = colorScheme.onSurface.copy(alpha = 0.72f),
+                ),
+                textAlign = TextAlign.Center,
+            )
         }
     }
 
