@@ -69,7 +69,7 @@
             android:background="@null"
             android:fontFamily="@font/misans"
             android:hint="@string/xbox_friends_search_local_hint"
-            android:imeOptions="actionSearch"
+            android:imeOptions="actionSearch|flagNoExtractUi"
             android:importantForAutofill="no"
             android:inputType="text"
             android:maxLines="1"
