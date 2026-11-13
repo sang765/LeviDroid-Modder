@@ -31,9 +31,8 @@ public final class CutoutAvoider {
 
     public static void attachToShell(View shell) {
         if (Build.VERSION.SDK_INT < Build.VERSION_CODES.P) return;
-        View bar = shell.findViewById(R.id.nav_bar_root);
         View content = shell.findViewById(R.id.shell_content);
-        Base base = new Base(bar, content);
+        Base base = new Base(null, content);
         String[] applied = {null};
         shell.setOnApplyWindowInsetsListener((v, insets) -> {
             List<Rect> holes = holes(insets);
@@ -48,7 +47,6 @@ public final class CutoutAvoider {
                 boolean changed = false;
                 for (Rect hole : holes) {
                     boolean left = hole.centerX() < v.getWidth() / 2;
-                    if (bar != null) changed |= avoidInBar(bar, hole, left, gap);
                     if (content != null) changed |= avoidInPage(content, hole, left, gap, Math.round(PAGE_CLEARANCE_DP * density));
                 }
                 return changed;
@@ -172,22 +170,6 @@ public final class CutoutAvoider {
 
     private static boolean overlapsVertically(Rect a, Rect b, int gap) {
         return a.top < b.bottom + gap && a.bottom + gap > b.top;
-    }
-
-    /** Moves the bar's items aside only when the camera reaches into the bar; its background stays put. */
-    private static boolean avoidInBar(View bar, Rect hole, boolean left, int gap) {
-        Rect b = windowRect(bar);
-        if (!overlapsVertically(hole, b, 0) || !Rect.intersects(hole, b)) return false;
-        if (left) {
-            int need = hole.right + gap - (b.left + bar.getPaddingLeft());
-            if (need <= 0) return false;
-            bar.setPadding(bar.getPaddingLeft() + need, bar.getPaddingTop(), bar.getPaddingRight(), bar.getPaddingBottom());
-        } else {
-            int need = (b.right - bar.getPaddingRight()) - (hole.left - gap);
-            if (need <= 0) return false;
-            bar.setPadding(bar.getPaddingLeft(), bar.getPaddingTop(), bar.getPaddingRight() + need, bar.getPaddingBottom());
-        }
-        return true;
     }
 
     /** Grows the page's margin on the camera side by the part of the camera beyond its clearance. */
