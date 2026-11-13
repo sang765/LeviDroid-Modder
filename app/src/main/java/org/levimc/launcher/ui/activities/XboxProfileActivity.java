@@ -128,11 +128,8 @@ public class XboxProfileActivity extends BaseActivity {
         presenceGamertag = profile.gamertag;
         presenceAvatarUrl = profile.displayPicRaw;
         DiscordRpcManager.getInstance().reportProfile(profile.gamertag, profile.displayPicRaw, xuid);
-        presenceView.setText(profile.presenceState != null && profile.presenceState.contains("Online")
-                ? (TextUtils.isEmpty(profile.presenceText)
-                ? getString(R.string.xbox_friends_online)
-                : getString(R.string.xbox_friends_online_title, profile.presenceText))
-                : getString(R.string.xbox_friends_offline));
+        presenceView.setText(XboxLiveClient.presenceLabel(this,
+                profile.presenceState, profile.presenceText, profile.lastSeen));
         presenceView.setTextColor(XboxLiveClient.presenceColor(this, profile.presenceState));
 
         StringBuilder detail = new StringBuilder();
