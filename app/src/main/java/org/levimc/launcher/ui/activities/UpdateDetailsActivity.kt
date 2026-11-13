@@ -273,54 +273,54 @@ class UpdateDetailsActivity : ComponentActivity() {
         ) {
             Column(
                 modifier = Modifier
+                    .padding(horizontal = 24.dp)
+                    .widthIn(max = 340.dp)
                     .fillMaxWidth()
-                    .padding(horizontal = 28.dp)
-                    .widthIn(max = 420.dp)
-                    .background(colorScheme.surface, RoundedCornerShape(20.dp))
+                    .background(colorScheme.surface, RoundedCornerShape(18.dp))
                     .clickable(
                         interactionSource = remember { MutableInteractionSource() },
                         indication = null,
-                    ) {},
+                    ) {}
+                    .padding(horizontal = 18.dp, vertical = 20.dp),
                 horizontalAlignment = Alignment.CenterHorizontally,
             ) {
-                Spacer(Modifier.height(28.dp))
-                IconMobileArrowDown(30.dp)
-                Spacer(Modifier.height(18.dp))
+                IconMobileArrowDown(26.dp)
+                Spacer(Modifier.height(14.dp))
                 Text(
                     text = stringResource(R.string.update_dialog_title, stringResource(R.string.app_name)),
                     style = TextStyle(
-                        fontSize = 17.sp,
-                        lineHeight = 24.sp,
+                        fontSize = 16.sp,
+                        lineHeight = 22.sp,
                         fontWeight = FontWeight.Medium,
                         fontFamily = misans,
                         color = colorScheme.onSurface,
                     ),
                     textAlign = TextAlign.Center,
-                    modifier = Modifier.padding(horizontal = 24.dp),
                 )
-                Spacer(Modifier.height(24.dp))
+                Spacer(Modifier.height(20.dp))
                 Button(
                     onClick = { showDetails.value = true },
-                    shape = RoundedCornerShape(topStart = 20.dp, topEnd = 20.dp),
+                    shape = RoundedCornerShape(12.dp),
                     colors = ButtonDefaults.buttonColors(
                         containerColor = colorScheme.primary,
                         contentColor = colorScheme.onPrimary,
                     ),
-                    modifier = Modifier.fillMaxWidth().height(48.dp),
+                    modifier = Modifier.fillMaxWidth().height(44.dp),
                 ) {
                     Text(
                         text = stringResource(R.string.update_now),
                         style = TextStyle(fontSize = 15.sp, fontWeight = FontWeight.Medium, fontFamily = misans),
                     )
                 }
+                Spacer(Modifier.height(8.dp))
                 Button(
                     onClick = { finish() },
-                    shape = RoundedCornerShape(bottomStart = 20.dp, bottomEnd = 20.dp),
+                    shape = RoundedCornerShape(12.dp),
                     colors = ButtonDefaults.buttonColors(
                         containerColor = colorScheme.surfaceVariant,
                         contentColor = colorScheme.onSurface,
                     ),
-                    modifier = Modifier.fillMaxWidth().height(48.dp),
+                    modifier = Modifier.fillMaxWidth().height(44.dp),
                 ) {
                     Text(
                         text = stringResource(R.string.cancel),
