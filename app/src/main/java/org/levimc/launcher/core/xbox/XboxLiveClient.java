@@ -4,6 +4,7 @@ import android.content.Context;
 import android.os.Handler;
 import android.os.Looper;
 import android.text.TextUtils;
+import android.text.format.DateUtils;
 import android.util.Log;
 
 import com.google.gson.Gson;
@@ -18,8 +19,12 @@ import org.levimc.launcher.core.auth.MsftAccountStore;
 import org.levimc.launcher.core.auth.MsftAuthManager;
 
 import java.io.IOException;
+import java.time.Instant;
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
@@ -40,6 +45,7 @@ public class XboxLiveClient {
     private static final String PEOPLEHUB_API = "https://peoplehub.xboxlive.com";
     private static final String SOCIAL_API = "https://social.xboxlive.com";
     private static final String PROFILE_API = "https://profile.xboxlive.com";
+    private static final String USERPRESENCE_API = "https://userpresence.xboxlive.com";
     private static final MediaType JSON = MediaType.parse("application/json");
     private static final long TOKEN_MARGIN_MS = 60_000;
 
@@ -67,6 +73,8 @@ public class XboxLiveClient {
         public String presenceState;
         public String presenceText;
         public List<PresenceDetail> presenceDetails;
+        public Detail detail;
+        public LastSeen lastSeen;
         public Boolean isFriendRequestSent;
         public Boolean isFriendRequestReceived;
     }
@@ -78,6 +86,21 @@ public class XboxLiveClient {
         public String State;
         public String TitleId;
         public Boolean IsPrimary;
+    }
+
+    public static class Detail {
+        public LastSeen lastSeen;
+    }
+
+    public static class LastSeen {
+        public String lastSeenTimestamp;
+        public String timestamp;
+        public String titleName;
+        public String deviceType;
+
+        public String isoTime() {
+            return !TextUtils.isEmpty(lastSeenTimestamp) ? lastSeenTimestamp : timestamp;
+        }
     }
 
     /** Xbox.com profile URLs use the modern gamertag with its suffix, without the '#'. */
@@ -117,6 +140,19 @@ public class XboxLiveClient {
         return null;
     }
 
+    public static LastSeen lastSeen(XboxFriend friend) {
+        if (friend != null) {
+            if (friend.lastSeen != null && !TextUtils.isEmpty(friend.lastSeen.isoTime())) {
+                return friend.lastSeen;
+            }
+            if (friend.detail != null && friend.detail.lastSeen != null
+                    && !TextUtils.isEmpty(friend.detail.lastSeen.isoTime())) {
+                return friend.detail.lastSeen;
+            }
+        }
+        return null;
+    }
+
     public interface FriendsCallback {
         void onFriends(List<XboxFriend> friends);
 
@@ -141,14 +177,32 @@ public class XboxLiveClient {
 
     /** Presence label for a friend, shared by the friends screen and the dashboard card. */
     public static String presenceLabel(Context context, XboxFriend friend) {
-        if (friend == null || !"Online".equals(friend.presenceState)) {
-            return context.getString(R.string.xbox_friends_offline);
+        if (friend == null) return context.getString(R.string.xbox_friends_offline);
+        return presenceLabel(context, friend.presenceState, richPresence(friend), lastSeen(friend));
+    }
+
+    public static String presenceLabel(Context context, String presenceState, String presenceText, LastSeen lastSeen) {
+        if ("Online".equals(presenceState)) {
+            if (TextUtils.isEmpty(presenceText) || "Online".equals(presenceText)) {
+                return context.getString(R.string.xbox_friends_online);
+            }
+            return context.getString(R.string.xbox_friends_online_title, presenceText);
         }
-        String text = richPresence(friend);
-        if (TextUtils.isEmpty(text) || "Online".equals(text)) {
-            return context.getString(R.string.xbox_friends_online);
+        String label = lastSeenLabel(context, lastSeen);
+        return label != null ? label : context.getString(R.string.xbox_friends_offline);
+    }
+
+    public static String lastSeenLabel(Context context, LastSeen seen) {
+        if (seen == null || TextUtils.isEmpty(seen.isoTime())) return null;
+        try {
+            long now = System.currentTimeMillis();
+            long seenMs = Instant.parse(seen.isoTime()).toEpochMilli();
+            CharSequence relative = DateUtils.getRelativeTimeSpanString(context,
+                    Math.min(seenMs, now), DateUtils.MINUTE_IN_MILLIS, 0);
+            return context.getString(R.string.xbox_friends_last_online, relative);
+        } catch (RuntimeException error) {
+            return null;
         }
-        return context.getString(R.string.xbox_friends_online_title, text);
     }
 
     public static int presenceColor(Context context, XboxFriend friend) {
@@ -166,11 +220,12 @@ public class XboxLiveClient {
                 ensureToken();
                 // MCBE social manager: /users/xuid(<self>)/people/friends contract 7.
                 String subpath = TextUtils.isEmpty(localXuid)
-                        ? "/users/me/people/friends/decoration/presenceDetail,preferredColor"
-                        : "/users/xuid(" + localXuid + ")/people/friends/decoration/presenceDetail,preferredColor";
+                        ? "/users/me/people/friends/decoration/presenceDetail,detail,preferredColor"
+                        : "/users/xuid(" + localXuid + ")/people/friends/decoration/presenceDetail,detail,preferredColor";
                 PeopleResponse parsed = GSON.fromJson(get(PEOPLEHUB_API + subpath, 7), PeopleResponse.class);
                 List<XboxFriend> friends = parsed != null && parsed.people != null
                         ? parsed.people : new ArrayList<>();
+                attachLastSeen(friends);
                 MAIN.post(() -> callback.onFriends(friends));
             } catch (IOException | RuntimeException error) {
                 MAIN.post(() -> callback.onError(errorMessage(error)));
@@ -202,10 +257,11 @@ public class XboxLiveClient {
             try {
                 ensureToken();
                 PeopleResponse parsed = GSON.fromJson(get(PEOPLEHUB_API
-                        + "/users/me/people/friendrequests(received)/decoration/presenceDetail,preferredColor,follower", 7),
+                        + "/users/me/people/friendrequests(received)/decoration/presenceDetail,detail,preferredColor,follower", 7),
                         PeopleResponse.class);
                 List<XboxFriend> list = parsed != null && parsed.people != null
                         ? parsed.people : new ArrayList<>();
+                attachLastSeen(list);
                 MAIN.post(() -> callback.onList(list));
             } catch (IOException | RuntimeException error) {
                 MAIN.post(() -> callback.onError(errorMessage(error)));
@@ -218,10 +274,11 @@ public class XboxLiveClient {
             try {
                 ensureToken();
                 PeopleResponse parsed = GSON.fromJson(get(PEOPLEHUB_API
-                        + "/users/me/people/friendrequests(sent)/decoration/presenceDetail,preferredColor,follower", 7),
+                        + "/users/me/people/friendrequests(sent)/decoration/presenceDetail,detail,preferredColor,follower", 7),
                         PeopleResponse.class);
                 List<XboxFriend> list = parsed != null && parsed.people != null
                         ? parsed.people : new ArrayList<>();
+                attachLastSeen(list);
                 MAIN.post(() -> callback.onList(list));
             } catch (IOException | RuntimeException error) {
                 MAIN.post(() -> callback.onError(errorMessage(error)));
@@ -254,6 +311,7 @@ public class XboxLiveClient {
         public String displayPicRaw;
         public String presenceState;
         public String presenceText;
+        public LastSeen lastSeen;
         public int friendsCount = -1;
         public int followingCount;
         public int followerCount;
@@ -354,14 +412,25 @@ public class XboxLiveClient {
     private void loadPresence(String xuid, XboxProfile profile) {
         try {
             PeopleResponse parsed = GSON.fromJson(post(PEOPLEHUB_API
-                    + "/users/me/people/batch/decoration/presenceDetail,preferredColor",
+                    + "/users/me/people/batch/decoration/presenceDetail,detail,preferredColor",
                     "{\"xuids\":[\"" + xuid + "\"]}", 7), PeopleResponse.class);
             if (parsed == null || parsed.people == null || parsed.people.isEmpty()) return;
             XboxFriend person = parsed.people.get(0);
             profile.presenceState = person.presenceState;
             profile.presenceText = richPresence(person);
+            profile.lastSeen = lastSeen(person);
             if (TextUtils.isEmpty(profile.gamertag)) profile.gamertag = displayName(person);
             if (TextUtils.isEmpty(profile.displayPicRaw)) profile.displayPicRaw = person.displayPicRaw;
+            if (profile.lastSeen == null && !"Online".equals(profile.presenceState)) {
+                PresenceRecord record = fetchPresenceRecords(Collections.singletonList(xuid)).get(xuid);
+                if (record != null) {
+                    if ("Online".equals(record.state)) {
+                        profile.presenceState = "Online";
+                    } else if (record.lastSeen != null && !TextUtils.isEmpty(record.lastSeen.isoTime())) {
+                        profile.lastSeen = record.lastSeen;
+                    }
+                }
+            }
         } catch (IOException | RuntimeException error) {
             Log.w(TAG, "profile presence failed for " + xuid, error);
         }
@@ -383,7 +452,7 @@ public class XboxLiveClient {
 
     /** The friends list of any user; the same peoplehub call the game makes for itself. */
     public void fetchUserFriends(String xuid, ListCallback callback) {
-        fetchPeopleList("/users/xuid(" + xuid + ")/people/friends/decoration/presenceDetail,preferredColor", callback);
+        fetchPeopleList("/users/xuid(" + xuid + ")/people/friends/decoration/presenceDetail,detail,preferredColor", callback);
     }
 
     /**
@@ -392,7 +461,7 @@ public class XboxLiveClient {
      * people screen falls back to the summary counts when this returns nothing.
      */
     public void fetchUserPeople(String xuid, String kind, ListCallback callback) {
-        fetchPeopleList("/users/xuid(" + xuid + ")/people/" + kind + "/decoration/presenceDetail,preferredColor", callback);
+        fetchPeopleList("/users/xuid(" + xuid + ")/people/" + kind + "/decoration/presenceDetail,detail,preferredColor", callback);
     }
 
     private void fetchPeopleList(String subpath, ListCallback callback) {
@@ -402,11 +471,60 @@ public class XboxLiveClient {
                 PeopleResponse parsed = GSON.fromJson(get(PEOPLEHUB_API + subpath, 7), PeopleResponse.class);
                 List<XboxFriend> list = parsed != null && parsed.people != null
                         ? parsed.people : new ArrayList<>();
+                attachLastSeen(list);
                 MAIN.post(() -> callback.onList(list));
             } catch (IOException | RuntimeException error) {
                 MAIN.post(() -> callback.onError(errorMessage(error)));
             }
         });
+    }
+
+    private void attachLastSeen(List<XboxFriend> friends) {
+        if (friends == null || friends.isEmpty()) return;
+        List<String> xuids = new ArrayList<>();
+        for (XboxFriend friend : friends) {
+            if (friend == null || TextUtils.isEmpty(friend.xuid)
+                    || "Online".equals(friend.presenceState) || lastSeen(friend) != null) {
+                continue;
+            }
+            xuids.add(friend.xuid);
+        }
+        if (xuids.isEmpty()) return;
+        Map<String, PresenceRecord> records = fetchPresenceRecords(xuids);
+        if (records.isEmpty()) return;
+        for (XboxFriend friend : friends) {
+            PresenceRecord record = friend == null ? null : records.get(friend.xuid);
+            if (record == null) continue;
+            if ("Online".equals(record.state)) {
+                friend.presenceState = "Online";
+            } else if (record.lastSeen != null && !TextUtils.isEmpty(record.lastSeen.isoTime())) {
+                friend.lastSeen = record.lastSeen;
+            }
+        }
+    }
+
+    private Map<String, PresenceRecord> fetchPresenceRecords(List<String> xuids) {
+        Map<String, PresenceRecord> records = new LinkedHashMap<>();
+        if (xuids == null || xuids.isEmpty()) return records;
+        StringBuilder ids = new StringBuilder();
+        for (String xuid : xuids) {
+            if (ids.length() > 0) ids.append(',');
+            ids.append('"').append(xuid).append('"');
+        }
+        try {
+            PresenceBatchResponse parsed = GSON.fromJson(post(USERPRESENCE_API + "/users/batch",
+                    "{\"userIds\": [" + ids + "], \"level\": \"all\"}", 3), PresenceBatchResponse.class);
+            if (parsed != null && parsed.people != null) {
+                for (PresenceRecord record : parsed.people) {
+                    if (record != null && !TextUtils.isEmpty(record.xuid)) {
+                        records.put(record.xuid, record);
+                    }
+                }
+            }
+        } catch (IOException | RuntimeException error) {
+            Log.w(TAG, "presence batch failed", error);
+        }
+        return records;
     }
 
     private void mutate(String method, String url, String body, int contract, ActionCallback callback) {
@@ -531,6 +649,16 @@ public class XboxLiveClient {
 
     private static class PeopleResponse {
         List<XboxFriend> people;
+    }
+
+    private static class PresenceBatchResponse {
+        List<PresenceRecord> people;
+    }
+
+    private static class PresenceRecord {
+        public String xuid;
+        public String state;
+        public LastSeen lastSeen;
     }
 
     private static class ProfileResponse {
