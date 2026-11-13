@@ -506,6 +506,8 @@
     <string name="xbox_friends_empty_offline">Ai cũng đang trực tuyến hết rồi</string>
     <string name="xbox_friends_search">Tìm kiếm</string>
     <string name="xbox_friends_search_hint">Gamertag</string>
+    <string name="xbox_friends_search_prompt">Muốn kiếm bạn mới hả? Nhập vào đây nhé</string>
+    <string name="xbox_friends_search_results">Kết quả tìm kiếm</string>
     <string name="xbox_friends_search_empty">Không tìm thấy gamertag phù hợp</string>
     <string name="xbox_friends_add_confirm">Gửi lời mời kết bạn tới %1$s?</string>
     <string name="xbox_friends_added">Đã gửi lời mời kết bạn tới %1$s</string>

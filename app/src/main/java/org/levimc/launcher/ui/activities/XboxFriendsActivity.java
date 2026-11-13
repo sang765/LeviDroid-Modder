@@ -4,9 +4,12 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
+import android.text.Editable;
 import android.text.TextUtils;
+import android.text.TextWatcher;
 import android.view.View;
-import android.widget.Button;
+import android.view.inputmethod.EditorInfo;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
 import android.widget.ProgressBar;
 import android.widget.TextView;
@@ -36,11 +39,20 @@ public class XboxFriendsActivity extends BaseActivity {
     private XboxLiveClient client;
     private XboxFriendsAdapter friendsAdapter;
     private XboxRequestsAdapter requestsAdapter;
+    private XboxSearchAdapter searchAdapter;
     private SegmentedControl friendFilter;
     private TextView tabFriends;
     private TextView tabRequests;
     private TextView emptyText;
+    private TextView searchStatus;
+    private EditText searchInput;
+    private View searchSection;
+    private View clearSearchButton;
     private ProgressBar progress;
+    private final Handler searchHandler = new Handler(Looper.getMainLooper());
+    private Runnable pendingSearch;
+    private int searchGeneration;
+    private boolean searchActive;
     private boolean friendsVisible = true;
     private boolean friendsLoaded;
     private boolean requestsLoaded;
@@ -116,16 +128,109 @@ public class XboxFriendsActivity extends BaseActivity {
         });
         friendFilter.setSelectedIndex(0, false);
 
-        View addButton = findViewById(R.id.add_friend_button);
-        addButton.setOnClickListener(v -> showSearchDialog());
-        DynamicAnim.applyPressScale(addButton);
-        addButton.setBackgroundTintList(android.content.res.ColorStateList.valueOf(new PersonalizationManager(this).getAccentColor()));
         View refreshButton = findViewById(R.id.refresh_button);
         refreshButton.setOnClickListener(v -> refreshAll());
         DynamicAnim.applyPressScale(refreshButton);
 
+        setupSearch();
+
         selectTab(true);
         refreshAll();
+    }
+
+    private void setupSearch() {
+        searchInput = findViewById(R.id.xbox_search_input);
+        searchSection = findViewById(R.id.search_section);
+        searchStatus = findViewById(R.id.search_status);
+        clearSearchButton = findViewById(R.id.clear_search_button);
+
+        RecyclerView searchResults = findViewById(R.id.search_results_list);
+        searchResults.setLayoutManager(new LinearLayoutManager(this));
+        searchAdapter = new XboxSearchAdapter(this::confirmAdd);
+        searchResults.setAdapter(searchAdapter);
+
+        searchInput.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+            }
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+                scheduleSearch(s.toString());
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+            }
+        });
+        searchInput.setOnEditorActionListener((view, actionId, event) -> {
+            if (actionId != EditorInfo.IME_ACTION_SEARCH) return false;
+            String query = searchInput.getText().toString().trim();
+            if (!query.isEmpty()) runSearch(query);
+            return true;
+        });
+        clearSearchButton.setOnClickListener(v -> clearSearch());
+    }
+
+    private void scheduleSearch(String raw) {
+        if (pendingSearch != null) searchHandler.removeCallbacks(pendingSearch);
+        String query = raw.trim();
+        clearSearchButton.setVisibility(query.isEmpty() ? View.GONE : View.VISIBLE);
+        if (query.length() < 2) {
+            if (searchActive) clearSearch();
+            return;
+        }
+        pendingSearch = () -> runSearch(query);
+        searchHandler.postDelayed(pendingSearch, 450L);
+    }
+
+    private void runSearch(String query) {
+        final int generation = ++searchGeneration;
+        setSearchVisible(true);
+        searchStatus.setText(R.string.xbox_friends_search_results);
+        searchAdapter.submit(new ArrayList<>());
+        progress.setVisibility(View.VISIBLE);
+        client.searchFriends(query, new XboxLiveClient.ListCallback() {
+            @Override
+            public void onList(List<XboxLiveClient.XboxFriend> results) {
+                if (generation != searchGeneration) return;
+                progress.setVisibility(View.GONE);
+                List<XboxLiveClient.XboxFriend> filtered = filterSearchResults(results);
+                searchAdapter.submit(filtered);
+                searchStatus.setText(filtered.isEmpty()
+                        ? R.string.xbox_friends_search_empty
+                        : R.string.xbox_friends_search_results);
+            }
+
+            @Override
+            public void onError(String message) {
+                if (generation != searchGeneration) return;
+                progress.setVisibility(View.GONE);
+                setSearchVisible(false);
+                Toast.makeText(XboxFriendsActivity.this, message, Toast.LENGTH_SHORT).show();
+            }
+        });
+    }
+
+    private void setSearchVisible(boolean visible) {
+        searchActive = visible;
+        searchSection.setVisibility(visible ? View.VISIBLE : View.GONE);
+        findViewById(R.id.friends_list).setVisibility(visible || !friendsVisible ? View.GONE : View.VISIBLE);
+        findViewById(R.id.requests_list).setVisibility(visible || friendsVisible ? View.GONE : View.VISIBLE);
+        friendFilter.setVisibility(!visible && friendsVisible ? View.VISIBLE : View.GONE);
+        updateEmpty();
+    }
+
+    private void clearSearch() {
+        searchActive = false;
+        searchGeneration++;
+        if (pendingSearch != null) searchHandler.removeCallbacks(pendingSearch);
+        if (searchInput.getText().length() > 0) searchInput.setText("");
+        searchAdapter.submit(new ArrayList<>());
+        clearSearchButton.setVisibility(View.GONE);
+        setSearchVisible(false);
+        InputMethodManager keyboard = (InputMethodManager) getSystemService(INPUT_METHOD_SERVICE);
+        if (keyboard != null) keyboard.hideSoftInputFromWindow(searchInput.getWindowToken(), 0);
     }
 
     @Override
@@ -141,6 +246,7 @@ public class XboxFriendsActivity extends BaseActivity {
     }
 
     private void selectTab(boolean friends) {
+        if (searchActive) clearSearch();
         friendsVisible = friends;
         tabFriends.setBackgroundResource(friends
                 ? R.drawable.bg_tab_selected : R.drawable.bg_tab_unselected);
@@ -290,6 +396,10 @@ public class XboxFriendsActivity extends BaseActivity {
     }
 
     private void updateEmpty() {
+        if (searchActive) {
+            emptyText.setVisibility(View.GONE);
+            return;
+        }
         boolean loaded = friendsVisible ? friendsLoaded : requestsLoaded;
         int count = friendsVisible ? friendsAdapter.getItemCount() : requestsAdapter.getItemCount();
         emptyText.setVisibility(loaded && count == 0 ? View.VISIBLE : View.GONE);
@@ -313,6 +423,7 @@ public class XboxFriendsActivity extends BaseActivity {
             @Override
             public void onDone() {
                 Toast.makeText(XboxFriendsActivity.this, doneMessage, Toast.LENGTH_SHORT).show();
+                clearSearch();
                 refreshAll();
                 // Xbox backend results can lag slightly after friend mutations.
                 new Handler(Looper.getMainLooper()).postDelayed(XboxFriendsActivity.this::refreshAll, 900L);
@@ -325,51 +436,6 @@ public class XboxFriendsActivity extends BaseActivity {
         });
     }
 
-    private void showSearchDialog() {
-        View content = getLayoutInflater().inflate(R.layout.dialog_xbox_search, null);
-        EditText input = content.findViewById(R.id.xbox_search_edit);
-        RecyclerView results = content.findViewById(R.id.search_results);
-        results.setLayoutManager(new LinearLayoutManager(this));
-        XboxSearchAdapter searchAdapter = new XboxSearchAdapter(friend -> confirmAdd(friend));
-        results.setAdapter(searchAdapter);
-        CustomAlertDialog searchDialog = new CustomAlertDialog(this)
-                .setTitleText(getString(R.string.xbox_friends_add))
-                .setCustomView(content)
-                .setPositiveButton(null, null)
-                .setNegativeButton(getString(R.string.dialog_negative_cancel), null);
-        searchDialog.show();
-        Button searchButton = content.findViewById(R.id.xbox_search_button);
-        int accent = new PersonalizationManager(this).getAccentColor();
-        searchButton.setBackgroundTintList(android.content.res.ColorStateList.valueOf(accent));
-        searchButton.setOnClickListener(v -> doSearch(input.getText().toString(), searchAdapter));
-        DynamicAnim.applyPressScale(searchButton);
-        new PersonalizationManager(this).applyAccentToView(content, this);
-    }
-
-    private void doSearch(String query, XboxSearchAdapter searchAdapter) {
-        if (TextUtils.isEmpty(query.trim())) return;
-        progress.setVisibility(View.VISIBLE);
-        client.searchFriends(query.trim(), new XboxLiveClient.ListCallback() {
-            @Override
-            public void onList(List<XboxLiveClient.XboxFriend> results) {
-                progress.setVisibility(View.GONE);
-                List<XboxLiveClient.XboxFriend> filtered = filterSearchResults(results);
-                searchAdapter.submit(filtered);
-                if (filtered.isEmpty()) {
-                    Toast.makeText(XboxFriendsActivity.this,
-                            R.string.xbox_friends_search_empty, Toast.LENGTH_SHORT).show();
-                }
-            }
-
-            @Override
-            public void onError(String message) {
-                progress.setVisibility(View.GONE);
-                Toast.makeText(XboxFriendsActivity.this, message, Toast.LENGTH_SHORT).show();
-            }
-        });
-    }
-
-    /** Directory search also returns people already friended and the account itself. */
     private List<XboxLiveClient.XboxFriend> filterSearchResults(List<XboxLiveClient.XboxFriend> results) {
         MsftAccountStore.MsftAccount account = MsftAccountStore.getActive(this);
         String selfXuid = account != null ? account.xuid : null;
