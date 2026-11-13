@@ -164,10 +164,10 @@ public final class WorldUi {
     }
 
     public static AlertDialog show(Context c, MaterialAlertDialogBuilder builder) {
-        builder.setBackground(background(c, color(c, R.color.surface), 16));
         AlertDialog dialog = builder.create();
+        org.levimc.launcher.ui.dialogs.LauncherDialogs.bind(dialog, 560);
         dialog.show();
-        org.levimc.launcher.ui.dialogs.DialogStyler.applyAccent(dialog);
+        org.levimc.launcher.ui.dialogs.LauncherDialogs.style(dialog, 560);
         return dialog;
     }
 }
