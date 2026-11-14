@@ -24,16 +24,6 @@ import org.levimc.launcher.util.PersonalizationManager;
 import java.util.ArrayList;
 import java.util.List;
 
-/**
- * Segmented tabs as in LeviLauncher for Windows (HeroUI Tabs): a grey track, the selected
- * segment is a raised white (dark: zinc) pill. Each segment is at least 40dp tall for touch.
- *
- * <pre>
- * control.setItems(getString(R.string.a), getString(R.string.b));
- * control.setOnSegmentSelectedListener(index -> ...);
- * control.setSelectedIndex(0, false);
- * </pre>
- */
 public class SegmentedControl extends LinearLayout {
     public interface OnSegmentSelectedListener {
         void onSegmentSelected(int index);
@@ -59,7 +49,6 @@ public class SegmentedControl extends LinearLayout {
         applyTrack();
     }
 
-    /** True (default): segments share the width. False: each segment wraps its label (scrollable rows). */
     public void setEqualWidth(boolean equalWidth) {
         this.equalWidth = equalWidth;
         for (TextView t : segments) t.setLayoutParams(segmentParams());
@@ -77,7 +66,6 @@ public class SegmentedControl extends LinearLayout {
         if (labels.length > 0) setSelectedIndex(Math.max(0, Math.min(selected, labels.length - 1)), false);
     }
 
-    /** Adds a segment with an optional leading icon (0 for none). Returns its index. */
     public int addSegment(CharSequence label, int iconRes) {
         TextView t = new TextView(getContext());
         t.setText(label);
@@ -108,7 +96,6 @@ public class SegmentedControl extends LinearLayout {
     }
 
     private LayoutParams segmentParams() {
-        // v1.6.1 tab pills size to their label, 8dp apart.
         LayoutParams lp = new LayoutParams(LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT);
         lp.setMarginEnd(dp(8));
         return lp;
