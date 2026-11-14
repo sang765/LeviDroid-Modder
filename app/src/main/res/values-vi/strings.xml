@@ -12,6 +12,7 @@
     <string name="debug_badge">Gỡ lỗi</string>
     <string name="cursor">Con trỏ</string>
     <string name="bedrock_edition">Bedrock Edition</string>
+    <string name="bedrock_edition_bugrock">Bugrock Edition</string>
     <string name="current_instance">Phiên bản hiện tại</string>
     <!-- Mods -->
     <string name="mods_title">(%d) Mod</string>
