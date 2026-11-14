@@ -859,6 +859,7 @@
     <string name="dialog_title_exit_app">Exit App</string>
     <string name="dialog_message_exit_app">Are you sure you want to exit?</string>
     <string name="dialog_positive_exit">Exit</string>
+    <string name="farewell_thanks">Thanks for coming</string>
     <string name="show_logcat_overlay">Logcat overlay</string>
     <string name="app_level_logging">App-Level Logging</string>
     <string name="app_level_logging_desc">Capture launcher and game logs inside the process — active in-game, installed after mods finish loading to keep mod launches safe</string>

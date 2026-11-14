@@ -89,6 +89,16 @@
             tools:ignore="DiscouragedApi" />
 
         <activity
+            android:name="org.levimc.launcher.ui.activities.FarewellActivity"
+            android:excludeFromRecents="true"
+            android:exported="false"
+            android:noHistory="true"
+            android:screenOrientation="sensorLandscape"
+            android:theme="@style/FarewellTheme"
+            android:configChanges="fontScale|density|smallestScreenSize|screenSize|uiMode|screenLayout|orientation|navigation|keyboardHidden|keyboard|touchscreen|locale|mnc|mcc"
+            tools:ignore="DiscouragedApi" />
+
+        <activity
             android:name="org.levimc.launcher.ui.activities.ContentManagementActivity"
             android:exported="false"
             android:screenOrientation="sensorLandscape"
