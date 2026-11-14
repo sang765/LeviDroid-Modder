@@ -1,18 +1,26 @@
 {
   "schemaVersion": 1,
-  "headline": "LeviLauncher Modder v1.6.1-modder.37",
-  "summary": "The update screen got a Material 3 Expressive pass: two tonal cards with 28dp corners, a bold headline with version and size as pill chips, notes that scroll inside their own surface, pill actions and a spring entrance.",
+  "headline": "LeviLauncher Modder v1.6.1-modder.38",
+  "summary": "Synced upstream: the options editor and external mods screens were refreshed, the splash screen now hands off on the first frame instead of playing a long animation, and the update screen is translated in every bundled language. Plus one small secret in the home header.",
   "sections": [
     {
       "title": "Changes",
       "items": [
         {
-          "text": "The release notes page was a flat two-column layout: the download badge floated on the bare background, the notes ran edge to edge and the left half sat mostly empty. It is now two rounded tonal cards — a hero card with the badge, a bold headline and the version and size shown as pill chips, and a notes card that scrolls inside its own surface. The actions are pill buttons with a wider primary button, and both cards spring into place instead of popping.",
-          "url": "https://github.com/sang765/LeviDroid-Modder/commit/7f5986a2"
+          "text": "The options editor and the external mods screen picked up upstream's refresh: a shared toolbar layout, a cleaner property list and mod rows that show the author again.",
+          "url": "https://github.com/sang765/LeviDroid-Modder/commit/5a1d8d8b"
         },
         {
-          "text": "On a short landscape screen the hero card could push its content past the card edge while a download was running. The hero stack now scrolls inside the card, staying centred while it fits and scrolling when it does not.",
-          "url": "https://github.com/sang765/LeviDroid-Modder/commit/c723f721"
+          "text": "The splash screen no longer plays a long intro animation. It now draws one frame and moves straight to the launcher, so starting the app feels quicker on slow devices.",
+          "url": "https://github.com/sang765/LeviDroid-Modder/commit/5a1d8d8b"
+        },
+        {
+          "text": "The update screen, release notes and download flow are now translated for every bundled language instead of falling back to English.",
+          "url": "https://github.com/sang765/LeviDroid-Modder/commit/5a1d8d8b"
+        },
+        {
+          "text": "There is a small easter egg in the home header: tap the Minecraft title or its Bedrock Edition line seven times.",
+          "url": "https://github.com/sang765/LeviDroid-Modder/commit/faf0631a"
         }
       ]
     }
