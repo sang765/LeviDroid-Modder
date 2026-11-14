@@ -74,23 +74,27 @@ object MinecraftRuntimePreparer {
         trace.mark("Minecraft version resolved", "${version.directoryName} ${version.versionCode}")
 
         if (FeatureSettings.getInstance().isLauncherManagedMcLoginEnabled) {
-            val activeAccount = MsftAccountStore.getActive(context.applicationContext)
-            val hasCachedAccount = activeAccount?.serializedAuthManager?.isNotEmpty() == true
-            if (hasCachedAccount && !isNetworkAvailable(context.applicationContext)) {
-                listener.onLog("Offline mode: using the cached Microsoft account")
-                trace.mark("Microsoft credentials reused from cache", "offline")
-            } else {
-                listener.onProgress(8, context.getString(R.string.ms_login_auth_xbox_device))
-                listener.onLog("Preparing Microsoft account")
-                try {
-                    MsftAuthManager.prepareActiveAccount(context.applicationContext)
-                    trace.mark("Microsoft credentials prepared")
-                } catch (error: Exception) {
-                    throw IllegalStateException(
-                        context.getString(R.string.ms_login_failed_detail, MsftAuthManager.describeError(error)),
-                        error
-                    )
+            listener.onProgress(8, context.getString(R.string.ms_login_auth_xbox_device))
+            listener.onLog("Preparing Microsoft account")
+            try {
+                val accountState = MsftAuthManager.prepareAccountForLaunch(context.applicationContext)
+                when (accountState) {
+                    MsftAuthManager.LaunchAccountState.CACHED_OFFLINE -> {
+                        listener.onLog(context.getString(R.string.accounts_launch_cached_offline))
+                        trace.mark("Offline launch using saved Microsoft account")
+                    }
+                    MsftAuthManager.LaunchAccountState.SIGNED_OUT_OFFLINE -> {
+                        listener.onLog(context.getString(R.string.accounts_launch_signed_out_offline))
+                        trace.mark("Offline launch without online Microsoft authentication")
+                    }
+                    MsftAuthManager.LaunchAccountState.NO_ACCOUNT -> trace.mark("No Microsoft account selected")
+                    else -> trace.mark("Microsoft credentials prepared")
                 }
+            } catch (error: Exception) {
+                throw IllegalStateException(
+                    context.getString(R.string.ms_login_failed_detail, MsftAuthManager.describeError(context, error)),
+                    error
+                )
             }
         }
 

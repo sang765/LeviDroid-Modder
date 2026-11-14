@@ -59,7 +59,6 @@ public class ThemeManager {
 
     public int getCurrentMode() {
         int mode = prefs.getInt(THEME_MODE_KEY, MODE_FOLLOW_SYSTEM);
-        // Users upgrading from an older build may still have MODE_DARK stored.
         if (mode == 3) {
             mode = MODE_AMOLED;
             prefs.edit().putInt(THEME_MODE_KEY, mode).apply();

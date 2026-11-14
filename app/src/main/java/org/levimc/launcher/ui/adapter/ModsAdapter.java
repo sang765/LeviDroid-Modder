@@ -20,6 +20,7 @@ import org.levimc.launcher.R;
 import org.levimc.launcher.util.MinecraftTextFormatter;
 import org.levimc.launcher.core.mods.Mod;
 import org.levimc.launcher.ui.packages.InstalledFragment;
+import org.levimc.launcher.ui.widget.LauncherPopup;
 
 import java.io.File;
 import java.text.DateFormat;
@@ -35,6 +36,7 @@ public class ModsAdapter extends RecyclerView.Adapter<ModsAdapter.ModViewHolder>
     private OnModEnableChangeListener onModEnableChangeListener;
     private OnModReorderListener onModReorderListener;
     private OnModClickListener onModClickListener;
+    private OnModUninstallListener onModUninstallListener;
     private ItemTouchHelper itemTouchHelper;
     private String currentVersionCode;
     private Map<String, String> updateVersions = Collections.emptyMap();
@@ -54,6 +56,10 @@ public class ModsAdapter extends RecyclerView.Adapter<ModsAdapter.ModViewHolder>
 
     public interface OnModClickListener {
         void onModClick(Mod mod, int position, View sharedView);
+    }
+
+    public interface OnModUninstallListener {
+        void onModUninstall(Mod mod);
     }
 
     /** The "Update to X" chip of a mod a package owns was tapped. */
@@ -78,10 +84,13 @@ public class ModsAdapter extends RecyclerView.Adapter<ModsAdapter.ModViewHolder>
         this.onModClickListener = listener;
     }
 
-    /** Maps mod id -> newer release tag, shown as "Version X ⬆ Y" on the row. */
     public void setUpdateVersions(Map<String, String> updates) {
         this.updateVersions = updates == null ? Collections.emptyMap() : updates;
         notifyDataSetChanged();
+    }
+
+    public void setOnModUninstallListener(OnModUninstallListener listener) {
+        onModUninstallListener = listener;
     }
 
     public void setItemTouchHelper(ItemTouchHelper itemTouchHelper) {
@@ -188,11 +197,26 @@ public class ModsAdapter extends RecyclerView.Adapter<ModsAdapter.ModViewHolder>
                 onModClickListener.onModClick(mod, current, holder.itemView);
             }
         });
+        holder.more.setOnClickListener(v -> showActions(holder, mod));
 
         android.content.Context context = holder.itemView.getContext();
         org.levimc.launcher.util.PersonalizationManager pm = new org.levimc.launcher.util.PersonalizationManager(context);
         if (context instanceof android.app.Activity) pm.applyGlassToTree(holder.itemView, (android.app.Activity) context);
         pm.applyAccentToView(holder.itemView, context);
+    }
+
+    private void showActions(ModViewHolder holder, Mod mod) {
+        android.content.Context context = holder.itemView.getContext();
+        new LauncherPopup(holder.more).width(220)
+                .destructiveAction(0, context.getString(R.string.pkg_menu_uninstall), R.drawable.ic_ui_delete)
+                .action(1, context.getString(R.string.crumb_details), R.drawable.ic_nav_about)
+                .onSelect(action -> {
+                    int position = holder.getBindingAdapterPosition();
+                    if (position == RecyclerView.NO_POSITION || position >= mods.size()
+                            || !mod.getId().equals(mods.get(position).getId())) return;
+                    if (action == 0 && onModUninstallListener != null) onModUninstallListener.onModUninstall(mod);
+                    else if (action == 1 && onModClickListener != null) onModClickListener.onModClick(mod, position, holder.itemView);
+                }).show();
     }
 
     @Override
@@ -363,6 +387,7 @@ public class ModsAdapter extends RecyclerView.Adapter<ModsAdapter.ModViewHolder>
         CompoundButton switchBtn;
         ImageView dragHandle;
         ImageView modIcon;
+        View more;
 
         public ModViewHolder(@NonNull View itemView) {
             super(itemView);
@@ -381,6 +406,7 @@ public class ModsAdapter extends RecyclerView.Adapter<ModsAdapter.ModViewHolder>
             dragHandle = itemView.findViewById(R.id.drag_handle);
             modIcon = itemView.findViewById(R.id.mod_icon);
             divider = itemView.findViewById(R.id.mod_divider);
+            more = itemView.findViewById(R.id.mod_more);
         }
     }
 }
