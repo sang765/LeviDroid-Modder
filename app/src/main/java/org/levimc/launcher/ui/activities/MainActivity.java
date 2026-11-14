@@ -108,6 +108,9 @@ import okhttp3.OkHttpClient;
     private final android.os.Handler tipHandler = new android.os.Handler(android.os.Looper.getMainLooper());
     private Runnable tipRotator;
     private boolean tipsVisible;
+    private int titleTapCount;
+    private boolean bugrockTitle;
+    private static final int TITLE_EASTER_EGG_TAPS = 7;
     private PermissionsHandler permissionsHandler;
     private FileHandler fileHandler;
     private ApkImportManager apkImportManager;
@@ -163,6 +166,7 @@ import okhttp3.OkHttpClient;
         });
 
         initAccountHeader();
+        setupTitleEasterEgg();
         binding.getRoot().post(this::showPostEulaFlow);
     }
 
@@ -216,6 +220,19 @@ import okhttp3.OkHttpClient;
         }
 
         refreshAccountHeaderUI();
+    }
+
+    private void setupTitleEasterEgg() {
+        if (binding == null) return;
+        View.OnClickListener tap = v -> {
+            if (++titleTapCount < TITLE_EASTER_EGG_TAPS) return;
+            titleTapCount = 0;
+            bugrockTitle = !bugrockTitle;
+            binding.bedrockSubtitleText.setText(bugrockTitle
+                    ? R.string.bedrock_edition_bugrock : R.string.bedrock_edition);
+        };
+        binding.minecraftTitleText.setOnClickListener(tap);
+        binding.bedrockSubtitleText.setOnClickListener(tap);
     }
 
     private MsftAccountStore.MsftAccount getActiveAccount() {
