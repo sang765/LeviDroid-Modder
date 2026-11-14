@@ -1,26 +1,14 @@
 {
   "schemaVersion": 1,
-  "headline": "LeviLauncher Modder v1.6.1-modder.38",
-  "summary": "Synced upstream: the options editor and external mods screens were refreshed, the splash screen now hands off on the first frame instead of playing a long animation, and the update screen is translated in every bundled language. Plus one small secret in the home header.",
+  "headline": "LeviLauncher Modder v1.6.1-modder.39",
+  "summary": "The Xbox friends card moved out of the content download column and now sits under content management as its own card, so both columns use their space properly.",
   "sections": [
     {
       "title": "Changes",
       "items": [
         {
-          "text": "The options editor and the external mods screen picked up upstream's refresh: a shared toolbar layout, a cleaner property list and mod rows that show the author again.",
-          "url": "https://github.com/sang765/LeviDroid-Modder/commit/5a1d8d8b"
-        },
-        {
-          "text": "The splash screen no longer plays a long intro animation. It now draws one frame and moves straight to the launcher, so starting the app feels quicker on slow devices.",
-          "url": "https://github.com/sang765/LeviDroid-Modder/commit/5a1d8d8b"
-        },
-        {
-          "text": "The update screen, release notes and download flow are now translated for every bundled language instead of falling back to English.",
-          "url": "https://github.com/sang765/LeviDroid-Modder/commit/5a1d8d8b"
-        },
-        {
-          "text": "There is a small easter egg in the home header: tap the Minecraft title or its Bedrock Edition line seven times.",
-          "url": "https://github.com/sang765/LeviDroid-Modder/commit/faf0631a"
+          "text": "The friends card used to be nested inside the content download card, which left it squeezed against that column's rows while the content management column had a large empty gap under its three entries. It is now its own card directly under content management, with the same header, divider and card chrome as the other columns.",
+          "url": "https://github.com/sang765/LeviDroid-Modder/commit/812e5328"
         }
       ]
     }
