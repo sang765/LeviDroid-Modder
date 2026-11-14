@@ -197,7 +197,7 @@ public class MainActivity extends BaseActivity {
                          .setMessage(getString(org.levimc.launcher.R.string.dialog_message_exit_app))
                          .setPositiveButton(getString(org.levimc.launcher.R.string.dialog_positive_exit), v -> {
                              exitDialog.dismissImmediately();
-                             startActivity(new Intent(this, FarewellActivity.class));
+                             startActivity(new Intent(MainActivity.this, FarewellActivity.class));
                              finishAffinity();
                          })
                          .setNegativeButton(getString(org.levimc.launcher.R.string.dialog_negative_cancel), null)
