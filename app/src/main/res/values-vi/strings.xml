@@ -741,6 +741,7 @@
     <string name="dialog_title_exit_app">Thoát ứng dụng</string>
     <string name="dialog_message_exit_app">Bạn có chắc chắn muốn thoát ra không?</string>
     <string name="dialog_positive_exit">Thoát</string>
+    <string name="farewell_thanks">Cam on vi da den</string>
     <string name="show_logcat_overlay">Lớp phủ Logcat</string>
     <string name="foreground_service">Dịch vụ tiền cảnh</string>
     <string name="foreground_service_desc">Giữ Minecraft tiếp tục chạy khi bạn chuyển ứng dụng bằng cách ngăn Bedrock tạm dừng phiên đang hoạt động và giữ tiến trình, CPU cùng Wi-Fi luôn hoạt động.</string>
