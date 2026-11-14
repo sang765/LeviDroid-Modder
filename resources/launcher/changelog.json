@@ -1,14 +1,31 @@
 {
   "schemaVersion": 1,
-  "headline": "LeviLauncher Modder v1.6.1-modder.39",
-  "summary": "The Xbox friends card moved out of the content download column and now sits under content management as its own card, so both columns use their space properly.",
+  "headline": "LeviLauncher Modder v1.6.1-modder.40",
+  "summary": "Synced upstream: the news and account screens were redesigned, the in-game mod menu picked up palette themes, and Microsoft sign-in got sturdier timeouts and clearer offline behaviour.",
   "sections": [
     {
       "title": "Changes",
       "items": [
         {
-          "text": "The friends card used to be nested inside the content download card, which left it squeezed against that column's rows while the content management column had a large empty gap under its three entries. It is now its own card directly under content management, with the same header, divider and card chrome as the other columns.",
-          "url": "https://github.com/sang765/LeviDroid-Modder/commit/812e5328"
+          "text": "The news screen has a new layout with cleaner cards and a tighter header, and the account screens follow the same design language.",
+          "url": "https://github.com/sang765/LeviDroid-Modder/commit/1b22baf1"
+        },
+        {
+          "text": "The avatar in the navigation bar now opens a reworked account switcher, and switching accounts no longer needs a full launcher restart.",
+          "url": "https://github.com/sang765/LeviDroid-Modder/commit/1b22baf1"
+        },
+        {
+          "text": "The in-game mod menu offers palette themes, so its panel can match the launcher accent instead of one fixed colour.",
+          "url": "https://github.com/sang765/LeviDroid-Modder/commit/1b22baf1"
+        }
+      ]
+    },
+    {
+      "title": "Fixes",
+      "items": [
+        {
+          "text": "Launching with the launcher-managed login while offline now says whether it is reusing saved credentials or continuing signed out, instead of failing with a vague error. Microsoft sign-in also retries and times out more sensibly on flaky connections.",
+          "url": "https://github.com/sang765/LeviDroid-Modder/commit/1b22baf1"
         }
       ]
     }
