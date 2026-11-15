@@ -1,18 +1,18 @@
 {
   "schemaVersion": 1,
-  "headline": "LeviLauncher Modder v1.6.1-modder.41",
-  "summary": "Exiting the launcher now says goodbye properly: confirming Exit shows a one-second farewell note before the app closes for real.",
+  "headline": "LeviLauncher Modder v1.7.0-modder.1",
+  "summary": "Rebased onto upstream 1.7.0: the LeviMC package screens were redesigned, and a round of locale cleanup removed dead Indonesian resource files.",
   "sections": [
     {
       "title": "Changes",
       "items": [
         {
-          "text": "Pressing Exit in the quit dialog now opens a fullscreen farewell note for one second, and the app then closes completely instead of lingering in the background.",
-          "url": "https://github.com/sang765/LeviDroid-Modder/commit/f6aa76b4"
+          "text": "The LeviMC package screens follow upstream's redesign: the catalog header is its own view, browse filters were extracted into a dedicated bar, and the package rows got slimmer.",
+          "url": "https://github.com/sang765/LeviDroid-Modder/commit/70cb5009"
         },
         {
-          "text": "The farewell note draws edge-to-edge under the display cutout, so the notch never pushes or clips it.",
-          "url": "https://github.com/sang765/LeviDroid-Modder/commit/f6aa76b4"
+          "text": "Browse filter state now lives in the Packages screen, so switching between Browse and Installed keeps the filters consistent.",
+          "url": "https://github.com/sang765/LeviDroid-Modder/commit/70cb5009"
         }
       ]
     },
@@ -20,8 +20,8 @@
       "title": "Fixes",
       "items": [
         {
-          "text": "English locale shows the translated note \"Thanks for coming\", while Vietnamese keeps the deliberately accent-free \"Cam on vi da den\".",
-          "url": "https://github.com/sang765/LeviDroid-Modder/commit/f6aa76b4"
+          "text": "Dropped leftover Indonesian resource files under a qualifier Android never selects; translations keep living in the qualifier that actually matches.",
+          "url": "https://github.com/sang765/LeviDroid-Modder/commit/f9a8f304"
         }
       ]
     }
