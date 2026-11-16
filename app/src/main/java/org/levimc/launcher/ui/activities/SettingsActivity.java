@@ -1690,19 +1690,13 @@ public class SettingsActivity extends BaseActivity {
         providerRow.setHint(R.string.ai_tap_provider);
         providerRow.setText(selectedProvider[0]);
         providerRow.setPadding(0, (int) (14 * density), 0, (int) (14 * density));
-        providerRow.setOnClickListener(v -> {
-            Toast.makeText(this, R.string.ai_loading_providers, Toast.LENGTH_SHORT).show();
-            AiProviderCatalog.load(this, providers ->
-                    showSearchListDialog(AiProviderCatalog.names(providers),
-                            getString(R.string.ai_select_provider), name -> {
-                                AiProviderCatalog.Provider preset = AiProviderCatalog.byName(providers, name);
-                                if (preset == null) return;
-                                selectedProvider[0] = preset.name;
-                                selectedFormat[0] = preset.format;
-                                if (!preset.baseUrl.isEmpty()) baseUrlInput.setText(preset.baseUrl);
-                                providerRow.setText(preset.name);
-                            }));
-        });
+        providerRow.setOnClickListener(v -> showProviderPickerDialog(
+                getString(R.string.ai_select_provider), preset -> {
+                    selectedProvider[0] = preset.name;
+                    selectedFormat[0] = preset.format;
+                    if (!preset.baseUrl.isEmpty()) baseUrlInput.setText(preset.baseUrl);
+                    providerRow.setText(preset.name);
+                }));
 
         TextView modelRow = new TextView(this);
         modelRow.setTextSize(15);
@@ -1764,6 +1758,65 @@ public class SettingsActivity extends BaseActivity {
                 Toast.makeText(SettingsActivity.this,
                         getString(R.string.ai_failed, message), Toast.LENGTH_LONG).show();
             }
+        });
+    }
+
+    private void showProviderPickerDialog(String title, Consumer<AiProviderCatalog.Provider> onPicked) {
+        float density = getResources().getDisplayMetrics().density;
+        LinearLayout container = new LinearLayout(this);
+        container.setOrientation(LinearLayout.VERTICAL);
+        container.setPadding((int) (20 * density), (int) (8 * density), (int) (20 * density), 0);
+
+        EditText dialogSearchInput = new EditText(this);
+        dialogSearchInput.setHint(R.string.ai_search_providers);
+        dialogSearchInput.setSingleLine(true);
+        container.addView(dialogSearchInput);
+
+        ArrayAdapter<String> adapter = new ArrayAdapter<>(this, android.R.layout.simple_list_item_1, new ArrayList<>());
+        ListView listView = new ListView(this);
+        listView.setAdapter(adapter);
+        LinearLayout.LayoutParams listParams = new LinearLayout.LayoutParams(
+                LinearLayout.LayoutParams.MATCH_PARENT, (int) (320 * density));
+        listParams.topMargin = (int) (8 * density);
+        listView.setLayoutParams(listParams);
+        container.addView(listView);
+
+        dialogSearchInput.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) { }
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) { }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+                adapter.getFilter().filter(s);
+            }
+        });
+
+        List<AiProviderCatalog.Provider> current = new ArrayList<>();
+        CustomAlertDialog[] dialogHolder = new CustomAlertDialog[1];
+        listView.setOnItemClickListener((parent, view, position, id) -> {
+            AiProviderCatalog.Provider picked = AiProviderCatalog.byName(current, (String) parent.getItemAtPosition(position));
+            if (picked == null) return;
+            onPicked.accept(picked);
+            if (dialogHolder[0] != null) dialogHolder[0].dismiss();
+        });
+
+        dialogHolder[0] = new CustomAlertDialog(this)
+                .setTitleText(title)
+                .setCustomView(container)
+                .setNegativeButton(getString(R.string.cancel), v -> { });
+        dialogHolder[0].show();
+
+        Toast.makeText(this, R.string.ai_loading_providers, Toast.LENGTH_SHORT).show();
+        AiProviderCatalog.load(this, providers -> {
+            if (isFinishing() || isDestroyed()) return;
+            current.clear();
+            current.addAll(providers);
+            adapter.clear();
+            adapter.addAll(AiProviderCatalog.names(providers));
+            adapter.notifyDataSetChanged();
         });
     }
 

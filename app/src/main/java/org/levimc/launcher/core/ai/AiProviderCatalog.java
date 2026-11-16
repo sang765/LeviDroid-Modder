@@ -3,6 +3,7 @@ package org.levimc.launcher.core.ai;
 import android.content.Context;
 import android.os.Handler;
 import android.os.Looper;
+import android.util.Log;
 
 import org.json.JSONArray;
 import org.json.JSONObject;
@@ -14,6 +15,7 @@ import java.io.FileOutputStream;
 import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
 import java.util.concurrent.TimeUnit;
 
 import okhttp3.OkHttpClient;
@@ -26,6 +28,7 @@ public final class AiProviderCatalog {
     public static final String FORMAT_ANTHROPIC = "anthropic";
     public static final String FORMAT_GEMINI = "gemini";
 
+    private static final String TAG = "AiProviderCatalog";
     private static final String SOURCE = "https://models.dev/api.json";
     private static final String CACHE_FILE = "ai_providers.json";
     private static final String LOCAL_OLLAMA = "http://localhost:11434/v1";
@@ -63,28 +66,25 @@ public final class AiProviderCatalog {
         List<Provider> cached = readCache(app);
         if (!cached.isEmpty()) {
             MAIN.post(() -> callback.onDone(cached));
-            refresh(app, callback);
+            refresh(app, callback, true);
             return;
         }
-        refresh(app, callback);
+        refresh(app, callback, false);
     }
 
-    public static void refresh(Context context, Callback callback) {
-        Context app = context.getApplicationContext();
+    private static void refresh(Context context, Callback callback, boolean hasCache) {
         new Thread(() -> {
             List<Provider> fetched = fetch();
             if (fetched.isEmpty()) {
-                if (readCache(app).isEmpty()) {
+                if (!hasCache) {
                     List<Provider> fallback = builtIn();
-                    if (callback != null) MAIN.post(() -> callback.onDone(fallback));
+                    MAIN.post(() -> callback.onDone(fallback));
                 }
                 return;
             }
-            writeCache(app, fetched);
-            if (callback != null) {
-                List<Provider> delivered = new ArrayList<>(fetched);
-                MAIN.post(() -> callback.onDone(delivered));
-            }
+            writeCache(context, fetched);
+            List<Provider> delivered = new ArrayList<>(fetched);
+            MAIN.post(() -> callback.onDone(delivered));
         }).start();
     }
 
@@ -107,7 +107,8 @@ public final class AiProviderCatalog {
                 if (!response.isSuccessful() || response.body() == null) return providers;
                 parse(new JSONObject(response.body().string()), providers);
             }
-        } catch (Exception ignored) {
+        } catch (Exception error) {
+            Log.w(TAG, "Failed to fetch the provider list", error);
         }
         return providers;
     }
@@ -143,9 +144,15 @@ public final class AiProviderCatalog {
     }
 
     private static String format(String npm) {
-        if (npm == null) return FORMAT_OPENAI;
-        if (npm.contains("anthropic")) return FORMAT_ANTHROPIC;
-        if (npm.contains("google")) return FORMAT_GEMINI;
+        String value = npm == null ? "" : npm.toLowerCase(Locale.ROOT);
+        if (value.contains("anthropic")) return FORMAT_ANTHROPIC;
+        if (value.contains("google")) return FORMAT_GEMINI;
+        return FORMAT_OPENAI;
+    }
+
+    private static String normalizeFormat(String format) {
+        if (FORMAT_ANTHROPIC.equals(format)) return FORMAT_ANTHROPIC;
+        if (FORMAT_GEMINI.equals(format)) return FORMAT_GEMINI;
         return FORMAT_OPENAI;
     }
 
@@ -203,15 +210,17 @@ public final class AiProviderCatalog {
             JSONArray array = new JSONArray(buffer.toString("UTF-8"));
             for (int i = 0; i < array.length(); i++) {
                 JSONObject entry = array.getJSONObject(i);
-                String baseUrl = entry.optString("baseUrl");
-                if (baseUrl.isEmpty()) continue;
+                String id = entry.optString("id");
+                String name = entry.optString("name");
+                if (id.isEmpty() || name.isEmpty()) continue;
                 providers.add(new Provider(
-                        entry.optString("id"),
-                        entry.optString("name"),
-                        baseUrl,
-                        format(entry.optString("format"))));
+                        id,
+                        name,
+                        entry.optString("baseUrl"),
+                        normalizeFormat(entry.optString("format"))));
             }
-        } catch (Exception ignored) {
+        } catch (Exception error) {
+            Log.w(TAG, "Failed to read the cached provider list", error);
         }
         return providers;
     }
