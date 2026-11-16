@@ -242,6 +242,7 @@ LeviLauncher Modder sẽ không thể thành hiện thực nếu không có sự
 - **Cộng đồng Android** – Với tài liệu, thư viện và công cụ tuyệt vời đã khiến launcher này thành hiện thực
 - **Cộng đồng Mã nguồn mở** – Với tất cả các thư viện, framework và công cụ vận hành dự án này
 - **Các cộng tác viên** – Một lời cảm ơn chân thành tới tất cả [các cộng tác viên của dự án gốc](https://github.com/LiteLDev/LeviLauncher-Android/graphs/contributors) đã không ngừng cải thiện và duy trì LeviLauncher bằng thời gian cùng chuyên môn của họ
+- **[models.dev](https://models.dev)** – Cung cấp danh mục mã mô hình AI mở dùng cho danh sách nhà cung cấp AI trong phân tích sự cố AI
 
 ---
 
