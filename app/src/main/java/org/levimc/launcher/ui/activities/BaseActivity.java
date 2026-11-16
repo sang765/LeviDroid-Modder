@@ -618,6 +618,10 @@ public class BaseActivity extends AppCompatActivity {
     private boolean tabSwipeVertical;
     private View tabSwipeTouchedView;
 
+    private static final float TAB_SWIPE_MIN_DISTANCE_DP = 90f;
+    private static final float TAB_SWIPE_MIN_VELOCITY_DP = 700f;
+    private static final float TAB_SWIPE_AXIS_DOMINANCE = 1.4f;
+
     @Override
     public boolean dispatchTouchEvent(MotionEvent event) {
         int action = event.getActionMasked();
@@ -666,23 +670,20 @@ public class BaseActivity extends AppCompatActivity {
         float dx = end.getX() - start.getX();
         float dy = end.getY() - start.getY();
         float density = getResources().getDisplayMetrics().density;
-        float minDistance = 90f * density;
-        float minVelocity = 700f * density;
+        float minDistance = TAB_SWIPE_MIN_DISTANCE_DP * density;
+        float minVelocity = TAB_SWIPE_MIN_VELOCITY_DP * density;
         boolean forward;
-        float distance;
         float velocity;
         if (tabSwipeVertical) {
-            if (Math.abs(dy) < minDistance || Math.abs(dy) < Math.abs(dx) * 1.4f) return false;
+            if (Math.abs(dy) < minDistance || Math.abs(dy) < Math.abs(dx) * TAB_SWIPE_AXIS_DOMINANCE) return false;
             forward = dy < 0;
-            distance = Math.abs(dy);
             velocity = Math.abs(velocityY);
         } else {
-            if (Math.abs(dx) < minDistance || Math.abs(dx) < Math.abs(dy) * 1.4f) return false;
+            if (Math.abs(dx) < minDistance || Math.abs(dx) < Math.abs(dy) * TAB_SWIPE_AXIS_DOMINANCE) return false;
             forward = dx < 0;
-            distance = Math.abs(dx);
             velocity = Math.abs(velocityX);
         }
-        if (distance < minDistance || velocity < minVelocity) return false;
+        if (velocity < minVelocity) return false;
         int target = index + (forward ? 1 : -1);
         if (target < 0 || target >= TAB_PAGES.length) return false;
         if (gestureBlockedByView(tabSwipeTouchedView, forward)) return false;
