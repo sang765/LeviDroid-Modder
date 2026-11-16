@@ -366,6 +366,8 @@
     <string name="ai_tap_provider">Chạm để chọn nhà cung cấp</string>
     <string name="ai_select_provider">Chọn nhà cung cấp</string>
     <string name="ai_loading_models">Đang tải danh sách model…</string>
+    <string name="ai_loading_providers">Đang đi cào đợi chút, lần đầu có vẻ sẽ hơi lâu đấy</string>
+    <string name="ai_search_providers">Tìm nhà cung cấp</string>
     <string name="ai_search_models">Tìm model</string>
     <string name="ai_select_model">Chọn model</string>
     <string name="ai_no_models">Provider không trả về model nào</string>

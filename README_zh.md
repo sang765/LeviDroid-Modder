@@ -242,6 +242,7 @@ LeviLauncher Modder 专为 Minecraft Bedrock Edition 的正版玩家设计。请
 - **Android 社区** – 提供了出色的文档、库和工具，使本启动器成为可能
 - **开源社区** – 提供了驱动本项目的所有库、框架和工具
 - **贡献者** – 衷心感谢[原版项目的所有贡献者](https://github.com/LiteLDev/LeviLauncher-Android/graphs/contributors)，他们用自己的时间和专业知识不断改进和维护 LeviLauncher
+- **[models.dev](https://models.dev)** – 为 AI 崩溃分析中使用的内置 AI 供应商列表提供开源 AI 模型目录
 
 ---
 
