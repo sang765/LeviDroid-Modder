@@ -38,7 +38,7 @@
 
 https://github.com/user-attachments/assets/f69146c1-725c-46e7-9983-0768f6841910
 
-**[文档](https://docs.levimc.org/LeviLauncher/guide/quick-start?platform=android)** · **[原生模组开发](https://docs.levimc.org/LeviLamina/developer_guides/android/)**
+**[文档](https://levimc.org/LeviLauncher/?platform=android)** · **[原生模组开发](https://levimc.org/LeviLamina/developer_guides/android/)**
 
 </div>
 
@@ -254,7 +254,7 @@ LeviLauncher Modder 专为 Minecraft Bedrock Edition 的正版玩家设计。请
 
 **原版仓库：** [https://github.com/LiteLDev/LeviLauncher-Android](https://github.com/LiteLDev/LeviLauncher-Android)
 
-**文档：** [docs.levimc.org/LeviLauncher](https://docs.levimc.org/LeviLauncher/guide/quick-start?platform=android) · 原生模组：[docs.levimc.org/LeviLamina](https://docs.levimc.org/LeviLamina/developer_guides/android/)
+**文档：** [levimc.org/LeviLauncher](https://levimc.org/LeviLauncher/?platform=android) · 原生模组：[levimc.org/LeviLamina](https://levimc.org/LeviLamina/developer_guides/android/)
 
 **反馈问题：** [GitHub Issues 页面](https://github.com/sang765/LeviDroid-Modder/issues)
 

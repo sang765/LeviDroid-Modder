@@ -38,7 +38,7 @@
 
 https://github.com/user-attachments/assets/f69146c1-725c-46e7-9983-0768f6841910
 
-**[Documentation](https://docs.levimc.org/LeviLauncher/guide/quick-start?platform=android)** · **[Native mod development](https://docs.levimc.org/LeviLamina/developer_guides/android/)**
+**[Documentation](https://levimc.org/LeviLauncher/?platform=android)** · **[Native mod development](https://levimc.org/LeviLamina/developer_guides/android/)**
 
 </div>
 
@@ -254,7 +254,7 @@ LeviLauncher Modder would not be possible without the contributions and support 
 
 **Original Repository:** [https://github.com/LiteLDev/LeviLauncher-Android](https://github.com/LiteLDev/LeviLauncher-Android)
 
-**Documentation:** [docs.levimc.org/LeviLauncher](https://docs.levimc.org/LeviLauncher/guide/quick-start?platform=android) · native mods: [docs.levimc.org/LeviLamina](https://docs.levimc.org/LeviLamina/developer_guides/android/)
+**Documentation:** [levimc.org/LeviLauncher](https://levimc.org/LeviLauncher/?platform=android) · native mods: [levimc.org/LeviLamina](https://levimc.org/LeviLamina/developer_guides/android/)
 
 **Report Issues:** [GitHub Issues Page](https://github.com/sang765/LeviDroid-Modder/issues)
 

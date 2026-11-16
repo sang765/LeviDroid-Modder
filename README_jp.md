@@ -38,7 +38,7 @@
 
 https://github.com/user-attachments/assets/f69146c1-725c-46e7-9983-0768f6841910
 
-**[ドキュメント](https://docs.levimc.org/LeviLauncher/guide/quick-start?platform=android)** · **[ネイティブ Mod 開発](https://docs.levimc.org/LeviLamina/developer_guides/android/)**
+**[ドキュメント](https://levimc.org/LeviLauncher/?platform=android)** · **[ネイティブ Mod 開発](https://levimc.org/LeviLamina/developer_guides/android/)**
 
 </div>
 
@@ -254,7 +254,7 @@ LeviLauncher Modder は、多くの才能ある個人や組織からの貢献と
 
 **オリジナルリポジトリ:** [https://github.com/LiteLDev/LeviLauncher-Android](https://github.com/LiteLDev/LeviLauncher-Android)
 
-**ドキュメント:** [docs.levimc.org/LeviLauncher](https://docs.levimc.org/LeviLauncher/guide/quick-start?platform=android) · ネイティブ Mod: [docs.levimc.org/LeviLamina](https://docs.levimc.org/LeviLamina/developer_guides/android/)
+**ドキュメント:** [levimc.org/LeviLauncher](https://levimc.org/LeviLauncher/?platform=android) · ネイティブ Mod: [levimc.org/LeviLamina](https://levimc.org/LeviLamina/developer_guides/android/)
 
 **問題の報告:** [GitHub Issues ページ](https://github.com/sang765/LeviDroid-Modder/issues)
 

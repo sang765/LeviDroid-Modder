@@ -38,7 +38,7 @@
 
 https://github.com/user-attachments/assets/f69146c1-725c-46e7-9983-0768f6841910
 
-**[Документация](https://docs.levimc.org/LeviLauncher/guide/quick-start?platform=android)** · **[Разработка нативных модов](https://docs.levimc.org/LeviLamina/developer_guides/android/)**
+**[Документация](https://levimc.org/LeviLauncher/?platform=android)** · **[Разработка нативных модов](https://levimc.org/LeviLamina/developer_guides/android/)**
 
 </div>
 
@@ -254,7 +254,7 @@ LeviLauncher Modder не был бы возможен без вклада и п�
 
 **Оригинальный репозиторий:** [https://github.com/LiteLDev/LeviLauncher-Android](https://github.com/LiteLDev/LeviLauncher-Android)
 
-**Документация:** [docs.levimc.org/LeviLauncher](https://docs.levimc.org/LeviLauncher/guide/quick-start?platform=android) · нативные моды: [docs.levimc.org/LeviLamina](https://docs.levimc.org/LeviLamina/developer_guides/android/)
+**Документация:** [levimc.org/LeviLauncher](https://levimc.org/LeviLauncher/?platform=android) · нативные моды: [levimc.org/LeviLamina](https://levimc.org/LeviLamina/developer_guides/android/)
 
 **Сообщить о проблемах:** [Страница issues на GitHub](https://github.com/sang765/LeviDroid-Modder/issues)
 

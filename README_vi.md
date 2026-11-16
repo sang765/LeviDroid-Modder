@@ -38,7 +38,7 @@
 
 https://github.com/user-attachments/assets/f69146c1-725c-46e7-9983-0768f6841910
 
-**[Tài liệu](https://docs.levimc.org/LeviLauncher/guide/quick-start?platform=android)** · **[Phát triển mod native](https://docs.levimc.org/LeviLamina/developer_guides/android/)**
+**[Tài liệu](https://levimc.org/LeviLauncher/?platform=android)** · **[Phát triển mod native](https://levimc.org/LeviLamina/developer_guides/android/)**
 
 </div>
 
@@ -254,7 +254,7 @@ LeviLauncher Modder sẽ không thể thành hiện thực nếu không có sự
 
 **Kho lưu trữ gốc:** [https://github.com/LiteLDev/LeviLauncher-Android](https://github.com/LiteLDev/LeviLauncher-Android)
 
-**Tài liệu:** [docs.levimc.org/LeviLauncher](https://docs.levimc.org/LeviLauncher/guide/quick-start?platform=android) · mod native: [docs.levimc.org/LeviLamina](https://docs.levimc.org/LeviLamina/developer_guides/android/)
+**Tài liệu:** [levimc.org/LeviLauncher](https://levimc.org/LeviLauncher/?platform=android) · mod native: [levimc.org/LeviLamina](https://levimc.org/LeviLamina/developer_guides/android/)
 
 **Báo lỗi:** [Trang GitHub Issues](https://github.com/sang765/LeviDroid-Modder/issues)
 
