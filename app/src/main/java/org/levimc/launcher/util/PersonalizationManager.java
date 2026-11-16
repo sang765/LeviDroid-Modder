@@ -56,6 +56,7 @@ public class PersonalizationManager {
     private static final String KEY_BG_IMAGE_BLUR = "bg_image_blur";
     private static final String KEY_BG_IMAGE_BRIGHTNESS = "bg_image_brightness";
     private static final String KEY_NAV_BAR_POSITION = "nav_bar_position";
+    private static final String KEY_TAB_SWIPE_NAV = "tab_swipe_nav";
     private static final String KEY_BG_ANIMATION = "bg_animation";
     private static final String KEY_BG_OPACITY = "bg_opacity";
 
@@ -187,6 +188,14 @@ public class PersonalizationManager {
     public void setNavBarPosition(String position) {
         prefs.edit().putString(KEY_NAV_BAR_POSITION, position).apply();
         sChangeGeneration.incrementAndGet();
+    }
+
+    public boolean isTabSwipeNavigationEnabled() {
+        return prefs.getBoolean(KEY_TAB_SWIPE_NAV, true);
+    }
+
+    public void setTabSwipeNavigationEnabled(boolean enabled) {
+        prefs.edit().putBoolean(KEY_TAB_SWIPE_NAV, enabled).apply();
     }
 
     public String getBackgroundAnimation() {

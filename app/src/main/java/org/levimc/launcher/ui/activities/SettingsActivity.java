@@ -1234,6 +1234,14 @@ public class SettingsActivity extends BaseActivity {
             public void onNothingSelected(AdapterView<?> parent) {
             }
         });
+
+        LinearLayout swipeRow = addSettingsRow(body, R.string.tab_swipe_title, R.string.tab_swipe_desc);
+        swipeRow.setTag(ROW_TAG);
+        SwitchMaterial swipeToggle = new SwitchMaterial(this);
+        swipeRow.addView(swipeToggle);
+        swipeToggle.setChecked(personalizationManager.isTabSwipeNavigationEnabled());
+        swipeToggle.setOnCheckedChangeListener((btn, checked) ->
+                personalizationManager.setTabSwipeNavigationEnabled(checked));
     }
 
     private void showAnimationOptions(String effect) {

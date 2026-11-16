@@ -10,12 +10,15 @@ import android.content.res.Resources;
 import android.graphics.Color;
 import android.os.Build;
 import android.os.Bundle;
+import android.view.GestureDetector;
 import android.view.LayoutInflater;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.WindowInsets;
 import android.view.WindowInsetsController;
 import android.view.WindowManager;
+import android.widget.EditText;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -603,6 +606,139 @@ public class BaseActivity extends AppCompatActivity {
     public void recreate() {
         LauncherBackgroundController.navigating(this);
         super.recreate();
+    }
+
+    private static final Class<?>[] TAB_PAGES = {
+            MainActivity.class, GameDownloadActivity.class, InstancesActivity.class,
+            AboutActivity.class, SettingsActivity.class
+    };
+
+    private GestureDetector tabSwipeDetector;
+    private boolean tabSwipeGestureValid;
+    private boolean tabSwipeVertical;
+    private View tabSwipeTouchedView;
+
+    @Override
+    public boolean dispatchTouchEvent(MotionEvent event) {
+        int action = event.getActionMasked();
+        if (action == MotionEvent.ACTION_DOWN) {
+            armTabSwipe(event);
+        } else if (tabSwipeGestureValid && tabSwipeDetector != null) {
+            if (action == MotionEvent.ACTION_POINTER_DOWN) {
+                tabSwipeGestureValid = false;
+            } else {
+                tabSwipeDetector.onTouchEvent(event);
+            }
+        }
+        return super.dispatchTouchEvent(event);
+    }
+
+    private void armTabSwipe(MotionEvent event) {
+        tabSwipeGestureValid = false;
+        if (!navBarInjected || LauncherBackgroundController.isMinecraftBlocked()) return;
+        if (currentTabIndex() < 0) return;
+        PersonalizationManager pm = new PersonalizationManager(this);
+        if (!pm.isTabSwipeNavigationEnabled()) return;
+        String position = pm.getNavBarPosition();
+        tabSwipeVertical = "left".equals(position) || "right".equals(position);
+        ViewGroup content = findViewById(android.R.id.content);
+        if (content == null) return;
+        int[] origin = new int[2];
+        content.getLocationOnScreen(origin);
+        View touched = findTouchedView(content, event.getRawX() - origin[0], event.getRawY() - origin[1]);
+        tabSwipeTouchedView = touched == null ? content : touched;
+        if (tabSwipeDetector == null) {
+            tabSwipeDetector = new GestureDetector(this, new GestureDetector.SimpleOnGestureListener() {
+                @Override
+                public boolean onFling(MotionEvent e1, MotionEvent e2, float velocityX, float velocityY) {
+                    return handleTabSwipeFling(e1, e2, velocityX, velocityY);
+                }
+            });
+        }
+        tabSwipeGestureValid = true;
+        tabSwipeDetector.onTouchEvent(event);
+    }
+
+    private boolean handleTabSwipeFling(MotionEvent start, MotionEvent end, float velocityX, float velocityY) {
+        if (start == null || end == null) return false;
+        int index = currentTabIndex();
+        if (index < 0) return false;
+        float dx = end.getX() - start.getX();
+        float dy = end.getY() - start.getY();
+        float density = getResources().getDisplayMetrics().density;
+        float minDistance = 90f * density;
+        float minVelocity = 700f * density;
+        boolean forward;
+        float distance;
+        float velocity;
+        if (tabSwipeVertical) {
+            if (Math.abs(dy) < minDistance || Math.abs(dy) < Math.abs(dx) * 1.4f) return false;
+            forward = dy < 0;
+            distance = Math.abs(dy);
+            velocity = Math.abs(velocityY);
+        } else {
+            if (Math.abs(dx) < minDistance || Math.abs(dx) < Math.abs(dy) * 1.4f) return false;
+            forward = dx < 0;
+            distance = Math.abs(dx);
+            velocity = Math.abs(velocityX);
+        }
+        if (distance < minDistance || velocity < minVelocity) return false;
+        int target = index + (forward ? 1 : -1);
+        if (target < 0 || target >= TAB_PAGES.length) return false;
+        if (gestureBlockedByView(tabSwipeTouchedView, forward)) return false;
+        navigateToTab(target, forward);
+        return true;
+    }
+
+    private boolean gestureBlockedByView(View view, boolean forward) {
+        for (View current = view; current != null;
+             current = current.getParent() instanceof View ? (View) current.getParent() : null) {
+            if (current instanceof EditText) return true;
+            boolean scrollsTowardGesture = tabSwipeVertical
+                    ? (forward ? current.canScrollVertically(1) : current.canScrollVertically(-1))
+                    : (forward ? current.canScrollHorizontally(1) : current.canScrollHorizontally(-1));
+            if (scrollsTowardGesture) return true;
+        }
+        return false;
+    }
+
+    private View findTouchedView(ViewGroup parent, float x, float y) {
+        for (int i = parent.getChildCount() - 1; i >= 0; i--) {
+            View child = parent.getChildAt(i);
+            if (child.getVisibility() != View.VISIBLE) continue;
+            if (x < child.getLeft() || x >= child.getRight() || y < child.getTop() || y >= child.getBottom()) continue;
+            if (child instanceof ViewGroup) {
+                View deeper = findTouchedView((ViewGroup) child, x - child.getLeft(), y - child.getTop());
+                if (deeper != null) return deeper;
+            }
+            return child;
+        }
+        return parent;
+    }
+
+    private int currentTabIndex() {
+        for (int i = 0; i < TAB_PAGES.length; i++) {
+            if (TAB_PAGES[i] == getClass()) return i;
+        }
+        return -1;
+    }
+
+    private void navigateToTab(int targetIndex, boolean forward) {
+        int enterAnim;
+        int exitAnim;
+        if (tabSwipeVertical) {
+            enterAnim = forward ? R.anim.tab_slide_in_bottom : R.anim.tab_slide_in_top;
+            exitAnim = forward ? R.anim.tab_slide_out_top : R.anim.tab_slide_out_bottom;
+        } else {
+            enterAnim = forward ? R.anim.tab_slide_in_right : R.anim.tab_slide_in_left;
+            exitAnim = forward ? R.anim.tab_slide_out_left : R.anim.tab_slide_out_right;
+        }
+        Intent intent = new Intent(this, TAB_PAGES[targetIndex]);
+        if (sLivePages.contains(TAB_PAGES[targetIndex])) {
+            intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_SINGLE_TOP);
+        }
+        startActivity(intent);
+        overridePendingTransition(enterAnim, exitAnim);
     }
 
     private void prepareBackgroundNavigation(Intent intent) {
