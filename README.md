@@ -242,6 +242,7 @@ LeviLauncher Modder would not be possible without the contributions and support 
 - **Android Community** – For excellent documentation, libraries, and tools that made this launcher possible
 - **Open Source Community** – For all the libraries, frameworks, and tools that power this project
 - **Contributors** – A heartfelt thank you to all [contributors of the original project](https://github.com/LiteLDev/LeviLauncher-Android/graphs/contributors) who have continuously improved and maintained LeviLauncher through their time and expertise
+- **[models.dev](https://models.dev)** – For the open AI model catalog that powers the built-in AI provider list used in crash analysis
 
 ---
 
