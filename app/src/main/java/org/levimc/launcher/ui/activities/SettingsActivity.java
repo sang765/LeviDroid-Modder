@@ -1809,8 +1809,7 @@ public class SettingsActivity extends BaseActivity {
                 .setNegativeButton(getString(R.string.cancel), v -> { });
         dialogHolder[0].show();
 
-        Toast.makeText(this, R.string.ai_loading_providers, Toast.LENGTH_SHORT).show();
-        AiProviderCatalog.load(this, providers -> {
+        boolean hasCache = AiProviderCatalog.load(this, providers -> {
             if (isFinishing() || isDestroyed()) return;
             current.clear();
             current.addAll(providers);
@@ -1818,6 +1817,9 @@ public class SettingsActivity extends BaseActivity {
             adapter.addAll(AiProviderCatalog.names(providers));
             adapter.notifyDataSetChanged();
         });
+        if (!hasCache) {
+            Toast.makeText(this, R.string.ai_loading_providers, Toast.LENGTH_SHORT).show();
+        }
     }
 
     private void showSearchListDialog(List<String> items, String title, Consumer<String> onPicked) {

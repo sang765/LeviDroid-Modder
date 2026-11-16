@@ -16,6 +16,8 @@ import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
 
 import okhttp3.OkHttpClient;
@@ -39,6 +41,7 @@ public final class AiProviderCatalog {
             .connectTimeout(20, TimeUnit.SECONDS)
             .readTimeout(120, TimeUnit.SECONDS)
             .build();
+    private static final ExecutorService FETCH_EXECUTOR = Executors.newSingleThreadExecutor();
 
     public static final class Provider {
         public final String id;
@@ -61,19 +64,20 @@ public final class AiProviderCatalog {
     private AiProviderCatalog() {
     }
 
-    public static void load(Context context, Callback callback) {
+    public static boolean load(Context context, Callback callback) {
         Context app = context.getApplicationContext();
         List<Provider> cached = readCache(app);
         if (!cached.isEmpty()) {
             MAIN.post(() -> callback.onDone(cached));
             refresh(app, callback, true);
-            return;
+            return true;
         }
         refresh(app, callback, false);
+        return false;
     }
 
     private static void refresh(Context context, Callback callback, boolean hasCache) {
-        new Thread(() -> {
+        FETCH_EXECUTOR.execute(() -> {
             List<Provider> fetched = fetch();
             if (fetched.isEmpty()) {
                 if (!hasCache) {
@@ -85,7 +89,7 @@ public final class AiProviderCatalog {
             writeCache(context, fetched);
             List<Provider> delivered = new ArrayList<>(fetched);
             MAIN.post(() -> callback.onDone(delivered));
-        }).start();
+        });
     }
 
     public static List<String> names(List<Provider> providers) {
@@ -239,7 +243,8 @@ public final class AiProviderCatalog {
             FileOutputStream out = context.openFileOutput(CACHE_FILE, Context.MODE_PRIVATE);
             out.write(array.toString().getBytes("UTF-8"));
             out.close();
-        } catch (Exception ignored) {
+        } catch (Exception error) {
+            Log.w(TAG, "Failed to write the provider cache", error);
         }
     }
 }
