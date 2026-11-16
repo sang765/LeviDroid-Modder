@@ -1,27 +1,22 @@
 {
   "schemaVersion": 1,
-  "headline": "LeviLauncher Modder v1.7.0-modder.1",
-  "summary": "Rebased onto upstream 1.7.0: the LeviMC package screens were redesigned, and a round of locale cleanup removed dead Indonesian resource files.",
+  "headline": "LeviLauncher Modder v1.7.0-modder.2",
+  "summary": "AI crash analysis now picks providers from the live models.dev catalog instead of a hardcoded list, with instant cached results and background refresh.",
   "sections": [
     {
       "title": "Changes",
       "items": [
         {
-          "text": "The LeviMC package screens follow upstream's redesign: the catalog header is its own view, browse filters were extracted into a dedicated bar, and the package rows got slimmer.",
-          "url": "https://github.com/sang765/LeviDroid-Modder/commit/70cb5009"
+          "text": "The AI provider picker now reads the live provider catalog from models.dev instead of a static preset list, so newly added providers appear without an app update.",
+          "url": "https://github.com/sang765/LeviDroid-Modder/pull/135"
         },
         {
-          "text": "Browse filter state now lives in the Packages screen, so switching between Browse and Installed keeps the filters consistent.",
-          "url": "https://github.com/sang765/LeviDroid-Modder/commit/70cb5009"
-        }
-      ]
-    },
-    {
-      "title": "Fixes",
-      "items": [
+          "text": "The provider list is cached locally and shown instantly on open, with a background refresh keeping it up to date.",
+          "url": "https://github.com/sang765/LeviDroid-Modder/pull/135"
+        },
         {
-          "text": "Dropped leftover Indonesian resource files under a qualifier Android never selects; translations keep living in the qualifier that actually matches.",
-          "url": "https://github.com/sang765/LeviDroid-Modder/commit/f9a8f304"
+          "text": "models.dev is credited in the README for providing the open AI model catalog.",
+          "url": "https://github.com/sang765/LeviDroid-Modder/pull/135"
         }
       ]
     }
