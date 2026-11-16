@@ -13,6 +13,7 @@ import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.ScrollView;
 import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.LinearLayoutManager;
@@ -32,6 +33,7 @@ public class CustomAlertDialog extends Dialog {
     private int mIconResource;
     private boolean mDismissing;
     private boolean mShowCloseButton;
+    private boolean mOuterScrollbarEnabled = true;
     private Runnable mDismissAnimationEndListener;
 
     public CustomAlertDialog(Context context) { super(context); }
@@ -43,6 +45,7 @@ public class CustomAlertDialog extends Dialog {
     public CustomAlertDialog setItems(String[] items, DialogInterface.OnClickListener listener) { mItems = items; mItemClickListener = listener; return this; }
     public CustomAlertDialog setCustomView(View view) { mCustomView = view; return this; }
     public CustomAlertDialog setBlurBackground(boolean blur) { mBlurBackground = blur; return this; }
+    public CustomAlertDialog setOuterScrollbarEnabled(boolean enabled) { mOuterScrollbarEnabled = enabled; return this; }
     public CustomAlertDialog setTitleColor(int color) { mTitleColor = color; return this; }
     public CustomAlertDialog setIconResource(int icon) { mIconResource = icon; return this; }
     public CustomAlertDialog setShowCloseButton(boolean show) { mShowCloseButton = show; return this; }
@@ -90,6 +93,8 @@ public class CustomAlertDialog extends Dialog {
                 dismiss();
             }));
         }
+        ScrollView outerScroll = findViewById(R.id.message_scroll_view);
+        outerScroll.setVerticalScrollBarEnabled(mOuterScrollbarEnabled);
         mPositiveButton = findViewById(R.id.btn_positive);
         Button negative = findViewById(R.id.btn_negative);
         Button neutral = findViewById(R.id.btn_neutral);

@@ -1775,8 +1775,10 @@ public class SettingsActivity extends BaseActivity {
         ArrayAdapter<String> adapter = new ArrayAdapter<>(this, android.R.layout.simple_list_item_1, new ArrayList<>());
         ListView listView = new ListView(this);
         listView.setAdapter(adapter);
+        int maxListHeight = Math.min((int) (320 * density),
+                (int) (getResources().getDisplayMetrics().heightPixels * 0.45f));
         LinearLayout.LayoutParams listParams = new LinearLayout.LayoutParams(
-                LinearLayout.LayoutParams.MATCH_PARENT, (int) (320 * density));
+                LinearLayout.LayoutParams.MATCH_PARENT, maxListHeight);
         listParams.topMargin = (int) (8 * density);
         listView.setLayoutParams(listParams);
         container.addView(listView);
@@ -1806,6 +1808,7 @@ public class SettingsActivity extends BaseActivity {
         dialogHolder[0] = new CustomAlertDialog(this)
                 .setTitleText(title)
                 .setCustomView(container)
+                .setOuterScrollbarEnabled(false)
                 .setNegativeButton(getString(R.string.cancel), v -> { });
         dialogHolder[0].show();
 
@@ -1836,8 +1839,10 @@ public class SettingsActivity extends BaseActivity {
         ArrayAdapter<String> adapter = new ArrayAdapter<>(this, android.R.layout.simple_list_item_1, items);
         ListView listView = new ListView(this);
         listView.setAdapter(adapter);
+        int maxListHeight = Math.min((int) (320 * density),
+                (int) (getResources().getDisplayMetrics().heightPixels * 0.45f));
         LinearLayout.LayoutParams listParams = new LinearLayout.LayoutParams(
-                LinearLayout.LayoutParams.MATCH_PARENT, (int) (320 * density));
+                LinearLayout.LayoutParams.MATCH_PARENT, maxListHeight);
         listParams.topMargin = (int) (8 * density);
         listView.setLayoutParams(listParams);
         container.addView(listView);
@@ -1864,6 +1869,7 @@ public class SettingsActivity extends BaseActivity {
         dialogHolder[0] = new CustomAlertDialog(this)
                 .setTitleText(title)
                 .setCustomView(container)
+                .setOuterScrollbarEnabled(false)
                 .setNegativeButton(getString(R.string.cancel), v -> { });
         dialogHolder[0].show();
     }
