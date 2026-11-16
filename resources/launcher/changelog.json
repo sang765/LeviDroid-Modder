@@ -1,23 +1,14 @@
 {
   "schemaVersion": 1,
-  "headline": "LeviLauncher Modder v1.7.1-modder.1",
-  "summary": "Rebased onto upstream 1.7.1 with fixes for the latest Minecraft beta, plus a scrollbar cleanup for the AI provider and model picker dialogs.",
+  "headline": "LeviLauncher Modder v1.7.1-modder.2",
+  "summary": "Picking an accent color now recolors the animated background effect immediately in every theme and edit-mode combination.",
   "sections": [
-    {
-      "title": "Changes",
-      "items": [
-        {
-          "text": "Rebased onto upstream 1.7.1: the crash on the latest Minecraft beta and the network navigation crash are fixed upstream and ship with this build.",
-          "url": "https://github.com/sang765/LeviDroid-Modder/commit/bd7b3de0"
-        }
-      ]
-    },
     {
       "title": "Fixes",
       "items": [
         {
-          "text": "The AI provider and model picker dialogs no longer show a second full-height scrollbar next to the list; the list caps its height so the dialog fits short windows and only the list itself scrolls.",
-          "url": "https://github.com/sang765/LeviDroid-Modder/pull/136"
+          "text": "Choosing an accent color in Settings → Personalize now refreshes the animated background effect right away, including while a different theme variant's edit tab is active; the effect previously kept the old palette until the next full screen rebuild.",
+          "url": "https://github.com/sang765/LeviDroid-Modder/pull/137"
         }
       ]
     }
