@@ -877,7 +877,10 @@ public class SettingsActivity extends BaseActivity {
     private void setAccent(int color) {
         personalizationManager.setAccentColor(color);
         if (editDark == isDark()) recreate();
-        else rebuildSwatches();
+        else {
+            rebuildSwatches();
+            personalizationManager.applyAccentToView(findViewById(android.R.id.content), this);
+        }
     }
 
     private void applyWallpaperAccentColor() {
@@ -885,7 +888,10 @@ public class SettingsActivity extends BaseActivity {
         if (color != 0) {
             personalizationManager.setAccentColor(color);
             if (editDark == isDark()) recreate();
-            else rebuildSwatches();
+            else {
+                rebuildSwatches();
+                personalizationManager.applyAccentToView(findViewById(android.R.id.content), this);
+            }
             Toast.makeText(this, R.string.wallpaper_color_applied, Toast.LENGTH_SHORT).show();
             return;
         }
