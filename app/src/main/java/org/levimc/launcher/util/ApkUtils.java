@@ -160,7 +160,7 @@ public class ApkUtils {
         }
     }
 
-    private static boolean isNativeLibrary(ZipEntry entry) {
+    public static boolean isNativeLibrary(ZipEntry entry) {
         if (entry.isDirectory()) return false;
         String[] parts = entry.getName().split("/", -1);
         return parts.length == 3 && "lib".equals(parts[0])
