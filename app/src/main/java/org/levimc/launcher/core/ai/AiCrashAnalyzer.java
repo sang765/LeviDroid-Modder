@@ -25,44 +25,9 @@ import okhttp3.Response;
 
 public final class AiCrashAnalyzer {
 
-    public static final String FORMAT_OPENAI = "openai";
-    public static final String FORMAT_ANTHROPIC = "anthropic";
-    public static final String FORMAT_GEMINI = "gemini";
-
-    public static class ProviderPreset {
-        public final String name;
-        public final String baseUrl;
-        public final String format;
-
-        ProviderPreset(String name, String baseUrl, String format) {
-            this.name = name;
-            this.baseUrl = baseUrl;
-            this.format = format;
-        }
-    }
-
-    private static final List<ProviderPreset> PRESETS = new ArrayList<>();
-
-    static {
-        PRESETS.add(new ProviderPreset("OpenAI", "https://api.openai.com/v1", FORMAT_OPENAI));
-        PRESETS.add(new ProviderPreset("Anthropic Claude", "https://api.anthropic.com/v1", FORMAT_ANTHROPIC));
-        PRESETS.add(new ProviderPreset("Google Gemini", "https://generativelanguage.googleapis.com/v1beta", FORMAT_GEMINI));
-        PRESETS.add(new ProviderPreset("OpenRouter", "https://openrouter.ai/api/v1", FORMAT_OPENAI));
-        PRESETS.add(new ProviderPreset("Groq", "https://api.groq.com/openai/v1", FORMAT_OPENAI));
-        PRESETS.add(new ProviderPreset("DeepSeek", "https://api.deepseek.com/v1", FORMAT_OPENAI));
-        PRESETS.add(new ProviderPreset("Mistral", "https://api.mistral.ai/v1", FORMAT_OPENAI));
-        PRESETS.add(new ProviderPreset("xAI Grok", "https://api.x.ai/v1", FORMAT_OPENAI));
-        PRESETS.add(new ProviderPreset("Together", "https://api.together.xyz/v1", FORMAT_OPENAI));
-        PRESETS.add(new ProviderPreset("Cerebras", "https://api.cerebras.ai/v1", FORMAT_OPENAI));
-        PRESETS.add(new ProviderPreset("Ollama (local)", "http://localhost:11434/v1", FORMAT_OPENAI));
-        PRESETS.add(new ProviderPreset("Ollama Cloud", "https://ollama.com/v1", FORMAT_OPENAI));
-        PRESETS.add(new ProviderPreset("LM Studio (local)", "http://localhost:1234/v1", FORMAT_OPENAI));
-        PRESETS.add(new ProviderPreset("Custom", "", FORMAT_OPENAI));
-    }
-
-    public static List<ProviderPreset> getPresets() {
-        return PRESETS;
-    }
+    public static final String FORMAT_OPENAI = AiProviderCatalog.FORMAT_OPENAI;
+    public static final String FORMAT_ANTHROPIC = AiProviderCatalog.FORMAT_ANTHROPIC;
+    public static final String FORMAT_GEMINI = AiProviderCatalog.FORMAT_GEMINI;
 
     private static final String PREFS_NAME = "ai_analysis_prefs";
     private static final String KEY_PROVIDER = "provider";

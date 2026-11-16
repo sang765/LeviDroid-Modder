@@ -48,6 +48,7 @@ import com.google.android.material.switchmaterial.SwitchMaterial;
 
 import org.levimc.launcher.R;
 import org.levimc.launcher.core.ai.AiCrashAnalyzer;
+import org.levimc.launcher.core.ai.AiProviderCatalog;
 import org.levimc.launcher.core.crash.CrashReporter;
 import org.levimc.launcher.core.discord.DiscordRpcManager;
 import org.levimc.launcher.core.logging.AppLevelLogSink;
@@ -1689,22 +1690,19 @@ public class SettingsActivity extends BaseActivity {
         providerRow.setHint(R.string.ai_tap_provider);
         providerRow.setText(selectedProvider[0]);
         providerRow.setPadding(0, (int) (14 * density), 0, (int) (14 * density));
-        List<String> providerNames = new ArrayList<>();
-        for (AiCrashAnalyzer.ProviderPreset preset : AiCrashAnalyzer.getPresets()) {
-            providerNames.add(preset.name);
-        }
-        providerRow.setOnClickListener(v -> showSearchListDialog(providerNames,
-                getString(R.string.ai_select_provider), name -> {
-                    for (AiCrashAnalyzer.ProviderPreset preset : AiCrashAnalyzer.getPresets()) {
-                        if (preset.name.equals(name)) {
-                            selectedProvider[0] = preset.name;
-                            selectedFormat[0] = preset.format;
-                            if (!preset.baseUrl.isEmpty()) baseUrlInput.setText(preset.baseUrl);
-                            providerRow.setText(preset.name);
-                            break;
-                        }
-                    }
-                }));
+        providerRow.setOnClickListener(v -> {
+            Toast.makeText(this, R.string.ai_loading_providers, Toast.LENGTH_SHORT).show();
+            AiProviderCatalog.load(this, providers ->
+                    showSearchListDialog(AiProviderCatalog.names(providers),
+                            getString(R.string.ai_select_provider), name -> {
+                                AiProviderCatalog.Provider preset = AiProviderCatalog.byName(providers, name);
+                                if (preset == null) return;
+                                selectedProvider[0] = preset.name;
+                                selectedFormat[0] = preset.format;
+                                if (!preset.baseUrl.isEmpty()) baseUrlInput.setText(preset.baseUrl);
+                                providerRow.setText(preset.name);
+                            }));
+        });
 
         TextView modelRow = new TextView(this);
         modelRow.setTextSize(15);

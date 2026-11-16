@@ -410,6 +410,7 @@
     <string name="ai_tap_provider">Tap to select provider</string>
     <string name="ai_select_provider">Select provider</string>
     <string name="ai_loading_models">Fetching model list…</string>
+    <string name="ai_loading_providers">Fetching provider list…</string>
     <string name="ai_search_models">Search model</string>
     <string name="ai_select_model">Select model</string>
     <string name="ai_no_models">Provider returned no models</string>
