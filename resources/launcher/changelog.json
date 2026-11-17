@@ -1,14 +1,18 @@
 {
   "schemaVersion": 1,
-  "headline": "LeviLauncher Modder v1.7.1-modder.2",
-  "summary": "Picking an accent color now recolors the animated background effect immediately in every theme and edit-mode combination.",
+  "headline": "LeviLauncher Modder v1.7.1-modder.3",
+  "summary": "Swipe between launcher tabs with a smooth directional slide — horizontal for top and bottom navbars, vertical for side navbars.",
   "sections": [
     {
-      "title": "Fixes",
+      "title": "Changes",
       "items": [
         {
-          "text": "Choosing an accent color in Settings → Personalize now refreshes the animated background effect right away, including while a different theme variant's edit tab is active; the effect previously kept the old palette until the next full screen rebuild.",
-          "url": "https://github.com/sang765/LeviDroid-Modder/pull/137"
+          "text": "New swipe gesture: fling toward a neighbouring tab to switch pages with a smooth directional slide animation; horizontal swipes for top and bottom navbars, vertical swipes for left and right side navbars.",
+          "url": "https://github.com/sang765/LeviDroid-Modder/pull/138"
+        },
+        {
+          "text": "The gesture skips scrollable lists moving toward the swipe and text fields, so it never fights normal scrolling, and it can be turned off in Settings → Personalize.",
+          "url": "https://github.com/sang765/LeviDroid-Modder/pull/138"
         }
       ]
     }
