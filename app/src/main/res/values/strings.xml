@@ -1484,4 +1484,29 @@
     <string name="rpc_playing_on">Playing on %1$s</string>
     <string name="rpc_realm">a Realm</string>
     <string name="rpc_view_xbox_profile">View Xbox profile</string>
+
+    <string name="nav_explorer">Explorer</string>
+    <string name="explorer_title">Explorer</string>
+    <string name="explorer_subtitle">Browse and edit files inside game data, no root needed</string>
+    <string name="explorer_select_instance">Select instance</string>
+    <string name="explorer_up">Go up</string>
+    <string name="explorer_new_folder">New folder</string>
+    <string name="explorer_refresh">Refresh</string>
+    <string name="explorer_empty">This folder is empty</string>
+    <string name="explorer_no_instances">No instances. Add one first, then come back.</string>
+    <string name="explorer_entry_folder">Folder</string>
+    <string name="explorer_open">Open</string>
+    <string name="explorer_copy">Copy</string>
+    <string name="explorer_cut">Cut</string>
+    <string name="explorer_paste">Paste</string>
+    <string name="explorer_rename">Rename</string>
+    <string name="explorer_export">Export to device</string>
+    <string name="explorer_delete">Delete</string>
+    <string name="explorer_delete_confirm">Delete %1$s? This cannot be undone.</string>
+    <string name="explorer_copy_done">Copied. Open a folder and choose Paste.</string>
+    <string name="explorer_cut_done">Cut. Open a folder and choose Paste.</string>
+    <string name="explorer_export_done">Exported</string>
+    <string name="explorer_error">Explorer: %1$s</string>
+    <string name="explorer_name_hint">Name</string>
+    <string name="explorer_paste_into_self">Cannot paste a folder into itself</string>
 </resources>

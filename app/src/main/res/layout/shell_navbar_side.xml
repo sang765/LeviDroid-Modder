@@ -78,6 +78,17 @@
             android:tooltipText="@string/nav_instances" />
 
         <TextView
+            android:id="@+id/nav_tab_explorer"
+            android:layout_width="match_parent"
+            android:layout_height="44dp"
+            android:contentDescription="@string/nav_explorer"
+            android:drawableStart="@drawable/ic_nav_explorer"
+            android:gravity="center"
+            android:paddingStart="@dimen/levi_sidebar_icon_inset"
+            android:paddingEnd="@dimen/levi_sidebar_icon_inset"
+            android:tooltipText="@string/nav_explorer" />
+
+        <TextView
             android:id="@+id/nav_tab_about"
             android:layout_width="match_parent"
             android:layout_height="44dp"

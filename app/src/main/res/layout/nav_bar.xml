@@ -109,6 +109,20 @@
                     android:background="?attr/selectableItemBackground" />
 
                 <TextView
+                    android:id="@+id/nav_tab_explorer"
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:gravity="center"
+                    android:paddingHorizontal="12dp"
+                    android:fontFamily="@font/misans"
+                    android:text="@string/nav_explorer"
+                    android:textColor="@color/text_secondary"
+                    android:textSize="13sp"
+                    android:drawableStart="@drawable/ic_nav_explorer"
+                    android:drawablePadding="5dp"
+                    android:background="?attr/selectableItemBackground" />
+
+                <TextView
                     android:id="@+id/nav_tab_about"
                     android:layout_width="wrap_content"
                     android:layout_height="match_parent"
