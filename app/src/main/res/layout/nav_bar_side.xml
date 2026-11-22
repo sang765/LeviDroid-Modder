@@ -140,6 +140,32 @@
         </LinearLayout>
 
         <LinearLayout
+            android:id="@+id/nav_tab_explorer_item"
+            android:layout_width="match_parent"
+            android:layout_height="52dp"
+            android:gravity="center"
+            android:orientation="vertical"
+            android:background="?attr/selectableItemBackground">
+
+            <ImageView
+                android:id="@+id/nav_tab_icon_explorer"
+                android:layout_width="22dp"
+                android:layout_height="22dp"
+                android:src="@drawable/ic_nav_explorer"
+                app:tint="@color/text_secondary" />
+
+            <TextView
+                android:id="@+id/nav_tab_explorer"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="3dp"
+                android:fontFamily="@font/misans"
+                android:text="@string/nav_explorer"
+                android:textColor="@color/text_secondary"
+                android:textSize="11sp" />
+        </LinearLayout>
+
+        <LinearLayout
             android:id="@+id/nav_tab_about_item"
             android:layout_width="match_parent"
             android:layout_height="52dp"

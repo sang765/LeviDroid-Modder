@@ -1397,4 +1397,29 @@
     <string name="rpc_playing_on">Đang chơi trên %1$s</string>
     <string name="rpc_realm">Realm</string>
     <string name="rpc_view_xbox_profile">Xem hồ sơ Xbox</string>
+
+    <string name="nav_explorer">Duyệt tệp</string>
+    <string name="explorer_title">Duyệt tệp</string>
+    <string name="explorer_subtitle">Xem và sửa tệp trong dữ liệu game, chẳng cần root gì</string>
+    <string name="explorer_select_instance">Chọn phiên bản</string>
+    <string name="explorer_up">Lùi lại</string>
+    <string name="explorer_new_folder">Tạo thư mục</string>
+    <string name="explorer_refresh">Làm mới</string>
+    <string name="explorer_empty">Thư mục này trống</string>
+    <string name="explorer_no_instances">Chưa có phiên bản nào. Thêm một cái rồi quay lại nha.</string>
+    <string name="explorer_entry_folder">Thư mục</string>
+    <string name="explorer_open">Mở</string>
+    <string name="explorer_copy">Sao chép</string>
+    <string name="explorer_cut">Cắt</string>
+    <string name="explorer_paste">Dán</string>
+    <string name="explorer_rename">Đổi tên</string>
+    <string name="explorer_export">Xuất ra máy</string>
+    <string name="explorer_delete">Xóa</string>
+    <string name="explorer_delete_confirm">Xóa %1$s? Làm xong là không lấy lại được nha.</string>
+    <string name="explorer_copy_done">Đã sao chép. Vào thư mục muốn dán rồi chọn Dán.</string>
+    <string name="explorer_cut_done">Đã cắt. Vào thư mục muốn dán rồi chọn Dán.</string>
+    <string name="explorer_export_done">Đã xuất</string>
+    <string name="explorer_error">Duyệt tệp: %1$s</string>
+    <string name="explorer_name_hint">Tên</string>
+    <string name="explorer_paste_into_self">Không dán thư mục vào chính nó nha</string>
 </resources>

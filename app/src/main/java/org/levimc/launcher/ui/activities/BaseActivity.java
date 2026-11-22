@@ -177,7 +177,7 @@ public class BaseActivity extends AppCompatActivity {
 
     private static final int[] NAV_TAB_IDS = {
             R.id.nav_tab_launch, R.id.nav_tab_download, R.id.nav_tab_instances,
-            R.id.nav_tab_about, R.id.nav_tab_settings
+            R.id.nav_tab_explorer, R.id.nav_tab_about, R.id.nav_tab_settings
     };
 
     private void setupBaseNavBar() {
@@ -244,6 +244,7 @@ public class BaseActivity extends AppCompatActivity {
         bindNavTab(R.id.nav_tab_launch, MainActivity.class);
         bindNavTab(R.id.nav_tab_download, GameDownloadActivity.class);
         bindNavTab(R.id.nav_tab_instances, InstancesActivity.class);
+        bindNavTab(R.id.nav_tab_explorer, ExplorerActivity.class);
         bindNavTab(R.id.nav_tab_about, AboutActivity.class);
         bindNavTab(R.id.nav_tab_settings, SettingsActivity.class);
 
@@ -610,7 +611,7 @@ public class BaseActivity extends AppCompatActivity {
 
     private static final Class<?>[] TAB_PAGES = {
             MainActivity.class, GameDownloadActivity.class, InstancesActivity.class,
-            AboutActivity.class, SettingsActivity.class
+            ExplorerActivity.class, AboutActivity.class, SettingsActivity.class
     };
 
     private GestureDetector tabSwipeDetector;

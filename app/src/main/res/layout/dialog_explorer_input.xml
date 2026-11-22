@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    android:paddingStart="4dp"
+    android:paddingEnd="4dp">
+
+    <EditText
+        android:id="@+id/explorer_input_field"
+        style="@style/Widget.Levi.Input"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="@string/explorer_name_hint"
+        android:imeOptions="actionDone"
+        android:importantForAutofill="no"
+        android:inputType="text"
+        android:singleLine="true" />
+</LinearLayout>
