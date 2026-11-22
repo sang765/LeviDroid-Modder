@@ -20,7 +20,7 @@ import java.util.Locale;
 
 public final class ExplorerRepository {
     public static final long MAX_TEXT_BYTES = 2L * 1024 * 1024;
-    private static final String[] HIDDEN_NAMES = {"xal"};
+    private static final String[] HIDDEN_CREDENTIAL_DIR_NAMES = {"xal"};
     private static final String[] TEXT_EXTENSIONS = {
             "txt", "json", "cfg", "conf", "properties", "toml", "ini", "yaml", "yml",
             "xml", "lang", "log", "csv", "md", "lua", "js", "java", "kt", "sh", "bat", "ps1", "nbt"
@@ -62,7 +62,7 @@ public final class ExplorerRepository {
     }
 
     private static boolean isHiddenName(String name) {
-        for (String hidden : HIDDEN_NAMES) if (hidden.equals(name)) return true;
+        for (String hidden : HIDDEN_CREDENTIAL_DIR_NAMES) if (hidden.equals(name)) return true;
         return false;
     }
 
@@ -91,16 +91,20 @@ public final class ExplorerRepository {
     public static void writeText(File file, String content) throws IOException {
         File parent = file.getParentFile();
         if (parent == null) throw new IOException("Invalid path");
-        File temp = new File(parent, file.getName() + ".explorer-tmp");
+        File temp = Files.createTempFile(parent.toPath(), file.getName() + ".", ".tmp").toFile();
+        boolean moved = false;
         try (OutputStream out = new FileOutputStream(temp)) {
             out.write(content.getBytes(StandardCharsets.UTF_8));
             out.flush();
-        }
-        try {
-            Files.move(temp.toPath(), file.toPath(), StandardCopyOption.REPLACE_EXISTING,
-                    StandardCopyOption.ATOMIC_MOVE);
-        } catch (AtomicMoveNotSupportedException error) {
-            Files.move(temp.toPath(), file.toPath(), StandardCopyOption.REPLACE_EXISTING);
+            try {
+                Files.move(temp.toPath(), file.toPath(), StandardCopyOption.REPLACE_EXISTING,
+                        StandardCopyOption.ATOMIC_MOVE);
+            } catch (AtomicMoveNotSupportedException error) {
+                Files.move(temp.toPath(), file.toPath(), StandardCopyOption.REPLACE_EXISTING);
+            }
+            moved = true;
+        } finally {
+            if (!moved) temp.delete();
         }
     }
 
@@ -116,7 +120,8 @@ public final class ExplorerRepository {
     public static void delete(File file) throws IOException {
         if (file.isDirectory()) {
             File[] children = file.listFiles();
-            if (children != null) for (File child : children) delete(child);
+            if (children == null) throw new IOException("Cannot list directory " + file.getName());
+            for (File child : children) delete(child);
         }
         if (file.exists() && !file.delete()) throw new IOException("Cannot delete " + file.getName());
     }
@@ -125,7 +130,8 @@ public final class ExplorerRepository {
         if (source.isDirectory()) {
             createDirectory(destination);
             File[] children = source.listFiles();
-            if (children != null) for (File child : children) {
+            if (children == null) throw new IOException("Cannot list directory " + source.getName());
+            for (File child : children) {
                 if (isHiddenName(child.getName())) continue;
                 copy(child, new File(destination, child.getName()));
             }

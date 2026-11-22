@@ -124,19 +124,23 @@ public class ExplorerActivity extends BaseActivity {
         binding.explorerLoadingProgress.setVisibility(View.VISIBLE);
         executor.execute(() -> {
             List<GameVersion> found = new ArrayList<>();
+            final String[] failure = new String[1];
             try {
                 VersionManager manager = VersionManager.get(getApplicationContext());
                 List<GameVersion> installed = manager.getInstalledVersions();
                 if (installed != null) found.addAll(installed);
                 List<GameVersion> custom = manager.getCustomVersions();
                 if (custom != null) found.addAll(custom);
-            } catch (Exception ignored) {
+            } catch (Exception error) {
+                failure[0] = error.getMessage();
             }
             final List<GameVersion> result = found;
+            final String loadError = failure[0];
             runOnUiThread(() -> {
                 if (isFinishing() || isDestroyed()) return;
                 versions = result;
                 binding.explorerLoadingProgress.setVisibility(View.GONE);
+                if (loadError != null) toastText(getString(R.string.explorer_error, loadError), true);
                 if (restoredProfileId != null) {
                     for (GameVersion version : result) {
                         if (restoredProfileId.equals(rootFor(version).getAbsolutePath())) {
