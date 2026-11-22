@@ -1,18 +1,22 @@
 {
   "schemaVersion": 1,
-  "headline": "LeviLauncher Modder v1.7.1-modder.3",
-  "summary": "Swipe between launcher tabs with a smooth directional slide — horizontal for top and bottom navbars, vertical for side navbars.",
+  "headline": "LeviLauncher Modder v1.7.1-modder.4",
+  "summary": "A built-in Explorer tab lets you browse and edit files inside your instances right from the launcher — no root required.",
   "sections": [
     {
-      "title": "Changes",
+      "title": "Features",
       "items": [
         {
-          "text": "New swipe gesture: fling toward a neighbouring tab to switch pages with a smooth directional slide animation; horizontal swipes for top and bottom navbars, vertical swipes for left and right side navbars.",
-          "url": "https://github.com/sang765/LeviDroid-Modder/pull/138"
+          "text": "New Explorer tab in the main navigation: browse files inside any launcher-managed instance, including game data that would otherwise need root to reach.",
+          "url": "https://github.com/sang765/LeviDroid-Modder/pull/139"
         },
         {
-          "text": "The gesture skips scrollable lists moving toward the swipe and text fields, so it never fights normal scrolling, and it can be turned off in Settings → Personalize.",
-          "url": "https://github.com/sang765/LeviDroid-Modder/pull/138"
+          "text": "Open text files in an editor with atomic saves, create folders, rename, copy/cut/paste, delete with confirmation, and export any file to device storage.",
+          "url": "https://github.com/sang765/LeviDroid-Modder/pull/139"
+        },
+        {
+          "text": "Explorer keeps you inside the selected instance with canonical-path checks and hides credential directories from listings and operations.",
+          "url": "https://github.com/sang765/LeviDroid-Modder/pull/139"
         }
       ]
     }
