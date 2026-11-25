@@ -54,7 +54,9 @@
         android:theme="@style/Base.Theme.FullScreen"
         android:networkSecurityConfig="@xml/network_security_config"
         android:supportsRtl="true"
-        android:forceDarkAllowed="false">
+        android:forceDarkAllowed="false"
+        android:appCategory="game"
+        android:isGame="true">
 
         <provider
             android:name="rikka.shizuku.ShizukuProvider"
